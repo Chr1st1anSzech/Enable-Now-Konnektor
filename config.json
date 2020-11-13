@@ -1,0 +1,18 @@
+{
+    "IndexUrl": "http://v970w134.now-it.drv:9605/json/index?method=delete&param0=",
+    "RemoveUrl": "http://v970w134.now-it.drv:9605/json/index?method=delete&param0=",
+    "ConverterUrl": "http://v970w134.now-it.drv:9605/json/index?method=delete&param0=",
+    "FetchUrl": "http://v970w134.now-it.drv:9605/json/index?method=delete&param0=",
+    "UidFieldName": "_str.uid",
+    "ClassFieldName": "_str.class",
+    "UrlFieldName": "_str.url",
+    "DateFieldName": "_long.datelastmodified",
+    "HasFieldName": "_str.url",
+    "EsIdFieldName": "_str.esid",
+    "LessonIdentifier": "%",
+    "EntityIdentifier": "$",
+    "SlideIdentifier": "&",
+    "AutostartName": "autostart",
+    "AssetsName" : "assets",
+    "UidName" : "uid",
+}

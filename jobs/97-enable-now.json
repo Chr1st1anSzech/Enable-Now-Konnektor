@@ -1,0 +1,144 @@
+{
+    "Id": "97-now-it",
+    "StartId": "GR_389F860B088563B1",
+    "AutostartMetaMapping": true,
+    "AutostartChildOverwrite": true,
+    "AutoStartMappingBlacklist": [
+        "_str.hash",
+        "_str.uid",
+        "_str.class",
+        "_str.url",
+        "_str.esid",
+        "_str.attachements",
+        "_long.datelastmodified",
+        "_str.autostart",
+        "_facet.type"
+    ],
+    "AttachementUrlOverwrite": true,
+    "IndexAttachements": true,
+    "IndexSlides": true,
+    "IndexGroups": true,
+    "IndexProjects": true,
+    "EntityUrl": "https://gezeigt-wie.now-it.drv/${Class}/${Id}/${File}",
+    "ContentUrl": "https://gezeigt-wie.now-it.drv/index.html#${Class}!${Id}",
+    "DemoUrl": "https://gezeigt-wie.now-it.drv/index.html?show=project!${Id}:demo",
+    "EmailSend": true,
+    "EmailRecipient": "c@c.de",
+    "EmailSender": "b@b.de",
+    "EmailSubject": "aaaaaa",
+    "EmailSmtpServer": "hhttt.now-it.drv",
+    "EmailPort": 12,
+    "BlacklistFields": {
+        "_str.title": "test[0-9]?"
+    },
+    "MustHaveFields": [
+        "_str.body"
+    ],
+    "GlobalMappings": {
+        "_str.title": [
+            "${$caption}"
+        ],
+        "_str.body": [
+            "${$description}"
+        ],
+        "_str.author": [
+            "${$drv_owner}"
+        ],
+        "_facet.author": [
+            "${$drv_owner}"
+        ],
+        "_facet.audience": [
+            "Ausland/Vertrag"
+        ],
+        "_facet.kategorie": [
+            "IT"
+        ],
+        "_facet.keywords": [
+            "${$keywords}"
+        ],
+        "_facet.contenttype": [
+            "text/html"
+        ],
+        "_str.contenttype": [
+            "text/html"
+        ],
+        "_facet.mimetype": [
+            "text/html"
+        ],
+        "_str.mimetype": [
+            "text/html"
+        ],
+        "_comment": [
+            "ACL-Allow entspricht..."
+            ],
+        "_raw.aclallow": [
+            "S-1-1-0"
+        ],
+        "_raw.acldeny": [
+            " "
+        ],
+        "_raw.connectorid": [
+            "sapenablenow_now"
+        ],
+        "_raw.tenant": [
+            "97"
+        ],
+        "_raw.connector": [
+            "crawler"
+        ],
+        "_str.indexname": [
+            "Gezeigt wie"
+        ],
+        "_facet.indexname": [
+            "Gezeigt wie"
+        ],
+        "_str.application": [
+            "HTML"
+        ],
+        "_facet.application": [
+            "HTML"
+        ],
+        "_str.duration": [
+            "${$drv_duration}"
+        ],
+        "_facet.region": [
+            "${$nowit_scope}"
+        ],
+        "_str.software": [
+            "${$drv_application}"
+        ],
+        "_facet.type": [
+            "${switch($tclass){ \"slide\"{ return \"Buchseite\"; } \"project\"{ return \"Projekt\";} \"group\" {return \"Gruppe\";} default { return \"Anderes\" } }}"
+        ]
+    },
+    "ProjectMappings": {
+        "_str.body": [
+            "${%explanation_d}",
+            "${$description}"
+        ],
+        "_str.demourl": [
+            "${Get-DemoUrl -Id $uid}"
+        ]
+    },
+    "SlideMappings": {
+        "_str.body": [
+            "${$text}",
+            "${$description}"
+        ]
+    },
+    "GroupMappings": {
+        "_str.body": [
+            "${$description}"
+        ]
+    },
+    "ThreadCount": 5,
+    "StartHour": 18,
+    "StartMinute": 0,
+    "Monday": true,
+    "Tuesday": false,
+    "Wednsday": false,
+    "Thursday": false,
+    "Friday": false,
+    "Saturday": false,
+    "Sunday": false
+}

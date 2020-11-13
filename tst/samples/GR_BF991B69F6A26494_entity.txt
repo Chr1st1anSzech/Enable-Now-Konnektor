@@ -1,0 +1,45 @@
+﻿{
+"tclass":"group",
+"uid":"GR_BF991B69F6A26494",
+"caption":"Cisco Jabber",
+"context_id":"",
+"roles":"",
+"context_info":"",
+"created_by":"Schöppe, Matthias",
+"modified_by":"Szech, Christian",
+"creation_time":"2020-08-03T08:33:54",
+"modification_time":"2020-09-23T05:52:48",
+"description":"",
+"shortdesc":"",
+"autostart":"slide!SL_FA9D040F95B6E9C",
+"da_context_id":"",
+"keywords":"",
+"language":"de-DE",
+"sub_type":"",
+"assets":[
+{
+"type":"Ref",
+"tclass":"slide",
+"uid":"SL_FA9D040F95B6E9C",
+"caption":"Buchseite Gruppe Cisco Jabber",
+"context_id":"",
+"roles":"",
+"context_info":"",
+"autostart":"true",
+"filter":[
+"FLT_DF39F66565411F9F"]
+}
+,{
+"type":"Ref",
+"tclass":"project",
+"uid":"PR_27D41B89D62A27AE",
+"caption":"Wie ich mich in eine laufende Videokonferenz einwähle",
+"context_id":"",
+"roles":"",
+"context_info":"",
+"macroset":"standard",
+"filter":[
+"FLT_DF39F66565411F9F"]
+}
+]
+}
