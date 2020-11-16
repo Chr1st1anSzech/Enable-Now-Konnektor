@@ -35,22 +35,14 @@ namespace Enable_Now_Konnektor.src.indexing
             string url = _config.IndexUrl + paramString;
             try
             {
-                string proxyUrl = null;
-                int proxyPort = 0;
-                if( _config.UseProxy)
-                {
-                    proxyUrl = _config.ProxyUrl;
-                    proxyPort = _config.ProxyPort;
-                }
-                await HttpRequest.SendRequestAsync(url, proxyUrl, proxyPort);
+                await new HttpRequest().SendRequestAsync(url);
                 return true;
             }
             catch (Exception e)
             {
-                _log.Error( Util.GetFormattedResource("JsonIndexerMessage01"),e );
+                _log.Error(Util.GetFormattedResource("JsonIndexerMessage01"), e);
                 return false;
             }
-            
         }
 
         public override bool RemoveElementFromIndex(Element element)

@@ -73,6 +73,7 @@ namespace Enable_Now_Konnektor.src.crawler
             if (isIndexingSuccess)
             {
                 context.SetElementFound(element, true);
+                _log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
             }
         }
 

@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AttachementCrawlerMessage01" xml:space="preserve">
+    <value>Der Anhang {0} des Elements {1} konnte nicht analysiert werden.</value>
+  </data>
   <data name="ConverterServiceMessage01" xml:space="preserve">
-    <value>Das Ergebnis des Converter-Service konnte nicht ausgewertet werden. Möglicherweise wurde eine ungültige Antwort erhalten.</value>
+    <value>Das Ergebnis des Converter-Service konnte nicht ausgewertet werden. Die Deserialisierung ist fehlgeschlagen. Das JSON ist ungültig.</value>
+  </data>
+  <data name="ConverterServiceMessage02" xml:space="preserve">
+    <value>Die Anfrage an den Converter Service ist fehlgeschlagen.</value>
+  </data>
+  <data name="ConverterServiceMessage03" xml:space="preserve">
+    <value>Die Antwort des Converter Service konnte deserialisiert werden, enthält aber nicht das notwendige Feld {0}.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage01" xml:space="preserve">
     <value>Das Element {0} soll nicht indexiert werden.</value>
@@ -130,23 +139,34 @@
     <value>Sende das Element {0} zum Indexieren.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage04" xml:space="preserve">
-    <value>Indexiere das Element {0}.</value>
+    <value>==&gt; Indexiere das Element {0}.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage05" xml:space="preserve">
     <value>Fehler beim Überprüfen der Übereinstimmung der Werte beim Objekt {0}</value>
   </data>
+  <data name="CrawlerIndexerInterfaceMessage06" xml:space="preserve">
+    <value>Das Element {0} wurde erfolgreich indexiert.</value>
+  </data>
+  <data name="ElementCrawlerMessage01" xml:space="preserve">
+    <value>Das Autostart-Element konnte nicht analysiert werden. Es wird übersprungen.</value>
+  </data>
   <data name="ElementLogContextMessage01" xml:space="preserve">
     <value>Es konnte keine Datenbankverbindung hergestellt werden. Der Name der Tabelle (ID des Jobs) darf nicht leer sein.</value>
+  </data>
+  <data name="ElementMessage01" xml:space="preserve">
+    <value>Die ID "{0}" entspricht nicht dem gültigen Muster von Enable Now.</value>
   </data>
   <data name="HttpRequestMessage01" xml:space="preserve">
     <value>Sende eine HTTP-Anfrage an: {0}</value>
   </data>
   <data name="HttpRequestMessage02" xml:space="preserve">
-    <value>Sende eine HTTP-Anfrage an: {0}</value>
-    <comment>Das Senden der HTTP-Anfrage an {0} ist fehlgeschlagen.</comment>
+    <value>Das Senden der HTTP-Anfrage ist fehlgeschlagen {0}.</value>
   </data>
   <data name="HttpRequestMessage03" xml:space="preserve">
     <value>Konfiguriere den Proxy: URL={0}, Port={1}</value>
+  </data>
+  <data name="HttpRequestMessage04" xml:space="preserve">
+    <value>Das Senden der HTTP-Anfrage ist fehlgeschlagen.</value>
   </data>
   <data name="JobReaderMessage01" xml:space="preserve">
     <value>Die Jobs konnten nicht gelesen werden. Möglicherweise existiert das Verzeichnis {0} nicht oder es fehlen die Berechtigungen.</value>
@@ -179,7 +199,13 @@
     <value>Die E-Mail konnte nicht verschickt werden.</value>
   </data>
   <data name="MetaFileReaderMessage01" xml:space="preserve">
-    <value>Die Metadaten-Datei konnte nicht geladen werden. Die Anfrage an lieferte ein ungültiges Ergebnis.</value>
+    <value>Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann (ID={0}, Dateityp={1}).</value>
+  </data>
+  <data name="MetaFileReaderMessage02" xml:space="preserve">
+    <value>Die angeforderte Metadatei ist nicht vorhanden.</value>
+  </data>
+  <data name="MetaFileReaderMessage03" xml:space="preserve">
+    <value>Die Metadatei konnte nicht heruntergeladen werden (URL={0}).</value>
   </data>
   <data name="ProgramMessage01" xml:space="preserve">
     <value>Das Programm kann nicht ins standardmäßige Protokollverzeichnis schreiben.</value>
@@ -197,12 +223,18 @@
     <value>Nichts zu tun.</value>
   </data>
   <data name="PublicationCrawlerMessage05" xml:space="preserve">
-    <value>Prüfe, ob ein Element in der Warteschlange ist</value>
+    <value>Es sind noch {0} Elemente in der Warteschlange.</value>
   </data>
   <data name="PublicationCrawlerMessage06" xml:space="preserve">
     <value>Das Element {0} konnte nicht vollständig indexiert werden.</value>
   </data>
+  <data name="PublicationCrawlerMessage07" xml:space="preserve">
+    <value>Das Element {0} konnte nicht erstellt werden. Es wird nicht indexiert.</value>
+  </data>
   <data name="UtilMessage01" xml:space="preserve">
     <value>Das Datum {0} konnte nicht geparst werden. Es wird stattdessen das heutige Datum verwendet.</value>
+  </data>
+  <data name="ValidatorMessage01" xml:space="preserve">
+    <value>Der reguläre Ausdruck "{0}" ist ungültig.</value>
   </data>
 </root>

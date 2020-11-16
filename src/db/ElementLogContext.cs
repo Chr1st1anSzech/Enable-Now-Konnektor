@@ -4,6 +4,7 @@ using log4net;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Enable_Now_Konnektor.src.db
     class ElementLogContext : DbContext
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string DatabasePath = @"C:\Users\Christian\Source\Repos\Enable Now Connector for iFinder5\db\ElementLogging.db";
+        private static readonly string DatabasePath = Path.Combine(Util.GetApplicationRoot(), "db", "ElementLogging.db");
         private readonly string _tableName;
         private DbSet<ElementLog> ElementLogs { get; set; }
 

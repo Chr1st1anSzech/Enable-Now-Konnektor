@@ -1,6 +1,6 @@
 {
     "Id": "97-now-it",
-    "StartId": "GR_389F860B088563B1",
+    "StartId": "GR_3DD954E48B533A8D",
     "AutostartMetaMapping": true,
     "AutostartChildOverwrite": true,
     "AutoStartMappingBlacklist": [
@@ -19,9 +19,9 @@
     "IndexSlides": true,
     "IndexGroups": true,
     "IndexProjects": true,
-    "EntityUrl": "https://gezeigt-wie.now-it.drv/${Class}/${Id}/${File}",
-    "ContentUrl": "https://gezeigt-wie.now-it.drv/index.html#${Class}!${Id}",
-    "DemoUrl": "https://gezeigt-wie.now-it.drv/index.html?show=project!${Id}:demo",
+    "EntityUrl": "http://192.168.178.28/${Class}/${Id}/${File}",
+    "ContentUrl": "http://192.168.178.28/index.html#${Class}!${Id}",
+    "DemoUrl": "http://192.168.178.28/index.html?show=project!${Id}:demo",
     "EmailSend": true,
     "EmailRecipient": "c@c.de",
     "EmailSender": "b@b.de",
@@ -131,14 +131,5 @@
             "${$description}"
         ]
     },
-    "ThreadCount": 5,
-    "StartHour": 18,
-    "StartMinute": 0,
-    "Monday": true,
-    "Tuesday": false,
-    "Wednsday": false,
-    "Thursday": false,
-    "Friday": false,
-    "Saturday": false,
-    "Sunday": false
+    "ThreadCount": 5
 }

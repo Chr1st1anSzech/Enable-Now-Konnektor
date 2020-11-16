@@ -1,9 +1,11 @@
-﻿using Enable_Now_Konnektor.src.jobs;
+﻿using Enable_Now_Konnektor.src.http;
+using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using log4net.Config;
 using System;
 using System.IO;
+using System.Net;
 
 namespace Enable_Now_Konnektor
 {

@@ -3,6 +3,8 @@ using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.misc;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +16,7 @@ namespace Enable_Now_Konnektor.src.crawler
     class AttachementCrawler
     {
         private readonly JobConfig _jobConfig;
-
+        private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AttachementCrawler(JobConfig jobConfig)
         {
@@ -27,7 +29,16 @@ namespace Enable_Now_Konnektor.src.crawler
             var attachements = new List<Element>();
             foreach (var attachementName in element.AttachementNames)
             {
-                var res = await converter.ConvertAttachementAsync(element, attachementName);
+                ConverterResult res;
+                try
+                {
+                    res = await converter.ConvertAttachementAsync(element, attachementName);
+                }
+                catch
+                {
+                    _log.Warn( Util.GetFormattedResource("AttachementCrawlerMessage01", attachementName, element.Id) );
+                    continue;
+                }
                 Element attachement = element.Clone() as Element;
                 OverwriteAttachementValues(attachement, res, attachementName);
                 attachements.Add(attachement);

@@ -9,16 +9,12 @@
 
   <ItemGroup>
     <None Remove="config.json" />
-    <None Remove="db\ElementLogging.db" />
     <None Remove="jobs\97-enable-now.json" />
     <None Remove="log4net.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="db\ElementLogging.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="jobs\97-enable-now.json">
@@ -30,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="db\" />
     <Folder Include="logs\" />
     <Folder Include="src\" />
   </ItemGroup>

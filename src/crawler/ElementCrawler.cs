@@ -88,8 +88,18 @@ namespace Enable_Now_Konnektor.src.crawler
             var metaFiles = await metaFileReader.LoadMetaFiles(element);
             FillFields(element, metaFiles);
             AddAssets(element, metaFiles);
-            Element autostartElement = await CrawlElement(GetAutostartId(metaFiles));
-            OverwriteValuesByAutostartElement(element, autostartElement);
+            string autostartId = GetAutostartId(metaFiles);
+            if( autostartId != null ) {
+                try
+                {
+                    Element autostartElement = await CrawlElement(autostartId);
+                    OverwriteValuesByAutostartElement(element, autostartElement);
+                }
+                catch
+                {
+                    _log.Warn(Util.GetFormattedResource("ElementCrawlerMessage01"));
+                }
+            }
             element.Hash = element.Fields.GetHashCode();
             SetDateValue(element);
             return element;
@@ -248,10 +258,15 @@ namespace Enable_Now_Konnektor.src.crawler
             foreach (string fieldName in keys)
             {
                 List<string> values = element.Fields[fieldName];
-                int length = values.Count;
-                for (int i = 0; i < length; i++)
+                int valuesCount = values.Count;
+                for (int valueIndex = 0; valueIndex < valuesCount; valueIndex++)
                 {
-                    FillField(metaFiles, values, i);
+                    bool fieldWasRemoved = FillOrRemoveField(metaFiles, values, valueIndex);
+                    if( fieldWasRemoved)
+                    {
+                        valueIndex--;
+                        valuesCount--;
+                    }
                 }
             }
         }
@@ -267,10 +282,11 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         /// <param name="metaFiles">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
         /// <param name="values">Die Liste der Werte für dieses Feld.</param>
-        /// <param name="i">Index des Wertes in der Liste, der befüllt werden soll.</param>
-        private void FillField(MetaFiles metaFiles, List<string> values, int i)
+        /// <param name="valueIndex">Index des Wertes in der Liste, der befüllt werden soll.</param>
+        private bool FillOrRemoveField(MetaFiles metaFiles, List<string> values, int valueIndex)
         {
-            var match = Regex.Match(values[i], _variablePattern);
+            var match = Regex.Match(values[valueIndex], _variablePattern);
+            bool wasRemoved = false;
             if (match.Success)
             {
                 string variable = match.Value;
@@ -279,14 +295,15 @@ namespace Enable_Now_Konnektor.src.crawler
                 var val = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, variable[0], variableName));
                 if( val != null )
                 {
-                    values[i] = val;
+                    values[valueIndex] = val;
                 }
                 else
                 {
-                    values.RemoveAt(i);
+                    values.RemoveAt(valueIndex);
+                    wasRemoved = true;
                 }
-                
             }
+            return wasRemoved;
         }
 
 
@@ -300,12 +317,12 @@ namespace Enable_Now_Konnektor.src.crawler
         private string GetAutostartId(MetaFiles metaFiles)
         {
             Config config = ConfigReader.LoadConnectorConfig();
-            if (metaFiles.EntityFile[config.AutostartIdentifier] == null)
+            if (metaFiles.EntityFile?[config.AutostartIdentifier] == null)
             {
                 return null;
             }
 
-            return metaFiles.EntityFile[config.AutostartIdentifier]?.Value<string>();
+            return metaFiles.EntityFile[config.AutostartIdentifier]?.Value<string>().Split('!')[1];
         }
 
 

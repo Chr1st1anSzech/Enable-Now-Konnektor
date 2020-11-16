@@ -41,7 +41,7 @@ namespace Enable_Now_Konnektor.src.jobs
         public Dictionary<string, string[]> SlideMappings { get; set; }
         public Dictionary<string, string[]> GroupMappings { get; set; }
 
-        public int ThreadCount { get; set; } = 6;
+        public int ThreadCount { get; set; } = 2;
 
     }
 }

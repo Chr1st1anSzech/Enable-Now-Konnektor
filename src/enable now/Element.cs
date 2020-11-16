@@ -22,6 +22,7 @@ namespace Enable_Now_Konnektor.src.enable_now
         public const string Group = "GR";
         public const string Project = "PR";
         public const string Slide = "SL";
+        public const string Media = "M";
 
         private readonly ILog _log = LogManager.GetLogger(typeof(Element));
 
@@ -34,8 +35,9 @@ namespace Enable_Now_Konnektor.src.enable_now
         {
             if (!Validator.Validate(id, Validator.EnableNowIdPattern))
             {
-                _log.Error($"Die ID {id} des Enable Now Elements entspricht keinem gültigen Muster.");
-                throw new ArgumentException($"Die ID {id} des Enable Now Elements entspricht keinem gültigen Muster.");
+                string message = Util.GetFormattedResource("ElementMessage01", id);
+                _log.Error(message);
+                throw new ArgumentException(message);
             }
             Id = id;
             Class = Id.Split('_')[0];

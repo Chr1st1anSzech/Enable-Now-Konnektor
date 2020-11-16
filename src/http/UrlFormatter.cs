@@ -12,6 +12,13 @@ namespace Enable_Now_Konnektor.src.http
         public static string LessonFile = "lesson.js";
         public static string SlideFile = "slide.js";
 
+        private readonly Dictionary<string, string> classNames = new Dictionary<string, string>() {
+            { "GR", "group" },
+            { "SL", "slide" },
+            { "PR", "project" },
+            { "M", "media" }
+        };
+
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly string _entityUrlPattern;
@@ -28,17 +35,20 @@ namespace Enable_Now_Konnektor.src.http
 
         public string GetEntityUrl(string className, string id, string fileType)
         {
-            return _entityUrlPattern.Replace("${Class}", className).Replace("${Id}", id).Replace("${File}", fileType);
+            _log.Debug($"Erstelle ContentUrl mit Parametern className='{className}', id='{id}', fileType='{fileType}'");
+            return _entityUrlPattern.Replace("${Class}", classNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
 
         public string GetDemoUrl(string id)
         {
+            _log.Debug($"Erstelle ContentUrl mit Parametern id='{id}'");
             return _demoUrlPattern.Replace("${Id}", id);
         }
 
         public string GetContentUrl(string className, string id)
         {
-            return _contentUrlPattern.Replace("${Class}", className).Replace("${Id}", id);
+            _log.Debug($"Erstelle ContentUrl mit Parametern className='{className}', id='{id}'");
+            return _contentUrlPattern.Replace("${Class}", classNames[className]).Replace("${Id}", id);
         }
     }
 }

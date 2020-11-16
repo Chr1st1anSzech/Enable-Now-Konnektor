@@ -19,32 +19,30 @@ namespace Enable_Now_Konnektor.src.jobs
 
         public void ScheduleJobs()
         {
+            _log.Info(Util.GetFormattedResource("JobSchedulerMessage02", DateTime.Now));
             JobReader reader = new JobReader();
             JobConfig[] jobConfigs = reader.ReadAllJobConfigs();
             if (jobConfigs == null) { return; }
 
             int jobCount = jobConfigs.Length;
-            Action[] actions = new Action[jobCount];
+            Task[] tasks = new Task[jobCount];
             for (int i = 0; i < jobCount; i++)
             {
                 var jobConfig = jobConfigs[i];
                 if (jobConfig == null) { continue; }
 
-                actions[i] = delegate () { StartJob(jobConfig); };
+                tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
             }
-            Parallel.Invoke(actions);
+            Task.WaitAll(tasks);
+            _log.Info(Util.GetFormattedResource("JobSchedulerMessage04", DateTime.Now));
 
+            
         }
 
         private void StartJob(JobConfig jobConfig)
         {
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage01", jobConfig.Id));
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage02", DateTime.Now));
             PublicationCrawler crawler = new PublicationCrawler(jobConfig);
             crawler.StartCrawlingThreads();
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage03", jobConfig.Id));
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage04", DateTime.Now));
-
             MailClient mail = new MailClient(jobConfig);
             mail.SendMail("");
         }

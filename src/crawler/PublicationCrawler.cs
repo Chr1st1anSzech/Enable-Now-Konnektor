@@ -15,13 +15,13 @@ namespace Enable_Now_Konnektor.src.crawler
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig _jobConfig;
-        
+
 
 
         /// <summary>
         /// Die Warteschlange mit den IDs, die noch analysiert und indexiert werden müssen.
         /// </summary>
-        private ConcurrentQueue<string> _idWorkQueue = new ConcurrentQueue<string>();
+        private readonly ConcurrentQueue<string> _idWorkQueue = new ConcurrentQueue<string>();
 
 
         /// <summary>
@@ -48,18 +48,20 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         public void StartCrawlingThreads()
         {
-            _log.Info( Util.GetFormattedResource("PublicationCrawlerMessage01") );
+            _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage01"));
             int threadCount = _jobConfig.ThreadCount;
             _taskStatus = new bool[threadCount];
-            Action[] actions = new Action[threadCount];
+            Task[] tasks = new Task[threadCount];
             _idWorkQueue.Enqueue(_jobConfig.StartId);
             for (int threadNumber = 0; threadNumber < threadCount; threadNumber++)
             {
                 _taskStatus[threadNumber] = true;
                 int i = threadNumber;
-                actions[threadNumber] = delegate() { EnterCrawlingLoopAsync(i).ConfigureAwait(false); };
+                tasks[threadNumber] = Task.Run(async delegate () { await EnterCrawlingLoopAsync(i); });
             }
-            Parallel.Invoke(actions);
+
+            Task.WaitAll(tasks);
+
         }
 
 
@@ -72,62 +74,60 @@ namespace Enable_Now_Konnektor.src.crawler
         private async Task EnterCrawlingLoopAsync(int threadNumber)
         {
             CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(_jobConfig);
-            _log.Debug(Util.GetFormattedResource("PublicationCrawlerMessage03"));
+            _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
-                _log.Debug(Util.GetFormattedResource("PublicationCrawlerMessage05"));
+
                 if (_idWorkQueue.TryDequeue(out string id))
                 {
-                    await CrawlElementAsync(threadNumber, crawlerIndexerInterface, id);
-
+                    await CrawlElementAsync(crawlerIndexerInterface, id);
                 }
                 else
                 {
                     _log.Debug(Util.GetFormattedResource("PublicationCrawlerMessage04"));
+                    Thread.Sleep(new Random().Next(500, 2000));
+                }
+
+                int countElementsInQueue = _idWorkQueue.Count;
+                _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage05", countElementsInQueue));
+                if (countElementsInQueue == 0)
+                {
                     _taskStatus[threadNumber] = false;
-                    Thread.Sleep( new Random().Next(50,250) );
-                }
-            }
-        }
-
-        private async Task CrawlElementAsync(int threadNumber, CrawlerIndexerInterface crawlerIndexerInterface, string id)
-        {
-            _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage02", id));
-            try
-            {
-                ElementCrawler elementCrawler = new ElementCrawler(_jobConfig);
-                AttachementCrawler attachementCrawler = new AttachementCrawler(_jobConfig);
-                
-                Element element = await elementCrawler.CrawlElement(id);
-                
-                var attachements = await attachementCrawler.CrawlAttachementsAsync(element);
-                Task[] attachementTasks = new Task[attachements.Count];
-                for (int i = 0; i < attachements.Count; i++)
-                {
-                    attachementTasks[i] = crawlerIndexerInterface.SendToIndexerAsync(attachements[i]);
-                }
-                
-                Task indexElementTask = crawlerIndexerInterface.SendToIndexerAsync(element);
-                
-
-                foreach (var childId in element.ChildrenIds)
-                {
-                    _idWorkQueue.Enqueue(childId);
-                }
-                if (element.ChildrenIds.Length > 0)
-                {
-                    _taskStatus[threadNumber] = true;
                 }
                 else
                 {
-                    _taskStatus[threadNumber] = false;
+                    _taskStatus[threadNumber] = true;
                 }
-                await indexElementTask;
-                Task.WaitAll(attachementTasks); 
+                _log.Info($"Thread={threadNumber}, Status={_taskStatus[threadNumber]}");
             }
-            catch (Exception e)
+
+            _log.Info("Fertig mit der Arbeit");
+        }
+
+        private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
+        {
+            _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage02", id));
+            ElementCrawler elementCrawler = new ElementCrawler(_jobConfig);
+            AttachementCrawler attachementCrawler = new AttachementCrawler(_jobConfig);
+
+            Element element = await elementCrawler.CrawlElement(id);
+            if (element == null)
             {
-                _log.Error(Util.GetFormattedResource("PublicationCrawlerMessage06",  id), e);
+                _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage07", id) );
+                return;
+            }
+            foreach (var childId in element.ChildrenIds)
+            {
+                _idWorkQueue.Enqueue(childId);
+            }
+
+            await crawlerIndexerInterface.SendToIndexerAsync(element);
+
+            var attachements = await attachementCrawler.CrawlAttachementsAsync(element);
+            //Task[] attachementTasks = new Task[attachements.Count];
+            for (int i = 0; i < attachements.Count; i++)
+            {
+                await crawlerIndexerInterface.SendToIndexerAsync(attachements[i]);
             }
         }
 

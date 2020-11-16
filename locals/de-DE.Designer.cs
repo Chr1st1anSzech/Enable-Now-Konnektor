@@ -61,11 +61,38 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Ergebnis des Converter-Service konnte nicht ausgewertet werden. Möglicherweise wurde eine ungültige Antwort erhalten. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Anhang {0} des Elements {1} konnte nicht analysiert werden. ähnelt.
+        /// </summary>
+        internal static string AttachementCrawlerMessage01 {
+            get {
+                return ResourceManager.GetString("AttachementCrawlerMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Ergebnis des Converter-Service konnte nicht ausgewertet werden. Die Deserialisierung ist fehlgeschlagen. Das JSON ist ungültig. ähnelt.
         /// </summary>
         internal static string ConverterServiceMessage01 {
             get {
                 return ResourceManager.GetString("ConverterServiceMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Anfrage an den Converter Service ist fehlgeschlagen. ähnelt.
+        /// </summary>
+        internal static string ConverterServiceMessage02 {
+            get {
+                return ResourceManager.GetString("ConverterServiceMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Antwort des Converter Service konnte deserialisiert werden, enthält aber nicht das notwendige Feld {0}. ähnelt.
+        /// </summary>
+        internal static string ConverterServiceMessage03 {
+            get {
+                return ResourceManager.GetString("ConverterServiceMessage03", resourceCulture);
             }
         }
         
@@ -97,7 +124,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Indexiere das Element {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die ==&gt; Indexiere das Element {0}. ähnelt.
         /// </summary>
         internal static string CrawlerIndexerInterfaceMessage04 {
             get {
@@ -115,11 +142,38 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} wurde erfolgreich indexiert. ähnelt.
+        /// </summary>
+        internal static string CrawlerIndexerInterfaceMessage06 {
+            get {
+                return ResourceManager.GetString("CrawlerIndexerInterfaceMessage06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Autostart-Element konnte nicht analysiert werden. Es wird übersprungen. ähnelt.
+        /// </summary>
+        internal static string ElementCrawlerMessage01 {
+            get {
+                return ResourceManager.GetString("ElementCrawlerMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Es konnte keine Datenbankverbindung hergestellt werden. Der Name der Tabelle (ID des Jobs) darf nicht leer sein. ähnelt.
         /// </summary>
         internal static string ElementLogContextMessage01 {
             get {
                 return ResourceManager.GetString("ElementLogContextMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die ID &quot;{0}&quot; entspricht nicht dem gültigen Muster von Enable Now. ähnelt.
+        /// </summary>
+        internal static string ElementMessage01 {
+            get {
+                return ResourceManager.GetString("ElementMessage01", resourceCulture);
             }
         }
         
@@ -133,7 +187,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sende eine HTTP-Anfrage an: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Senden der HTTP-Anfrage ist fehlgeschlagen {0}. ähnelt.
         /// </summary>
         internal static string HttpRequestMessage02 {
             get {
@@ -147,6 +201,15 @@ namespace Enable_Now_Konnektor.locals {
         internal static string HttpRequestMessage03 {
             get {
                 return ResourceManager.GetString("HttpRequestMessage03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Senden der HTTP-Anfrage ist fehlgeschlagen. ähnelt.
+        /// </summary>
+        internal static string HttpRequestMessage04 {
+            get {
+                return ResourceManager.GetString("HttpRequestMessage04", resourceCulture);
             }
         }
         
@@ -241,11 +304,29 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die Metadaten-Datei konnte nicht geladen werden. Die Anfrage an lieferte ein ungültiges Ergebnis. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann (ID={0}, Dateityp={1}). ähnelt.
         /// </summary>
         internal static string MetaFileReaderMessage01 {
             get {
                 return ResourceManager.GetString("MetaFileReaderMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die angeforderte Metadatei ist nicht vorhanden. ähnelt.
+        /// </summary>
+        internal static string MetaFileReaderMessage02 {
+            get {
+                return ResourceManager.GetString("MetaFileReaderMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Metadatei konnte nicht heruntergeladen werden (URL={0}). ähnelt.
+        /// </summary>
+        internal static string MetaFileReaderMessage03 {
+            get {
+                return ResourceManager.GetString("MetaFileReaderMessage03", resourceCulture);
             }
         }
         
@@ -295,7 +376,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Prüfe, ob ein Element in der Warteschlange ist ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Es sind noch {0} Elemente in der Warteschlange. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage05 {
             get {
@@ -313,11 +394,29 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} konnte nicht erstellt werden. Es wird nicht indexiert. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage07 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage07", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Das Datum {0} konnte nicht geparst werden. Es wird stattdessen das heutige Datum verwendet. ähnelt.
         /// </summary>
         internal static string UtilMessage01 {
             get {
                 return ResourceManager.GetString("UtilMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der reguläre Ausdruck &quot;{0}&quot; ist ungültig. ähnelt.
+        /// </summary>
+        internal static string ValidatorMessage01 {
+            get {
+                return ResourceManager.GetString("ValidatorMessage01", resourceCulture);
             }
         }
     }

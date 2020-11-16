@@ -12,7 +12,7 @@ namespace Enable_Now_Konnektor.src.misc
     {
         public static string EmailPattern = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
         public static string ServerNamePattern = @"[A-Za-z0-9-]*[A-Za-z0-9]+(\.[A-Za-z0-9-]*[A-Za-z0-9]+)+";
-        public static string EnableNowIdPattern = @"(PR|GR|SL)_[0-9A-Za-z]{16}";
+        public static string EnableNowIdPattern = @"^(PR|GR|SL|M)_[0-9A-Za-z]+$";
         public static string UrlPattern = @"(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?";
 
         private static ILog _log = LogManager.GetLogger(typeof(Validator));
@@ -32,7 +32,7 @@ namespace Enable_Now_Konnektor.src.misc
             }
             catch (Exception e)
             {
-                _log.Error($"Der reguläre Ausdruck {pattern} ist ungültig", e);
+                _log.Error(Util.GetFormattedResource("ValidatorMessage01", pattern), e);
                 return false;
             }
         }

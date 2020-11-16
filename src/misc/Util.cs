@@ -30,7 +30,11 @@ namespace Enable_Now_Konnektor.src.misc
                 InitializeResourceManager();
             }
             var txt = res.GetString(key) ?? "";
-            return string.Format(txt, parameters);
+            if( parameters != null)
+            {
+                txt = string.Format(txt, parameters);
+            }
+            return txt;
         }
 
         private static void InitializeResourceManager()

@@ -37,11 +37,11 @@ namespace Enable_Now_Konnektor.src.misc
         public void ExtractAssets(MetaFiles metaFiles, out string[] childrenIds, out string[] attachementNames)
         {
             _log.Debug("Analysiere alle Kindselemente.");
-            var assets = metaFiles.EntityFile[_config.AssetsIdentifier];
+            var assets = metaFiles.EntityFile?[_config.AssetsIdentifier];
             if (assets == null)
             {
-                childrenIds = null;
-                attachementNames = null;
+                childrenIds = new string[0];
+                attachementNames = new string[0];
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace Enable_Now_Konnektor.src.misc
         {
             if (json == null)
             {
-                _log.Info($"Die Variable {variableName} ist nicht in der Metadatei vorhanden");
+                _log.Warn( Util.GetFormattedResource("MetaFileReaderMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -102,25 +102,36 @@ namespace Enable_Now_Konnektor.src.misc
             return files;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
         private async Task<JObject> GetJsonFileAsync(Element element, string fileType)
         {
             // nur Projekte haben eine lesson.js
             // nur Buchseiten haben eine slide.js
             if ((element.Class != Element.Project && fileType == UrlFormatter.LessonFile) || (element.Class != Element.Slide && fileType == UrlFormatter.SlideFile))
             {
-                _log.Debug($"Keine Datei gefunden. Für {element.Class} gibt es keine {fileType}.");
+                _log.Debug($"Für {element.Class} gibt es keine {fileType}.");
                 return null;
             }
             string entityUrl = _urlFormatter.GetEntityUrl(element.Class, element.Id, fileType);
             try
             {
-                string jsonString = await HttpRequest.SendRequestAsync(entityUrl);
+                string jsonString = await new HttpRequest().SendRequestAsync(entityUrl);
                 return JsonConvert.DeserializeObject<JObject>(jsonString);
+            }
+            catch (System.Net.WebException)
+            {
+                _log.Warn(Util.GetFormattedResource("MetaFileReaderMessage03", entityUrl));
+                return null;
             }
             catch
             {
-                _log.Error( Util.GetFormattedResource("MetaFileReaderMessage01", entityUrl) );
-                throw;
+                _log.Warn( Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType) );
+                return null;
             }
         }
     }

@@ -12,9 +12,9 @@ namespace Enable_Now_Konnektor.src.config
         public string ConverterUrl { get; set; }
         public string FetchUrl { get; set; }
 
-        public string ProxyUrl { get; set; }
-        public int ProxyPort { get; set; }
-        public bool UseProxy { get; set; }
+        public string ProxyUrl { get; set; } = "http://proxy.de";
+        public int ProxyPort { get; set; } = 0;
+        public bool UseProxy { get; set; } = false;
 
         public string StringIdentifier = "_str";
         public string FacetIdentifier = "_facet";
