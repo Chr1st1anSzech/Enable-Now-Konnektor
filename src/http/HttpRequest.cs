@@ -43,22 +43,16 @@ namespace Enable_Now_Konnektor.src.http
                 string responseBody = await response.Content.ReadAsStringAsync();
                 return responseBody;
             }
-            catch (Exception e)
+            catch (TaskCanceledException timeoutException)
             {
-                _log.Error(Util.GetFormattedResource("HttpRequestMessage04"), e);
+                _log.Error(Util.GetFormattedResource("HttpRequestMessage02"), timeoutException);
                 throw;
             }
-        }
-
-        private void ConfigureProxy(WebRequest request, string proxyUrl, int port)
-        {
-            if (string.IsNullOrWhiteSpace(proxyUrl))
+            catch (Exception e)
             {
-                return;
+                _log.Error(Util.GetFormattedResource("HttpRequestMessage03"), e);
+                throw;
             }
-            _log.Debug(Util.GetFormattedResource("HttpRequestMessage03", proxyUrl, port));
-            WebProxy proxy = new WebProxy(proxyUrl, port);
-            request.Proxy = proxy;
         }
     }
 }

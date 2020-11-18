@@ -28,7 +28,6 @@
   <ItemGroup>
     <Folder Include="db\" />
     <Folder Include="logs\" />
-    <Folder Include="src\" />
   </ItemGroup>
 
   <ItemGroup>

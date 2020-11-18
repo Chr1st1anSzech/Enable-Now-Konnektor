@@ -124,7 +124,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ==&gt; Indexiere das Element {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Indexiere das Element {0}. ähnelt.
         /// </summary>
         internal static string CrawlerIndexerInterfaceMessage04 {
             get {
@@ -160,6 +160,33 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Eingabe &quot;{0}&quot; wurde nicht als Expression erkannt. ähnelt.
+        /// </summary>
+        internal static string ElementCrawlerMessage02 {
+            get {
+                return ResourceManager.GetString("ElementCrawlerMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Eingabe &quot;{0}&quot; wurde als Variable erkannt. Die Variable ist &quot;{1}&quot;. ähnelt.
+        /// </summary>
+        internal static string ElementCrawlerMessage03 {
+            get {
+                return ResourceManager.GetString("ElementCrawlerMessage03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Eingabe &quot;{0}&quot; wurde als Erweiterungsmethode erkannt. Der Klassenname ist &quot;{1}&quot; und die Variable ist &quot;{2}&quot;. ähnelt.
+        /// </summary>
+        internal static string ElementCrawlerMessage04 {
+            get {
+                return ResourceManager.GetString("ElementCrawlerMessage04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Es konnte keine Datenbankverbindung hergestellt werden. Der Name der Tabelle (ID des Jobs) darf nicht leer sein. ähnelt.
         /// </summary>
         internal static string ElementLogContextMessage01 {
@@ -178,6 +205,24 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Aufruf der Erweiterungsmethode &quot;{0}&quot; mit dem Wert &quot;{1}&quot; ist fehlgeschlagen. Das Feld wird gelöscht. ähnelt.
+        /// </summary>
+        internal static string ExpressionEvaluatorMessage01 {
+            get {
+                return ResourceManager.GetString("ExpressionEvaluatorMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Führe die Erweiterungsmethode &quot;{0}&quot; mit dem Wert &quot;{1}&quot; aus. ähnelt.
+        /// </summary>
+        internal static string ExpressionEvaluatorMessage02 {
+            get {
+                return ResourceManager.GetString("ExpressionEvaluatorMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sende eine HTTP-Anfrage an: {0} ähnelt.
         /// </summary>
         internal static string HttpRequestMessage01 {
@@ -187,7 +232,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Senden der HTTP-Anfrage ist fehlgeschlagen {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Server ist nicht erreichbar. Die Antwort auf die HTTP-Anfrage dauert zu lange und wurde deswegen abgebrochen. ähnelt.
         /// </summary>
         internal static string HttpRequestMessage02 {
             get {
@@ -196,20 +241,11 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Konfiguriere den Proxy: URL={0}, Port={1} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Senden der HTTP-Anfrage ist fehlgeschlagen. ähnelt.
         /// </summary>
         internal static string HttpRequestMessage03 {
             get {
                 return ResourceManager.GetString("HttpRequestMessage03", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Senden der HTTP-Anfrage ist fehlgeschlagen. ähnelt.
-        /// </summary>
-        internal static string HttpRequestMessage04 {
-            get {
-                return ResourceManager.GetString("HttpRequestMessage04", resourceCulture);
             }
         }
         
@@ -331,6 +367,15 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Entity-Datei darf nicht null sein. ähnelt.
+        /// </summary>
+        internal static string MetaFileReaderMessage04 {
+            get {
+                return ResourceManager.GetString("MetaFileReaderMessage04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Das Programm kann nicht ins standardmäßige Protokollverzeichnis schreiben. ähnelt.
         /// </summary>
         internal static string ProgramMessage01 {
@@ -394,7 +439,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} konnte nicht erstellt werden. Es wird nicht indexiert. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} konnte nicht vollständig analysiert werden. Es wird daher übersprungen. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage07 {
             get {

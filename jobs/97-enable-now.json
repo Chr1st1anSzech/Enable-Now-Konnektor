@@ -31,21 +31,25 @@
     "BlacklistFields": {
         "_str.title": "test[0-9]?"
     },
+
     "MustHaveFields": [
         "_str.body"
     ],
     "GlobalMappings": {
+        "_facet.type": [
+            "${ClassToTypeConverter(E_tclass)}"
+        ],
         "_str.title": [
-            "${$caption}"
+            "${E_caption}"
         ],
         "_str.body": [
-            "${$description}"
+            "${E_description}"
         ],
         "_str.author": [
-            "${$drv_owner}"
+            "${E_drv_owner}"
         ],
         "_facet.author": [
-            "${$drv_owner}"
+            "${E_drv_owner}"
         ],
         "_facet.audience": [
             "Ausland/Vertrag"
@@ -54,7 +58,7 @@
             "IT"
         ],
         "_facet.keywords": [
-            "${$keywords}"
+            "${E_keywords}"
         ],
         "_facet.contenttype": [
             "text/html"
@@ -99,37 +103,34 @@
             "HTML"
         ],
         "_str.duration": [
-            "${$drv_duration}"
+            "${E_drv_duration}"
         ],
         "_facet.region": [
-            "${$nowit_scope}"
+            "${E_nowit_scope}"
         ],
         "_str.software": [
-            "${$drv_application}"
-        ],
-        "_facet.type": [
-            "${switch($tclass){ \"slide\"{ return \"Buchseite\"; } \"project\"{ return \"Projekt\";} \"group\" {return \"Gruppe\";} default { return \"Anderes\" } }}"
+            "${E_drv_application}"
         ]
     },
     "ProjectMappings": {
         "_str.body": [
-            "${%explanation_d}",
-            "${$description}"
+            "${L_explanation_d}",
+            "${E_description}"
         ],
         "_str.demourl": [
-            "${Get-DemoUrl -Id $uid}"
+            ""
         ]
     },
     "SlideMappings": {
         "_str.body": [
-            "${$text}",
-            "${$description}"
+            "${E_text}",
+            "${E_description}"
         ]
     },
     "GroupMappings": {
         "_str.body": [
-            "${$description}"
+            "${E_description}"
         ]
     },
-    "ThreadCount": 5
+    "ThreadCount": 4
 }

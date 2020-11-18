@@ -14,8 +14,9 @@ namespace Enable_Now_Konnektor.src.crawler
     class PublicationCrawler
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig _jobConfig;
-
+        private readonly JobConfig jobConfig;
+        ElementCrawler elementCrawler;
+        AttachementCrawler attachementCrawler;
 
 
         /// <summary>
@@ -37,7 +38,9 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="jobConfig">Die Konfiguration des Jobs.</param>
         public PublicationCrawler(JobConfig jobConfig)
         {
-            _jobConfig = jobConfig;
+            this.jobConfig = jobConfig;
+            elementCrawler = new ElementCrawler(this.jobConfig);
+            attachementCrawler = new AttachementCrawler(this.jobConfig);
         }
 
 
@@ -49,10 +52,10 @@ namespace Enable_Now_Konnektor.src.crawler
         public void StartCrawlingThreads()
         {
             _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage01"));
-            int threadCount = _jobConfig.ThreadCount;
+            int threadCount = jobConfig.ThreadCount;
             _taskStatus = new bool[threadCount];
             Task[] tasks = new Task[threadCount];
-            _idWorkQueue.Enqueue(_jobConfig.StartId);
+            _idWorkQueue.Enqueue(jobConfig.StartId);
             for (int threadNumber = 0; threadNumber < threadCount; threadNumber++)
             {
                 _taskStatus[threadNumber] = true;
@@ -73,7 +76,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="threadNumber">Die Nummer des Threads</param>
         private async Task EnterCrawlingLoopAsync(int threadNumber)
         {
-            CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(_jobConfig);
+            CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
             _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
@@ -98,7 +101,6 @@ namespace Enable_Now_Konnektor.src.crawler
                 {
                     _taskStatus[threadNumber] = true;
                 }
-                _log.Info($"Thread={threadNumber}, Status={_taskStatus[threadNumber]}");
             }
 
             _log.Info("Fertig mit der Arbeit");
@@ -107,15 +109,17 @@ namespace Enable_Now_Konnektor.src.crawler
         private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
         {
             _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage02", id));
-            ElementCrawler elementCrawler = new ElementCrawler(_jobConfig);
-            AttachementCrawler attachementCrawler = new AttachementCrawler(_jobConfig);
-
-            Element element = await elementCrawler.CrawlElement(id);
-            if (element == null)
+            Element element;
+            try
             {
-                _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage07", id) );
+                element = await elementCrawler.CrawlElement(id);
+            }
+            catch
+            {
+                _log.Error(Util.GetFormattedResource("PublicationCrawlerMessage07", id));
                 return;
             }
+            
             foreach (var childId in element.ChildrenIds)
             {
                 _idWorkQueue.Enqueue(childId);

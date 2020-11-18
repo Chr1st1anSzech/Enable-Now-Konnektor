@@ -1,5 +1,6 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
+using Enable_Now_Konnektor.src.extension;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
@@ -21,9 +22,9 @@ namespace Enable_Now_Konnektor.src.crawler
     /// </summary>
     class ElementCrawler
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly string _variablePattern = @"(?<=\${).*(?=})";
-        private readonly JobConfig _jobConfig;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig jobConfig;
+        private readonly MetaFileReader metaFileReader;
 
         /// <summary>
         /// Felder eines Projekts, die von einem Autostart-Element auf das andere Element abgebildet werden sollen
@@ -37,7 +38,8 @@ namespace Enable_Now_Konnektor.src.crawler
 
         public ElementCrawler(JobConfig jobConfig)
         {
-            _jobConfig = jobConfig;
+            this.jobConfig = jobConfig;
+            metaFileReader = new MetaFileReader(new UrlFormatter(jobConfig));
             InitializeMappingFields();
         }
 
@@ -52,7 +54,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private void InitializeMappingFields()
         {
             // Mapping ist komplett deaktiviert oder das Überschreiben ist deaktiviert
-            if (!_jobConfig.AutostartMetaMapping || !_jobConfig.AutostartChildOverwrite)
+            if (!jobConfig.AutostartMetaMapping || !jobConfig.AutostartChildOverwrite)
             {
                 return;
             }
@@ -61,13 +63,13 @@ namespace Enable_Now_Konnektor.src.crawler
             _groupMappingFields = new List<string>();
 
             // alle globalen Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(_jobConfig.GlobalMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _projectMappingFields, _groupMappingFields);
+            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, _projectMappingFields, _groupMappingFields);
 
             // alle Projekt-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(_jobConfig.ProjectMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _projectMappingFields);
+            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, _projectMappingFields);
 
             // alle Gruppen-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(_jobConfig.GroupMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _groupMappingFields);
+            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, _groupMappingFields);
         }
 
 
@@ -80,16 +82,16 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Ein Objekt, das die Daten des Elements in Enable Now enthält</returns>
         public async Task<Element> CrawlElement(string id)
         {
-            _log.Debug($"Crawle das Objekt mit der ID '{id}'.");
-            ElementFactory factory = new ElementFactory( new UrlFormatter(_jobConfig) );
+            log.Debug($"Crawle das Objekt mit der ID '{id}'.");
+            ElementFactory factory = new ElementFactory(new UrlFormatter(jobConfig));
             Element element = factory.CreateENObject(id);
             FillInitialFields(element);
-            MetaFileReader metaFileReader = new MetaFileReader(new UrlFormatter(_jobConfig));
-            var metaFiles = await metaFileReader.LoadMetaFiles(element);
+            MetaFiles metaFiles = await metaFileReader.LoadMetaFiles(element);
             FillFields(element, metaFiles);
             AddAssets(element, metaFiles);
             string autostartId = GetAutostartId(metaFiles);
-            if( autostartId != null ) {
+            if (autostartId != null)
+            {
                 try
                 {
                     Element autostartElement = await CrawlElement(autostartId);
@@ -97,7 +99,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 catch
                 {
-                    _log.Warn(Util.GetFormattedResource("ElementCrawlerMessage01"));
+                    log.Warn(Util.GetFormattedResource("ElementCrawlerMessage01"));
                 }
             }
             element.Hash = element.Fields.GetHashCode();
@@ -109,7 +111,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             Config config = ConfigReader.LoadConnectorConfig();
             string dateFieldName = $"{config.LongIdentifier}.{config.DateFieldName}";
-            if ( !element.Fields.ContainsKey(dateFieldName))
+            if (!element.Fields.ContainsKey(dateFieldName))
             {
                 element.AddValues(dateFieldName, Util.ConvertToUnixTime(DateTime.Now));
             }
@@ -117,45 +119,30 @@ namespace Enable_Now_Konnektor.src.crawler
 
         public void FillInitialFields(Element element)
         {
-            foreach (var mapping in _jobConfig.GlobalMappings)
+            foreach (var mapping in jobConfig.GlobalMappings)
             {
                 element.AddValues(mapping.Key, mapping.Value);
             }
-            switch (element.Class)
+
+            Dictionary<string, Dictionary<string, string[]>> mappings = new Dictionary<string, Dictionary<string, string[]>>()
             {
-                case Element.Project:
-                    {
-                        foreach (var mapping in _jobConfig.ProjectMappings)
-                        {
-                            element.AddValues(mapping.Key, mapping.Value);
-                        }
-                        break;
-                    }
-                case Element.Slide:
-                    {
-                        foreach (var mapping in _jobConfig.SlideMappings)
-                        {
-                            element.AddValues(mapping.Key, mapping.Value);
-                        }
-                        break;
-                    }
-                case Element.Group:
-                    {
-                        foreach (var mapping in _jobConfig.GroupMappings)
-                        {
-                            element.AddValues(mapping.Key, mapping.Value);
-                        }
-                        break;
-                    }
+                { Element.Project, jobConfig.ProjectMappings },
+                { Element.Slide, jobConfig.SlideMappings},
+                { Element.Group, jobConfig.GroupMappings }
+
+            };
+            foreach (var mapping in mappings[element.Class])
+            {
+                element.AddValues(mapping.Key, mapping.Value);
             }
         }
-        
-        
-        
-        
+
+
+
+
         private void AddAssets(Element element, MetaFiles metaFiles)
         {
-            MetaFileReader metaFileReader = new MetaFileReader(new UrlFormatter(_jobConfig));
+            MetaFileReader metaFileReader = new MetaFileReader(new UrlFormatter(jobConfig));
             metaFileReader.ExtractAssets(metaFiles, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;
@@ -195,20 +182,12 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (element.Class == Element.Slide) { return; }
 
-            if (!_jobConfig.AutostartMetaMapping || _projectMappingFields == null || _groupMappingFields == null)
-            {
-                return;
-            }
-
-            bool overwriteValues = _jobConfig.AutostartChildOverwrite;
-            string tmp = overwriteValues ? "" : "nicht";
-            _log.Debug($"Die Werte des Element {element.Id} werden {tmp} von den Werten des Autostartelements {autostartElement.Id} überschrieben.");
+            if (!jobConfig.AutostartMetaMapping || _projectMappingFields == null || _groupMappingFields == null) { return; }
 
             List<string> mappingFieldList = GetMappingListForClass(element);
-
             if (mappingFieldList == null) { return; }
 
-
+            bool overwriteValues = jobConfig.AutostartChildOverwrite;
             foreach (string field in mappingFieldList)
             {
                 var autostartValues = autostartElement.GetValues(field);
@@ -253,57 +232,90 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="metaFiles">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
         public void FillFields(Element element, MetaFiles metaFiles)
         {
-            var keys = element.Fields.Keys;
-
+            var keys = element.Fields.Keys.ToList();
+            ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();
             foreach (string fieldName in keys)
             {
                 List<string> values = element.Fields[fieldName];
-                int valuesCount = values.Count;
-                for (int valueIndex = 0; valueIndex < valuesCount; valueIndex++)
+                int lastIndex = values.Count - 1;
+                for (int valueIndex = lastIndex; valueIndex >= 0; valueIndex--)
                 {
-                    bool fieldWasRemoved = FillOrRemoveField(metaFiles, values, valueIndex);
-                    if( fieldWasRemoved)
-                    {
-                        valueIndex--;
-                        valuesCount--;
-                    }
+                    string temporaryValue = values[valueIndex];
+                    string[] resultValues = EvaluateField(temporaryValue, expressionEvaluator, metaFiles);
+                    AddOrRemoveFields(values, valueIndex, resultValues);
+                }
+
+                if (values.Count == 0)
+                {
+                    element.Fields.Remove(fieldName);
                 }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="temporaryValue"></param>
+        /// <param name="expressionEvaluator"></param>
+        /// <param name="metaFiles"></param>
+        /// <returns>Eine Liste mit den Werten oder null, wenn der Ausdruck kein Ergebnis liefert.</returns>
+        private string[] EvaluateField(string temporaryValue, ExpressionEvaluator expressionEvaluator, MetaFiles metaFiles)
+        {
+            if (!expressionEvaluator.IsExpression(temporaryValue, out string expression))
+            {
+                log.Debug(Util.GetFormattedResource("ElementCrawlerMessage02", temporaryValue));
+                return string.IsNullOrWhiteSpace(temporaryValue) ? null : new string[] { temporaryValue };
+            }
 
-
+            if (expressionEvaluator.IsVariableExpression(expression, out string variableName))
+            {
+                string value = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, variableName));
+                log.Debug(Util.GetFormattedResource("ElementCrawlerMessage03", expression, value));
+                return string.IsNullOrWhiteSpace(value) ? null : new string[] { value };
+            }
+            if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string converterVariableName))
+            {
+                string value = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, converterVariableName));
+                log.Debug(Util.GetFormattedResource("ElementCrawlerMessage04", expression, converterClassName, converterVariableName));
+                return expressionEvaluator.EvaluateAsConverter(value, converterClassName);
+            }
+            return null;
+        }
 
         /// <summary>
-        /// Ersetzt ein Feld durch einen Wert.
-        /// <para>Wenn der vorbelegte Wert ein statischer Wert ist (keine Variable), dann wird nichts gemacht. Falls der Wert aber dem regulären Ausdruck für
-        /// Variablen entspricht, wird es durch einen Wert in einer Metadatei ersetzt. Falls der ermittelt Wert null ist, wird dieser Eintrag aus der Liste
-        /// entfernt.</para>
+        /// Fügt die Werte aus der Ergebnisliste der Werteliste des Feldes hinzu.
+        /// <para>Falls die Ergebnisliste leer ist, wird der bisherige Feldwert entfernt.</para>
+        /// <para>Ansonsten wird der Wert ersetzt und alle weiteren Werte hinzugefügt.</para>
         /// </summary>
-        /// <param name="metaFiles">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
-        /// <param name="values">Die Liste der Werte für dieses Feld.</param>
-        /// <param name="valueIndex">Index des Wertes in der Liste, der befüllt werden soll.</param>
-        private bool FillOrRemoveField(MetaFiles metaFiles, List<string> values, int valueIndex)
+        /// <param name="values"></param>
+        /// <param name="valueIndex"></param>
+        /// <param name="resultValues"></param>
+        private void AddOrRemoveFields(List<string> values, int valueIndex, string[] resultValues)
         {
-            var match = Regex.Match(values[valueIndex], _variablePattern);
-            bool wasRemoved = false;
-            if (match.Success)
+            if (resultValues == null || resultValues.Length == 0)
             {
-                string variable = match.Value;
-                string variableName = variable[1..];
-                MetaFileReader metaFileReader = new MetaFileReader(new UrlFormatter(_jobConfig));
-                var val = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, variable[0], variableName));
-                if( val != null )
-                {
-                    values[valueIndex] = val;
-                }
-                else
-                {
-                    values.RemoveAt(valueIndex);
-                    wasRemoved = true;
-                }
+                values.RemoveAt(valueIndex);
+                return;
             }
-            return wasRemoved;
+
+            if (resultValues[0] == null)
+            {
+                values.RemoveAt(valueIndex);
+            }
+            else
+            {
+                values[valueIndex] = resultValues[0];
+            }
+
+            int length = resultValues.Length;
+            for (int i = 1; i < length; i++)
+            {
+                if (resultValues[i] != null)
+                {
+                    values.Add(resultValues[i]);
+                }
+
+            }
         }
 
 

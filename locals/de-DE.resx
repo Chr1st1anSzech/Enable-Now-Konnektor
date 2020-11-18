@@ -139,7 +139,7 @@
     <value>Sende das Element {0} zum Indexieren.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage04" xml:space="preserve">
-    <value>==&gt; Indexiere das Element {0}.</value>
+    <value>Indexiere das Element {0}.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage05" xml:space="preserve">
     <value>Fehler beim Überprüfen der Übereinstimmung der Werte beim Objekt {0}</value>
@@ -150,22 +150,34 @@
   <data name="ElementCrawlerMessage01" xml:space="preserve">
     <value>Das Autostart-Element konnte nicht analysiert werden. Es wird übersprungen.</value>
   </data>
+  <data name="ElementCrawlerMessage02" xml:space="preserve">
+    <value>Die Eingabe "{0}" wurde nicht als Expression erkannt.</value>
+  </data>
+  <data name="ElementCrawlerMessage03" xml:space="preserve">
+    <value>Die Eingabe "{0}" wurde als Variable erkannt. Die Variable ist "{1}".</value>
+  </data>
+  <data name="ElementCrawlerMessage04" xml:space="preserve">
+    <value>Die Eingabe "{0}" wurde als Erweiterungsmethode erkannt. Der Klassenname ist "{1}" und die Variable ist "{2}".</value>
+  </data>
   <data name="ElementLogContextMessage01" xml:space="preserve">
     <value>Es konnte keine Datenbankverbindung hergestellt werden. Der Name der Tabelle (ID des Jobs) darf nicht leer sein.</value>
   </data>
   <data name="ElementMessage01" xml:space="preserve">
     <value>Die ID "{0}" entspricht nicht dem gültigen Muster von Enable Now.</value>
   </data>
+  <data name="ExpressionEvaluatorMessage01" xml:space="preserve">
+    <value>Der Aufruf der Erweiterungsmethode "{0}" mit dem Wert "{1}" ist fehlgeschlagen. Das Feld wird gelöscht.</value>
+  </data>
+  <data name="ExpressionEvaluatorMessage02" xml:space="preserve">
+    <value>Führe die Erweiterungsmethode "{0}" mit dem Wert "{1}" aus.</value>
+  </data>
   <data name="HttpRequestMessage01" xml:space="preserve">
     <value>Sende eine HTTP-Anfrage an: {0}</value>
   </data>
   <data name="HttpRequestMessage02" xml:space="preserve">
-    <value>Das Senden der HTTP-Anfrage ist fehlgeschlagen {0}.</value>
+    <value>Der Server ist nicht erreichbar. Die Antwort auf die HTTP-Anfrage dauert zu lange und wurde deswegen abgebrochen.</value>
   </data>
   <data name="HttpRequestMessage03" xml:space="preserve">
-    <value>Konfiguriere den Proxy: URL={0}, Port={1}</value>
-  </data>
-  <data name="HttpRequestMessage04" xml:space="preserve">
     <value>Das Senden der HTTP-Anfrage ist fehlgeschlagen.</value>
   </data>
   <data name="JobReaderMessage01" xml:space="preserve">
@@ -207,6 +219,9 @@
   <data name="MetaFileReaderMessage03" xml:space="preserve">
     <value>Die Metadatei konnte nicht heruntergeladen werden (URL={0}).</value>
   </data>
+  <data name="MetaFileReaderMessage04" xml:space="preserve">
+    <value>Die Entity-Datei darf nicht null sein.</value>
+  </data>
   <data name="ProgramMessage01" xml:space="preserve">
     <value>Das Programm kann nicht ins standardmäßige Protokollverzeichnis schreiben.</value>
   </data>
@@ -229,7 +244,7 @@
     <value>Das Element {0} konnte nicht vollständig indexiert werden.</value>
   </data>
   <data name="PublicationCrawlerMessage07" xml:space="preserve">
-    <value>Das Element {0} konnte nicht erstellt werden. Es wird nicht indexiert.</value>
+    <value>Das Element {0} konnte nicht vollständig analysiert werden. Es wird daher übersprungen.</value>
   </data>
   <data name="UtilMessage01" xml:space="preserve">
     <value>Das Datum {0} konnte nicht geparst werden. Es wird stattdessen das heutige Datum verwendet.</value>

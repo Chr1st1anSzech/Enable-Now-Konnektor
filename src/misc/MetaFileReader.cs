@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,20 +25,20 @@ namespace Enable_Now_Konnektor.src.misc
             public JObject LessonFile { get; set; }
         }
 
-        private readonly ILog _log = LogManager.GetLogger(typeof(MetaFileReader));
-        private readonly UrlFormatter _urlFormatter;
-        private readonly Config _config;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly UrlFormatter urlFormatter;
+        private readonly Config config;
 
         public MetaFileReader(UrlFormatter urlFormatter)
         {
-            _config = ConfigReader.LoadConnectorConfig();
-            _urlFormatter = urlFormatter;
+            config = ConfigReader.LoadConnectorConfig();
+            this.urlFormatter = urlFormatter;
         }
 
         public void ExtractAssets(MetaFiles metaFiles, out string[] childrenIds, out string[] attachementNames)
         {
-            _log.Debug("Analysiere alle Kindselemente.");
-            var assets = metaFiles.EntityFile?[_config.AssetsIdentifier];
+            log.Debug("Analysiere alle Kindselemente.");
+            var assets = metaFiles.EntityFile?[config.AssetsIdentifier];
             if (assets == null)
             {
                 childrenIds = new string[0];
@@ -46,29 +47,35 @@ namespace Enable_Now_Konnektor.src.misc
             }
 
             childrenIds = (from JToken asset in assets
-                               where asset[_config.AutostartIdentifier]?.Value<bool>() != true
-                               && asset[_config.UidFieldName]?.Value<string>() != null
-                               select asset[_config.UidFieldName].Value<string>()).ToArray();
+                               where asset[config.AutostartIdentifier]?.Value<bool>() != true
+                               && asset[config.UidFieldName]?.Value<string>() != null
+                               select asset[config.UidFieldName].Value<string>()).ToArray();
 
             attachementNames = (from JToken asset in assets
-                                    where asset[_config.TypeIdentifier]?.Value<string>() == _config.DocuIdentifier
-                                    && asset[_config.FileNameIdentifier]?.Value<string>() != null
-                                    select asset[_config.FileNameIdentifier].Value<string>()).ToArray();
+                                    where asset[config.TypeIdentifier]?.Value<string>() == config.DocuIdentifier
+                                    && asset[config.FileNameIdentifier]?.Value<string>() != null
+                                    select asset[config.FileNameIdentifier].Value<string>()).ToArray();
         }
 
-        public string ExtractValue(MetaFiles metaFiles, char firstChar, string variableName)
+        public string ExtractValue(MetaFiles metaFiles, string variableName)
         {
-            if (firstChar.Equals(_config.EntityIdentifier))
+            if( variableName == null)
             {
-                return ExtractValueFromEntityTxt(variableName, metaFiles.EntityFile);
+                return null;
             }
-            else if (firstChar.Equals(_config.LessonIdentifier))
+
+
+            if (variableName.StartsWith(config.EntityIdentifier))
             {
-                return ExtractValueFromJson(variableName, metaFiles.LessonFile);
+                return ExtractValueFromEntityTxt(variableName[config.EntityIdentifier.Length..], metaFiles.EntityFile);
             }
-            else if (firstChar.Equals(_config.SlideIdentifier))
+            else if (variableName.StartsWith(config.LessonIdentifier))
             {
-                return ExtractValueFromJson(variableName, metaFiles.SlideFile);
+                return ExtractValueFromJson(variableName[config.LessonIdentifier.Length..], metaFiles.LessonFile);
+            }
+            else if (variableName.StartsWith(config.SlideIdentifier))
+            {
+                return ExtractValueFromJson(variableName[config.SlideIdentifier.Length..], metaFiles.SlideFile);
             }
             return "";
         }
@@ -82,7 +89,7 @@ namespace Enable_Now_Konnektor.src.misc
         {
             if (json == null)
             {
-                _log.Warn( Util.GetFormattedResource("MetaFileReaderMessage02"));
+                log.Warn( Util.GetFormattedResource("MetaFileReaderMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -95,10 +102,16 @@ namespace Enable_Now_Konnektor.src.misc
         {
             MetaFiles files = new MetaFiles
             {
-                EntityFile = await GetJsonFileAsync(element, UrlFormatter.EntityFile),
                 LessonFile = await GetJsonFileAsync(element, UrlFormatter.LessonFile),
                 SlideFile = await GetJsonFileAsync(element, UrlFormatter.SlideFile)
             };
+            files.EntityFile = await GetJsonFileAsync(element, UrlFormatter.EntityFile);
+            if(files.EntityFile == null)
+            {
+                string message = Util.GetFormattedResource("MetaFileReaderMessage04");
+                log.Error(message);
+                throw new ArgumentNullException(message);
+            }
             return files;
         }
 
@@ -114,23 +127,18 @@ namespace Enable_Now_Konnektor.src.misc
             // nur Buchseiten haben eine slide.js
             if ((element.Class != Element.Project && fileType == UrlFormatter.LessonFile) || (element.Class != Element.Slide && fileType == UrlFormatter.SlideFile))
             {
-                _log.Debug($"Für {element.Class} gibt es keine {fileType}.");
+                log.Debug($"Für {element.Class} gibt es keine {fileType}.");
                 return null;
             }
-            string entityUrl = _urlFormatter.GetEntityUrl(element.Class, element.Id, fileType);
+            string entityUrl = urlFormatter.GetEntityUrl(element.Class, element.Id, fileType);
             try
             {
                 string jsonString = await new HttpRequest().SendRequestAsync(entityUrl);
                 return JsonConvert.DeserializeObject<JObject>(jsonString);
             }
-            catch (System.Net.WebException)
-            {
-                _log.Warn(Util.GetFormattedResource("MetaFileReaderMessage03", entityUrl));
-                return null;
-            }
             catch
             {
-                _log.Warn( Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType) );
+                log.Warn( Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType) );
                 return null;
             }
         }

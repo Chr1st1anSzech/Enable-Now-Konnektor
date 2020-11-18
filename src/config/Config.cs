@@ -32,9 +32,9 @@ namespace Enable_Now_Konnektor.src.config
         public string ContentTypeFieldNAme { get; } = "contenttype";
 
 
-        public char LessonIdentifier { get; } = '%';
-        public char EntityIdentifier { get; } = '$';
-        public char SlideIdentifier { get; } = '&';
+        public string LessonIdentifier { get; } = "L_";
+        public string EntityIdentifier { get; } = "E_";
+        public string SlideIdentifier { get; } = "S_";
 
         public string AutostartIdentifier { get; } = "autostart";
         public string AssetsIdentifier { get; } = "assets";
