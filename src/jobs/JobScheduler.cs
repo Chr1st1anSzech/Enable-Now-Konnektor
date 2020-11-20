@@ -1,5 +1,6 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.crawler;
+using Enable_Now_Konnektor.src.db;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using System;
@@ -20,6 +21,7 @@ namespace Enable_Now_Konnektor.src.jobs
         public void ScheduleJobs()
         {
             _log.Info(Util.GetFormattedResource("JobSchedulerMessage02", DateTime.Now));
+            ConfigReader.Initialize();
             JobReader reader = new JobReader();
             JobConfig[] jobConfigs = reader.ReadAllJobConfigs();
             if (jobConfigs == null) { return; }
@@ -31,6 +33,8 @@ namespace Enable_Now_Konnektor.src.jobs
                 var jobConfig = jobConfigs[i];
                 if (jobConfig == null) { continue; }
 
+                using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+                context.Initialize();
                 tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
             }
             Task.WaitAll(tasks);

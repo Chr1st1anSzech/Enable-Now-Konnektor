@@ -17,10 +17,9 @@ namespace Enable_Now_Konnektor.tst
             JobReader jobReader = new JobReader();
             var jobConfigs = jobReader.ReadAllJobConfigs();
             JobConfig jobConfig = jobConfigs[0];
-            ElementFactory factory = new ElementFactory(new UrlFormatter(jobConfig));
             ElementCrawler crawler = new ElementCrawler(jobConfig);
 
-            var element = factory.CreateENObject("PR_CD031F4334BD65BE");
+            var element = new Element("PR_CD031F4334BD65BE");
             crawler.FillInitialFields(element);
 
             var files = ReadFile(element);

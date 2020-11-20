@@ -1,18 +1,44 @@
 {
-    "IndexUrl": "http://192.168.178.28/json/index?method=index&param0=",
-    "RemoveUrl": "http://192.168.178.28/json/index?method=delete&param0=",
-    "ConverterUrl": "http://192.168.178.28/json/converter?method=convertLocation&param0=&param1=",
-    "FetchUrl": "http://192.168.178.28/json/index?method=fetch&param0=[_id]&param1=",
-    "UidFieldName": "_str.uid",
-    "ClassFieldName": "_str.class",
-    "UrlFieldName": "_str.url",
-    "DateFieldName": "_long.datelastmodified",
-    "HasFieldName": "_str.url",
-    "EsIdFieldName": "_str.esid",
-    "LessonIdentifier": "L_",
-    "EntityIdentifier": "E_",
-    "SlideIdentifier": "S_",
-    "AutostartName": "autostart",
-    "AssetsName" : "assets",
-    "UidName" : "uid",
+	"IndexUrl": "http://192.168.178.28/json/index?method=index&param0=",
+	"RemoveUrl": "http://192.168.178.28/json/index?method=delete&param0=",
+	"ConverterUrl": "http://192.168.178.28/json/converter?method=convertLocation&param0=&param1=",
+	"FetchUrl": "http://192.168.178.28/json/index?method=fetch&param0=[_id]&param1=",
+
+	"ProxyUrl" : "http://proxy.de",
+	"ProxyPort" : 12,
+	"bool UseProxy" : false,
+
+	"StringIdentifier" : "_str",
+	"FacetIdentifier" : "_facet",
+	"LongIdentifier" : "_long",
+
+	"UidFieldName" : "uid",
+	"ClassFieldName" : "class",
+	"UrlFieldName" : "url",
+	"DateFieldName" : "datelastmodified",
+	"BodyFieldName" : "body",
+	"MimeTypeFieldName" : "mimetype",
+	"ApplicationFieldName" : "application",
+	"ContentTypeFieldNAme" : "contenttype",
+
+
+	"LessonIdentifier" : "L_",
+	"EntityIdentifier" : "E_",
+	"SlideIdentifier" : "S_",
+
+	"AutostartIdentifier": "autostart",
+	"AssetsIdentifier": "assets",
+	"UidIdentifier": "uid",
+	"TypeIdentifier": "type",
+	"DocuIdentifier": "Docu",
+	"FileNameIdentifier": "fileName",
+	"ConverterFieldsIdentifier": "fields",
+
+	"ConverterApplicationMapping" : {
+		"Adobe Acrobat Document" : "PDF" ,
+		"Microsoft Word" : "Word",
+		"Microsoft PowerPoint" : "PowerPoint"
+	},
+
+	"ConverterApplicationDefaultMapping" : "HTML"
 }

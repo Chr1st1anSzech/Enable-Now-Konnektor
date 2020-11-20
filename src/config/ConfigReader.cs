@@ -9,38 +9,40 @@ namespace Enable_Now_Konnektor.src.config
 {
     public class ConfigReader
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        public static string FilePath = Path.Combine(Util.GetApplicationRoot(), "config.json");
-        private static Config _config;
+        private static string filePath = Path.Combine(Util.GetApplicationRoot(), "config.json");
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static Config config;
 
         private ConfigReader() { }
 
-        public static Config LoadConnectorConfig()
+        public static void Initialize()
         {
-            if(_config == null )
+            if (config == null)
             {
                 string jsonString = ReadFile();
-                _config = JsonConvert.DeserializeObject<Config>(jsonString);
-                Validator configValidator = new Validator();
                 try
                 {
-                    configValidator.ValidateConfig(_config);
+                    config = JsonConvert.DeserializeObject<Config>(jsonString);
+                    Validator configValidator = new Validator();
+                    configValidator.ValidateConfig(config);
                 }
                 catch (Exception e)
                 {
                     throw new Exception("Die Konfiguration ist fehlerhaft", e);
                 }
             }
-            
-            
-            return _config;
+        }
+
+        public static Config LoadConnectorConfig()
+        {
+            return config;
         }
 
         private static string ReadFile()
         {
             try
             {
-                return File.ReadAllText(FilePath);
+                return File.ReadAllText(filePath);
             }
             catch (Exception e)
             {

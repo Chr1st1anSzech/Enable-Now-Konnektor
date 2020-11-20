@@ -28,6 +28,7 @@
   <ItemGroup>
     <Folder Include="db\" />
     <Folder Include="logs\" />
+    <Folder Include="lib\" />
   </ItemGroup>
 
   <ItemGroup>

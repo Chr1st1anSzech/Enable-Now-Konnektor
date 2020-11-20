@@ -24,13 +24,10 @@ namespace Enable_Now_Konnektor.src.config
         public string ClassFieldName { get; } = "class";
         public string UrlFieldName { get; } = "url";
         public string DateFieldName { get; } = "datelastmodified";
-        public string HasFieldName { get; } = "url";
-        public string EsIdFieldName { get; } = "esid";
         public string BodyFieldName { get; } = "body";
         public string MimeTypeFieldName { get; } = "mimetype";
         public string ApplicationFieldName { get; } = "application";
         public string ContentTypeFieldNAme { get; } = "contenttype";
-
 
         public string LessonIdentifier { get; } = "L_";
         public string EntityIdentifier { get; } = "E_";

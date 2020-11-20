@@ -19,7 +19,10 @@
     "IndexSlides": true,
     "IndexGroups": true,
     "IndexProjects": true,
+    "PublicationSource" : "Http",
+    "EntityPath": "D:\\Daten\\Dokumente\\test\\${Class}\\${Id}\\${File}",
     "EntityUrl": "http://192.168.178.28/${Class}/${Id}/${File}",
+    "ContentPath": "D:\\Daten\\Dokumente\\test\\index.html#${Class}!${Id}",
     "ContentUrl": "http://192.168.178.28/index.html#${Class}!${Id}",
     "DemoUrl": "http://192.168.178.28/index.html?show=project!${Id}:demo",
     "EmailSend": true,
@@ -55,10 +58,11 @@
             "Ausland/Vertrag"
         ],
         "_facet.kategorie": [
-            "IT"
+            "IT",
+            "Alle Mitarbeiter"
         ],
         "_facet.keywords": [
-            "${E_keywords}"
+            "${CommaSeparationConverter(E_keywords)}"
         ],
         "_facet.contenttype": [
             "text/html"

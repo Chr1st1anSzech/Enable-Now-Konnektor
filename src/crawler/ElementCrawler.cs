@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Enable_Now_Konnektor.src.misc.MetaFileReader;
@@ -39,7 +40,7 @@ namespace Enable_Now_Konnektor.src.crawler
         public ElementCrawler(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
-            metaFileReader = new MetaFileReader(new UrlFormatter(jobConfig));
+            metaFileReader = new MetaFileReader(jobConfig);
             InitializeMappingFields();
         }
 
@@ -83,8 +84,7 @@ namespace Enable_Now_Konnektor.src.crawler
         public async Task<Element> CrawlElement(string id)
         {
             log.Debug($"Crawle das Objekt mit der ID '{id}'.");
-            ElementFactory factory = new ElementFactory(new UrlFormatter(jobConfig));
-            Element element = factory.CreateENObject(id);
+            Element element = new Element(id);
             FillInitialFields(element);
             MetaFiles metaFiles = await metaFileReader.LoadMetaFiles(element);
             FillFields(element, metaFiles);
@@ -102,7 +102,7 @@ namespace Enable_Now_Konnektor.src.crawler
                     log.Warn(Util.GetFormattedResource("ElementCrawlerMessage01"));
                 }
             }
-            element.Hash = element.Fields.GetHashCode();
+            element.Hash = element.GenerateHashCode();
             SetDateValue(element);
             return element;
         }
@@ -119,6 +119,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
         public void FillInitialFields(Element element)
         {
+            Config cfg = ConfigReader.LoadConnectorConfig();
+            element.AddValues(cfg.UidFieldName, element.Id);
+            element.AddValues(cfg.ClassFieldName, element.Class);
+            element.AddValues(cfg.UrlFieldName, new access.HttpMetaAccess(jobConfig).GetContentUrl(element.Class, element.Id));
+
             foreach (var mapping in jobConfig.GlobalMappings)
             {
                 element.AddValues(mapping.Key, mapping.Value);
@@ -131,6 +136,9 @@ namespace Enable_Now_Konnektor.src.crawler
                 { Element.Group, jobConfig.GroupMappings }
 
             };
+
+            if( !mappings.ContainsKey(element.Class) ) { return; }
+
             foreach (var mapping in mappings[element.Class])
             {
                 element.AddValues(mapping.Key, mapping.Value);
@@ -142,7 +150,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void AddAssets(Element element, MetaFiles metaFiles)
         {
-            MetaFileReader metaFileReader = new MetaFileReader(new UrlFormatter(jobConfig));
+            MetaFileReader metaFileReader = new MetaFileReader(jobConfig);
             metaFileReader.ExtractAssets(metaFiles, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;

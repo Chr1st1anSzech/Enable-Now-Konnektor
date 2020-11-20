@@ -22,7 +22,7 @@ namespace Enable_Now_Konnektor.src.config
         {
             try
             {
-                File.WriteAllText(ConfigReader.FilePath, jsonString);
+                //File.WriteAllText(ConfigReader.filePath, jsonString);
             }
             catch (Exception e)
             {

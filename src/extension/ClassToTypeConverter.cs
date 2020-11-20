@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Enable_Now_Konnektor.src.extension
 {
@@ -8,7 +6,7 @@ namespace Enable_Now_Konnektor.src.extension
     {
         public string[] TransformParameter(params string[] parameter)
         {
-            if(parameter == null || parameter.Length == 0) { return Array.Empty<string>(); }
+            if(parameter == null || parameter.Length == 0 || parameter[0] == null) { return Array.Empty<string>(); }
             string[] values = new string[1];
             switch (parameter[0])
             {

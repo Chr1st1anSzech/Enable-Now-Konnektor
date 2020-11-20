@@ -8,6 +8,6 @@ namespace Enable_Now_Konnektor.src.db
     {
         public string Id { get; set; }
         public bool WasFound { get; set; }
-        public int Hash { get; set; }
+        public string Hash { get; set; }
     }
 }

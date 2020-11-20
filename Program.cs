@@ -1,4 +1,5 @@
-﻿using Enable_Now_Konnektor.src.extension;
+﻿using Enable_Now_Konnektor.src.config;
+using Enable_Now_Konnektor.src.extension;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
@@ -18,7 +19,6 @@ namespace Enable_Now_Konnektor
         static void Main(string[] args)
         {
             ConfigLogging();
-
             JobScheduler scheduler = new JobScheduler();
             scheduler.ScheduleJobs();
 

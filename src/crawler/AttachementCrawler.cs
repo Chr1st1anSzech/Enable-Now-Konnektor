@@ -15,17 +15,17 @@ namespace Enable_Now_Konnektor.src.crawler
 {
     class AttachementCrawler
     {
-        private readonly JobConfig _jobConfig;
+        private readonly JobConfig jobConfig;
         private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AttachementCrawler(JobConfig jobConfig)
         {
-            _jobConfig = jobConfig;
+            this.jobConfig = jobConfig;
         }
 
         public async Task<List<Element>> CrawlAttachementsAsync(Element element)
         {
-            ConverterService converter = new ConverterService(new UrlFormatter(_jobConfig));
+            ConverterService converter = new ConverterService(jobConfig);
             var attachements = new List<Element>();
             foreach (var attachementName in element.AttachementNames)
             {

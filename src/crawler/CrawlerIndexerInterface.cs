@@ -50,7 +50,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
 
             bool hasContentChanged = HasContentChanged(element);
-            bool isAlreadyIndexed = IsAlreadyIndex(element);
+            bool isAlreadyIndexed = IsAlreadyIndexed(element);
 
             using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
             if (isAlreadyIndexed)
@@ -96,11 +96,11 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         /// <param name="element">Das Element, das auf Vorhandensein im Index geprüft werden soll.</param>
         /// <returns>Wahr, wenn es bereits vorhanden ist, ansonsten falsch.</returns>
-        private bool IsAlreadyIndex(Element element)
+        private bool IsAlreadyIndexed(Element element)
         {
             using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
             var elementLog = context.GetElementLog(element);
-            return elementLog != null;
+            return (elementLog != null);
         }
 
 
@@ -157,7 +157,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
             var elementLog = context.GetElementLog(element);
-            return elementLog == null || elementLog.Hash != element.Hash;
+            return elementLog == null || !elementLog.Hash.Equals(element.Hash);
         }
 
 

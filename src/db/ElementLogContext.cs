@@ -28,7 +28,10 @@ namespace Enable_Now_Konnektor.src.db
             _tableName = tableName;
         }
 
-
+        public void Initialize()
+        {
+            Database.EnsureCreated();
+        }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

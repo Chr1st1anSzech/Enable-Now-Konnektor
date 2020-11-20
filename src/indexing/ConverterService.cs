@@ -1,4 +1,5 @@
-﻿using Enable_Now_Konnektor.src.config;
+﻿using Enable_Now_Konnektor.src.access;
+using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
@@ -25,11 +26,11 @@ namespace Enable_Now_Konnektor.src.indexing
         }
 
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly UrlFormatter _urlFormatter;
+        private readonly JobConfig jobConfig;
 
-        public ConverterService(UrlFormatter urlFormatter)
+        public ConverterService(JobConfig jobConfig)
         {
-            _urlFormatter = urlFormatter;
+            this.jobConfig = jobConfig;
         }
 
         /// <summary>
@@ -122,7 +123,8 @@ namespace Enable_Now_Konnektor.src.indexing
 
         private string GetConverterRequestUrl(Element element, string fileName)
         {
-            string contentUrl = HttpUtility.UrlEncode(_urlFormatter.GetEntityUrl(element.Class, element.Id, fileName));
+            string attachementUrl = new HttpMetaAccess(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            string contentUrl = HttpUtility.UrlEncode(attachementUrl);
             Config config = ConfigReader.LoadConnectorConfig();
             return config.ConverterUrl + contentUrl;
         }

@@ -22,7 +22,11 @@ namespace Enable_Now_Konnektor.src.jobs
         public bool IndexGroups { get; set; } = true;
         public bool IndexProjects { get; set; } = true;
 
+        public string PublicationSource { get; set; }
+
+        public string EntityPath { get; set; }
         public string EntityUrl { get; set; }
+        public string ContentPath { get; set; }
         public string ContentUrl { get; set; }
         public string DemoUrl { get; set; }
 

@@ -3,6 +3,8 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Enable_Now_Konnektor.src.enable_now
 {
@@ -15,7 +17,7 @@ namespace Enable_Now_Konnektor.src.enable_now
         /// <summary>
         /// Hashwert der Felder, um zu überprüfen, ob ein Element veraltet ist
         /// </summary>
-        public int Hash { get; set; }
+        public string Hash { get; set; }
         public string[] ChildrenIds { get; set; }
         public string[] AttachementNames { get; set; }
 
@@ -134,6 +136,23 @@ namespace Enable_Now_Konnektor.src.enable_now
             copy.Id = Id.Clone() as string ;
             copy.Class = Class.Clone() as string ;
             return copy;
+        }
+
+        public string GenerateHashCode()
+        {
+            var values = Fields.SelectMany(field => field.Value);
+            string concatenatedString = string.Join(",", values);
+
+            var hasher = new SHA1Managed();
+            byte[] byteArray = Encoding.UTF8.GetBytes(concatenatedString);
+            byte[] hashByteArray = hasher.ComputeHash(byteArray);
+            string res = "";
+            foreach (var b in hashByteArray)
+            {
+                res += b.ToString();
+            }
+
+            return res;
         }
     }
 }

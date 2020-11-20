@@ -1,6 +1,8 @@
-﻿using Enable_Now_Konnektor.src.config;
+﻿using Enable_Now_Konnektor.src.access;
+using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
+using Enable_Now_Konnektor.src.jobs;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,17 +28,16 @@ namespace Enable_Now_Konnektor.src.misc
         }
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly UrlFormatter urlFormatter;
-        private readonly Config config;
+        private JobConfig jobConfig;
 
-        public MetaFileReader(UrlFormatter urlFormatter)
+        public MetaFileReader(JobConfig jobConfig)
         {
-            config = ConfigReader.LoadConnectorConfig();
-            this.urlFormatter = urlFormatter;
+            this.jobConfig = jobConfig;
         }
 
         public void ExtractAssets(MetaFiles metaFiles, out string[] childrenIds, out string[] attachementNames)
         {
+            Config config = ConfigReader.LoadConnectorConfig();
             log.Debug("Analysiere alle Kindselemente.");
             var assets = metaFiles.EntityFile?[config.AssetsIdentifier];
             if (assets == null)
@@ -64,7 +65,7 @@ namespace Enable_Now_Konnektor.src.misc
                 return null;
             }
 
-
+            Config config = ConfigReader.LoadConnectorConfig();
             if (variableName.StartsWith(config.EntityIdentifier))
             {
                 return ExtractValueFromEntityTxt(variableName[config.EntityIdentifier.Length..], metaFiles.EntityFile);
@@ -94,7 +95,7 @@ namespace Enable_Now_Konnektor.src.misc
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
                 .Where((e) => e.Name.Equals(variableName))
-                .Select(e => e.Value.Value<String>());
+                .Select(e => e.Value.Value<string>());
             return Util.JoinArray(values);
         }
 
@@ -102,10 +103,10 @@ namespace Enable_Now_Konnektor.src.misc
         {
             MetaFiles files = new MetaFiles
             {
-                LessonFile = await GetJsonFileAsync(element, UrlFormatter.LessonFile),
-                SlideFile = await GetJsonFileAsync(element, UrlFormatter.SlideFile)
+                LessonFile = await GetJsonFileAsync(element, MetaAccess.LessonFile),
+                SlideFile = await GetJsonFileAsync(element, MetaAccess.SlideFile)
             };
-            files.EntityFile = await GetJsonFileAsync(element, UrlFormatter.EntityFile);
+            files.EntityFile = await GetJsonFileAsync(element, MetaAccess.EntityFile);
             if(files.EntityFile == null)
             {
                 string message = Util.GetFormattedResource("MetaFileReaderMessage04");
@@ -125,22 +126,14 @@ namespace Enable_Now_Konnektor.src.misc
         {
             // nur Projekte haben eine lesson.js
             // nur Buchseiten haben eine slide.js
-            if ((element.Class != Element.Project && fileType == UrlFormatter.LessonFile) || (element.Class != Element.Slide && fileType == UrlFormatter.SlideFile))
+            if ((element.Class != Element.Project && fileType == MetaAccess.LessonFile) || (element.Class != Element.Slide && fileType == MetaAccess.SlideFile))
             {
                 log.Debug($"Für {element.Class} gibt es keine {fileType}.");
                 return null;
             }
-            string entityUrl = urlFormatter.GetEntityUrl(element.Class, element.Id, fileType);
-            try
-            {
-                string jsonString = await new HttpRequest().SendRequestAsync(entityUrl);
-                return JsonConvert.DeserializeObject<JObject>(jsonString);
-            }
-            catch
-            {
-                log.Warn( Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType) );
-                return null;
-            }
+
+            var access = new HttpMetaAccess(jobConfig);
+            return await access.GetMetaData(element, fileType);
         }
     }
 }
