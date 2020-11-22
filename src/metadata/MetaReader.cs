@@ -24,12 +24,12 @@ namespace Enable_Now_Konnektor.src.metadata
 
         public static MetaReader GetMetaAccess(JobConfig jobConfig)
         {
-            switch (jobConfig.PublicationSource) {
-                case "File":
+            switch (jobConfig.PublicationSource.ToLower()) {
+                case "file":
                     {
                         return new MetaFileReader(jobConfig);
                     }
-                case "Http":
+                case "website":
                 default:
                     {
                         return new MetaWebsiteReader(jobConfig);

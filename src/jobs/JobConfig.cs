@@ -1,8 +1,4 @@
-﻿using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.misc;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Enable_Now_Konnektor.src.jobs
 {
@@ -17,12 +13,14 @@ namespace Enable_Now_Konnektor.src.jobs
 
         public bool AttachementUrlOverwrite { get; set; }
 
+        public string IndexerType { get; set; } = "Json";
+
         public bool IndexAttachements { get; set; } = true;
         public bool IndexSlides { get; set; } = true;
         public bool IndexGroups { get; set; } = true;
         public bool IndexProjects { get; set; } = true;
 
-        public string PublicationSource { get; set; }
+        public string PublicationSource { get; set; } = "Website";
 
         public string EntityPath { get; set; }
         public string EntityUrl { get; set; }
@@ -30,7 +28,7 @@ namespace Enable_Now_Konnektor.src.jobs
         public string ContentUrl { get; set; }
         public string DemoUrl { get; set; }
 
-        public bool EmailSend { get; set; }
+        public bool EmailSend { get; set; } = false;
         public string EmailRecipient { get; set; }
         public string EmailSender { get; set; }
         public string EmailSubject { get; set; }

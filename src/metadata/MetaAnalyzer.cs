@@ -80,7 +80,7 @@ namespace Enable_Now_Konnektor.src.metadata
         {
             if (json == null)
             {
-                log.Warn( Util.GetFormattedResource("MetaFileReaderMessage02"));
+                log.Warn( Util.GetFormattedResource("MetaAnalyzerMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -99,7 +99,7 @@ namespace Enable_Now_Konnektor.src.metadata
             metaData.Entity = await GetJsonFileAsync(element, MetaReader.EntityFile);
             if(metaData.Entity == null)
             {
-                string message = Util.GetFormattedResource("MetaFileReaderMessage04");
+                string message = Util.GetFormattedResource("MetaAnalyzerMessage04");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }

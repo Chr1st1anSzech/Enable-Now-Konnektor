@@ -15,7 +15,7 @@ namespace Enable_Now_Konnektor.src.indexing
 {
     class JsonIndexer : Indexer
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private struct IndexingElement
         {
@@ -25,14 +25,14 @@ namespace Enable_Now_Konnektor.src.indexing
 
         public JsonIndexer(JobConfig jobConfig)
         {
-            _config = ConfigReader.LoadConnectorConfig();
-            _jobConfig = jobConfig;
+            base.jobConfig = jobConfig;
         }
 
-        public async override Task<bool> AddElementToIndex(Element element)
+        public async override Task<bool> AddElementToIndexAsync(Element element)
         {
-            string paramString = GetParameterString(element);
-            string url = _config.IndexUrl + paramString;
+            Config config = ConfigReader.LoadConnectorConfig();
+            string paramString = GetIndexingParameterString(element);
+            string url = $"{config.IndexUrl}{paramString}";
             try
             {
                 await new HttpRequest().SendRequestAsync(url);
@@ -40,22 +40,33 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch (Exception e)
             {
-                _log.Error(Util.GetFormattedResource("JsonIndexerMessage01"), e);
+                log.Error(Util.GetFormattedResource("JsonIndexerMessage01"), e);
                 return false;
             }
         }
 
-        public override bool RemoveElementFromIndex(Element element)
+        public override Task<bool> RemoveElementFromIndexAsync(Element element)
         {
-            return true;
+            return RemoveElementFromIndexAsync(element.Id);
         }
 
-        public override bool RemoveElementFromIndex(string id)
+        public async override Task<bool> RemoveElementFromIndexAsync(string id)
         {
-            return true;
+            Config config = ConfigReader.LoadConnectorConfig();
+            string url = $"{config.RemoveUrl}[{id}]";
+            try
+            {
+                await new HttpRequest().SendRequestAsync(url);
+                return true;
+            }
+            catch (Exception e)
+            {
+                log.Error(Util.GetFormattedResource("JsonIndexerMessage02"), e);
+                return false;
+            }
         }
 
-        private string GetParameterString(Element element)
+        private string GetIndexingParameterString(Element element)
         {
             IndexingElement indexingElement = new IndexingElement()
             {

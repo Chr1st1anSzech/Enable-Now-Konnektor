@@ -15,6 +15,7 @@
         "_facet.type"
     ],
     "AttachementUrlOverwrite": true,
+    "IndexerType" : "Json",
     "IndexAttachements": true,
     "IndexSlides": true,
     "IndexGroups": true,

@@ -286,7 +286,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Der Job {0} wird gestartet. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Beginn: {0}. ähnelt.
         /// </summary>
         internal static string JobSchedulerMessage01 {
             get {
@@ -295,7 +295,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Beginn: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Dauer: {0}. ähnelt.
         /// </summary>
         internal static string JobSchedulerMessage02 {
             get {
@@ -304,20 +304,11 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Der Job {0} wird beendet. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ende: {0}. ähnelt.
         /// </summary>
         internal static string JobSchedulerMessage03 {
             get {
                 return ResourceManager.GetString("JobSchedulerMessage03", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Ende: {0} ähnelt.
-        /// </summary>
-        internal static string JobSchedulerMessage04 {
-            get {
-                return ResourceManager.GetString("JobSchedulerMessage04", resourceCulture);
             }
         }
         
@@ -331,6 +322,15 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element konnte nicht aus dem Index entfernt werden. ähnelt.
+        /// </summary>
+        internal static string JsonIndexerMessage02 {
+            get {
+                return ResourceManager.GetString("JsonIndexerMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Die E-Mail konnte nicht verschickt werden. ähnelt.
         /// </summary>
         internal static string MailClientMessage01 {
@@ -340,7 +340,25 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann (ID={0}, Dateityp={1}). ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die angeforderte Metadatei ist nicht vorhanden. ähnelt.
+        /// </summary>
+        internal static string MetaAnalyzerMessage02 {
+            get {
+                return ResourceManager.GetString("MetaAnalyzerMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Entity-Datei darf nicht null sein. ähnelt.
+        /// </summary>
+        internal static string MetaAnalyzerMessage04 {
+            get {
+                return ResourceManager.GetString("MetaAnalyzerMessage04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Datei &quot;{0}&quot; existiert nicht. ähnelt.
         /// </summary>
         internal static string MetaFileReaderMessage01 {
             get {
@@ -349,7 +367,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die angeforderte Metadatei ist nicht vorhanden. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Inhalt der Datei ist ungültig und konnte nicht analysiert werden. ähnelt.
         /// </summary>
         internal static string MetaFileReaderMessage02 {
             get {
@@ -358,20 +376,11 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die Metadatei konnte nicht heruntergeladen werden (URL={0}). ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann. ähnelt.
         /// </summary>
-        internal static string MetaFileReaderMessage03 {
+        internal static string MetaWebsiteReaderMessage01 {
             get {
-                return ResourceManager.GetString("MetaFileReaderMessage03", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die Entity-Datei darf nicht null sein. ähnelt.
-        /// </summary>
-        internal static string MetaFileReaderMessage04 {
-            get {
-                return ResourceManager.GetString("MetaFileReaderMessage04", resourceCulture);
+                return ResourceManager.GetString("MetaWebsiteReaderMessage01", resourceCulture);
             }
         }
         
@@ -453,6 +462,69 @@ namespace Enable_Now_Konnektor.locals {
         internal static string PublicationCrawlerMessage08 {
             get {
                 return ResourceManager.GetString("PublicationCrawlerMessage08", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Datenbank wurde initialisiert und alle gespeicherten Elemente wurde auf &quot;nicht gefunden&quot; gesetzt. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage09 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage09", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die nicht gefundenen Elemente wurden gelöscht. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage10 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der Fehler: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage11 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der indexierten Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage12 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der entfernten Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage13 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Gefundene Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage14 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Davon Autostart-Elemente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage15 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage15", resourceCulture);
             }
         }
         

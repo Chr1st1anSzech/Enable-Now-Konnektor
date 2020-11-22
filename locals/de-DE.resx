@@ -193,34 +193,37 @@
     <value>Die Datei {0} konnte nicht gelesen werden.</value>
   </data>
   <data name="JobSchedulerMessage01" xml:space="preserve">
-    <value>Der Job {0} wird gestartet.</value>
+    <value>Beginn: {0}.</value>
   </data>
   <data name="JobSchedulerMessage02" xml:space="preserve">
-    <value>Beginn: {0}</value>
+    <value>Dauer: {0}.</value>
   </data>
   <data name="JobSchedulerMessage03" xml:space="preserve">
-    <value>Der Job {0} wird beendet.</value>
-  </data>
-  <data name="JobSchedulerMessage04" xml:space="preserve">
-    <value>Ende: {0}</value>
+    <value>Ende: {0}.</value>
   </data>
   <data name="JsonIndexerMessage01" xml:space="preserve">
     <value>Das Element konnte nicht an den Index übermittelt werden.</value>
   </data>
+  <data name="JsonIndexerMessage02" xml:space="preserve">
+    <value>Das Element konnte nicht aus dem Index entfernt werden.</value>
+  </data>
   <data name="MailClientMessage01" xml:space="preserve">
     <value>Die E-Mail konnte nicht verschickt werden.</value>
   </data>
-  <data name="MetaFileReaderMessage01" xml:space="preserve">
-    <value>Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann (ID={0}, Dateityp={1}).</value>
-  </data>
-  <data name="MetaFileReaderMessage02" xml:space="preserve">
+  <data name="MetaAnalyzerMessage02" xml:space="preserve">
     <value>Die angeforderte Metadatei ist nicht vorhanden.</value>
   </data>
-  <data name="MetaFileReaderMessage03" xml:space="preserve">
-    <value>Die Metadatei konnte nicht heruntergeladen werden (URL={0}).</value>
-  </data>
-  <data name="MetaFileReaderMessage04" xml:space="preserve">
+  <data name="MetaAnalyzerMessage04" xml:space="preserve">
     <value>Die Entity-Datei darf nicht null sein.</value>
+  </data>
+  <data name="MetaFileReaderMessage01" xml:space="preserve">
+    <value>Die Datei "{0}" existiert nicht.</value>
+  </data>
+  <data name="MetaFileReaderMessage02" xml:space="preserve">
+    <value>Der Inhalt der Datei ist ungültig und konnte nicht analysiert werden.</value>
+  </data>
+  <data name="MetaWebsiteReaderMessage01" xml:space="preserve">
+    <value>Die HTTP-Anfrage für die Metadatei lieferte ein ungültiges Ergebnis, das nicht analysiert werden kann.</value>
   </data>
   <data name="ProgramMessage01" xml:space="preserve">
     <value>Das Programm kann nicht ins standardmäßige Protokollverzeichnis schreiben.</value>
@@ -248,6 +251,27 @@
   </data>
   <data name="PublicationCrawlerMessage08" xml:space="preserve">
     <value>Dieser Crawler-Thread beendet seine Arbeit.</value>
+  </data>
+  <data name="PublicationCrawlerMessage09" xml:space="preserve">
+    <value>Die Datenbank wurde initialisiert und alle gespeicherten Elemente wurde auf "nicht gefunden" gesetzt.</value>
+  </data>
+  <data name="PublicationCrawlerMessage10" xml:space="preserve">
+    <value>Die nicht gefundenen Elemente wurden gelöscht.</value>
+  </data>
+  <data name="PublicationCrawlerMessage11" xml:space="preserve">
+    <value>Anzahl der Fehler: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage12" xml:space="preserve">
+    <value>Anzahl der indexierten Dokumente: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage13" xml:space="preserve">
+    <value>Anzahl der entfernten Dokumente: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage14" xml:space="preserve">
+    <value>Gefundene Dokumente: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage15" xml:space="preserve">
+    <value>Davon Autostart-Elemente: {0}.</value>
   </data>
   <data name="StatisticServiceMessage01" xml:space="preserve">
     <value>Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden.</value>

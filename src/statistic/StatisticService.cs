@@ -12,6 +12,8 @@ namespace Enable_Now_Konnektor.src.statistic
         internal int ErrorCount { get; private set; } = 0;
         internal int IndexedDocumentsCount { get; private set; } = 0;
         internal int RemovedDocumentsCount { get; private set; } = 0;
+        internal int FoundDocumentsCount { get; private set; } = 0;
+        internal int AutostartElementsCount { get; private set; } = 0;
 
         internal static void Initialize(string jobId)
         {
@@ -38,6 +40,11 @@ namespace Enable_Now_Konnektor.src.statistic
             ErrorCount++;
         }
 
+        internal void IncreaseFoundDocumentsCount()
+        {
+            FoundDocumentsCount++;
+        }
+
         internal void IncreaseIndexedDocumentsCount()
         {
             IndexedDocumentsCount++;
@@ -46,6 +53,11 @@ namespace Enable_Now_Konnektor.src.statistic
         internal void IncreaseRemovedDocumentsCount()
         {
             RemovedDocumentsCount++;
+        }
+
+        internal void IncreaseAutostartElementsCount()
+        {
+            AutostartElementsCount++;
         }
     }
 }

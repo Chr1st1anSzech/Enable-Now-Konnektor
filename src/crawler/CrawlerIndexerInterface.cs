@@ -16,14 +16,14 @@ namespace Enable_Now_Konnektor.src.crawler
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
-        private readonly Indexer _indexer;
+        private readonly Indexer indexer;
 
 
 
         public CrawlerIndexerInterface(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
-            _indexer = new JsonIndexer(jobConfig);
+            indexer = new JsonIndexer(jobConfig);
         }
 
 
@@ -43,15 +43,15 @@ namespace Enable_Now_Konnektor.src.crawler
         public async Task SendToIndexerAsync(Element element)
         {
 
+            bool isAlreadyIndexed = IsAlreadyIndexed(element);
             if (!ShouldBeIndexed(element))
             {
                 _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage01", element.Id));
-                RemoveElementCompletly(element);
+                if (isAlreadyIndexed) { RemoveElementCompletly(element); };
                 return;
             }
 
             bool hasContentChanged = HasContentChanged(element);
-            bool isAlreadyIndexed = IsAlreadyIndexed(element);
 
             using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             if (isAlreadyIndexed)
@@ -70,7 +70,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
 
             _log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage03", element.Id));
-            bool isIndexingSuccess = await _indexer.AddElementToIndex(element);
+            bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
             if (isIndexingSuccess)
             {
                 context.SetElementFound(element, true);
@@ -96,7 +96,7 @@ namespace Enable_Now_Konnektor.src.crawler
             _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
             using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             context.RemoveElementLog(id);
-            _indexer.RemoveElementFromIndex(id);
+            indexer.RemoveElementFromIndexAsync(id);
             StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
 

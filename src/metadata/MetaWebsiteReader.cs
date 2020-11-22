@@ -5,9 +5,6 @@ using Enable_Now_Konnektor.src.misc;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.metadata
@@ -33,26 +30,23 @@ namespace Enable_Now_Konnektor.src.metadata
             }
             catch
             {
-                log.Warn(Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType));
+                log.Warn(Util.GetFormattedResource("MetaWebsiteReaderMessage01"));
                 return null;
             }
         }
 
         public override string GetContentUrl(string className, string id)
         {
-            log.Debug(Util.GetFormattedResource("HttpMetaAccessMessage01"));
             return jobConfig.ContentUrl.Replace("${Class}", classNames[className]).Replace("${Id}", id);
         }
 
         public override string GetMetaUrl(string className, string id, string fileType)
         {
-            log.Debug(Util.GetFormattedResource("HttpMetaAccessMessage02"));
             return jobConfig.EntityUrl.Replace("${Class}", classNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
 
         private string GetDemoUrl(string id)
         {
-            log.Debug(Util.GetFormattedResource("HttpMetaAccessMessage03"));
             return jobConfig.DemoUrl.Replace("${Id}", id);
         }
 

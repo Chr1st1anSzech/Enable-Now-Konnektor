@@ -59,13 +59,13 @@ namespace Enable_Now_Konnektor.src.db
             base.OnModelCreating(modelBuilder);
         }
 
-        internal void ResetAllFoundStatus()
+        internal async void ResetAllFoundStatus()
         {
-            foreach (var elementLog in ElementLogs)
-            {
-                elementLog.WasFound = false;
-                UpdateElementLog(elementLog);
-            }
+            await ElementLogs.ForEachAsync(elementLog =>
+           {
+               elementLog.WasFound = false;
+           });
+            SaveChanges();
         }
 
         private void AddElementLog(Element element, bool wasFound = true)
@@ -80,7 +80,7 @@ namespace Enable_Now_Konnektor.src.db
             {
                 log.WasFound = wasFound;
                 log.Hash = element.Hash;
-                UpdateElementLog(log);
+                UpdateElementsLog(log);
             }
             
             SaveChanges();
@@ -116,10 +116,10 @@ namespace Enable_Now_Konnektor.src.db
             return ElementLogs.Find(id);
         }
 
-        internal void UpdateElementLog(ElementLog elementLog)
+        internal void UpdateElementsLog(params ElementLog[] elementLogs)
         {
             Database.EnsureCreated();
-            ElementLogs.Update(elementLog);
+            ElementLogs.UpdateRange(elementLogs);
             SaveChanges();
         }
 
@@ -134,7 +134,7 @@ namespace Enable_Now_Konnektor.src.db
             else
             {
                 elementLog.WasFound = wasFound;
-                UpdateElementLog(elementLog);
+                UpdateElementsLog(elementLog);
             }
         }
     }

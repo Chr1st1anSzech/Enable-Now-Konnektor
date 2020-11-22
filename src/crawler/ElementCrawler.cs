@@ -3,6 +3,7 @@ using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.metadata;
 using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using Newtonsoft.Json.Linq;
 using System;
@@ -79,7 +80,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Ein Objekt, das die Daten des Elements in Enable Now enthält</returns>
         public async Task<Element> CrawlElement(string id)
         {
-            log.Debug($"Crawle das Objekt mit der ID '{id}'.");
+            StatisticService.GetService(jobConfig.Id).IncreaseFoundDocumentsCount();
             Element element = new Element(id);
             FillInitialFields(element);
             MetaDataCollection metaData = await metaAnalyzer.LoadMetaFiles(element);
@@ -90,6 +91,7 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 try
                 {
+                    StatisticService.GetService(jobConfig.Id).IncreaseAutostartElementsCount();
                     Element autostartElement = await CrawlElement(autostartId);
                     OverwriteValuesByAutostartElement(element, autostartElement);
                 }

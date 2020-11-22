@@ -1,6 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.crawler;
-using Enable_Now_Konnektor.src.db;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using System;
@@ -11,7 +10,7 @@ namespace Enable_Now_Konnektor.src.jobs
 {
     class JobScheduler
     {
-        private readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
         public JobScheduler()
@@ -20,7 +19,8 @@ namespace Enable_Now_Konnektor.src.jobs
 
         public void ScheduleJobs()
         {
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage02", DateTime.Now));
+            DateTime startTime = DateTime.Now;
+            log.Info(Util.GetFormattedResource("JobSchedulerMessage01", startTime));
             ConfigReader.Initialize();
             JobReader reader = new JobReader();
             JobConfig[] jobConfigs = reader.ReadAllJobConfigs();
@@ -36,8 +36,10 @@ namespace Enable_Now_Konnektor.src.jobs
                 tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
             }
             Task.WaitAll(tasks);
-            _log.Info(Util.GetFormattedResource("JobSchedulerMessage04", DateTime.Now));
-
+            DateTime endTime = DateTime.Now;
+            TimeSpan duration = endTime - startTime;
+            log.Info(Util.GetFormattedResource("JobSchedulerMessage02", duration));
+            log.Info(Util.GetFormattedResource("JobSchedulerMessage03", endTime));
             
         }
 

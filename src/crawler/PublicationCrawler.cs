@@ -6,6 +6,7 @@ using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -50,6 +51,7 @@ namespace Enable_Now_Konnektor.src.crawler
             using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             context.Initialize();
             context.ResetAllFoundStatus();
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage09"));
         }
 
         private void RemoveAllUnfoundElements()
@@ -60,6 +62,7 @@ namespace Enable_Now_Konnektor.src.crawler
                CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
                crawlerIndexerInterface.RemoveElementCompletly(e.Id);
            });
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage10"));
         }
 
         private void InitializeStatisticService()
@@ -76,8 +79,18 @@ namespace Enable_Now_Konnektor.src.crawler
         internal void CompleteCrawling()
         {
             RemoveAllUnfoundElements();
+            WriteStatistics();
         }
 
+        internal void WriteStatistics()
+        {
+            StatisticService service = StatisticService.GetService(jobConfig.Id);
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage11", service.ErrorCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage14", service.FoundDocumentsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage15", service.AutostartElementsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage12", service.IndexedDocumentsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage13", service.RemovedDocumentsCount));
+        }
 
 
         /// <summary>
@@ -158,7 +171,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
                 return;
             }
-            
+
             foreach (var childId in element.ChildrenIds)
             {
                 idWorkQueue.Enqueue(childId);
