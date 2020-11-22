@@ -6,7 +6,6 @@ using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.crawler
 {
-    class PublicationCrawler
+    internal class PublicationCrawler
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
@@ -39,7 +38,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// Konstruktor der Klasse PublicationCrawler.
         /// </summary>
         /// <param name="jobConfig">Die Konfiguration des Jobs.</param>
-        public PublicationCrawler(JobConfig jobConfig)
+        internal PublicationCrawler(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
             elementCrawler = new ElementCrawler(this.jobConfig);
@@ -96,7 +95,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <summary>
         /// Startet alle Threads, die die Elemente in der Warteschlange crawlen.
         /// </summary>
-        public void StartCrawling()
+        internal void StartCrawling()
         {
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage01"));
             int threadCount = jobConfig.ThreadCount;

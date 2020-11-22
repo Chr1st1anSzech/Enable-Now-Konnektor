@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.crawler
 {
-    class CrawlerIndexerInterface
+    internal class CrawlerIndexerInterface
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-        public CrawlerIndexerInterface(JobConfig jobConfig)
+        internal CrawlerIndexerInterface(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
             indexer = new JsonIndexer(jobConfig);
@@ -40,7 +40,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </para>
         /// </summary>
         /// <param name="element">Das Element, das indexiert werden soll.</param>
-        public async Task SendToIndexerAsync(Element element)
+        internal async Task SendToIndexerAsync(Element element)
         {
 
             bool isAlreadyIndexed = IsAlreadyIndexed(element);

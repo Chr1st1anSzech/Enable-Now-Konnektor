@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Enable_Now_Konnektor.src.db
+﻿namespace Enable_Now_Konnektor.src.db
 {
-    class ElementLog
+    internal class ElementLog
     {
-        public string Id { get; set; }
-        public bool WasFound { get; set; }
-        public string Hash { get; set; }
+        internal string Id { get; set; }
+        internal bool WasFound { get; set; }
+        internal string Hash { get; set; }
     }
 }

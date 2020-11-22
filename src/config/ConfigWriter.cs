@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Enable_Now_Konnektor.src.config
 {
-    public class ConfigWriter
+    internal class ConfigWriter
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void SaveConfig(Config config)
+        internal void SaveConfig(Config config)
         {
             string jsonString = JsonConvert.SerializeObject(config);
             WriteFile(jsonString);

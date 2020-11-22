@@ -9,13 +9,13 @@ using System.Text;
 
 namespace Enable_Now_Konnektor.src.jobs
 {
-    class JobReader
+    internal class JobReader
     {
-        public static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
+        internal static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
 
         private readonly ILog _log = LogManager.GetLogger(typeof(JobReader));
 
-        public JobConfig[] ReadAllJobConfigs()
+        internal List<JobConfig> ReadAllJobConfigs()
         {
             IEnumerable<string> fullFileNames;
             try
@@ -28,7 +28,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 return null;
             }
             int jobCount = fullFileNames.Count();
-            JobConfig[] jobsConfigs = new JobConfig[jobCount];
+            List<JobConfig> jobsConfigs = new List<JobConfig>();
             Validator jobValidator = new Validator();
             for (int i = 0; i < jobCount; i++)
             {
@@ -50,7 +50,7 @@ namespace Enable_Now_Konnektor.src.jobs
 
                 if (jobValidator.ValidateJobConfig(jobConfig))
                 {
-                    jobsConfigs[i] = jobConfig;
+                    jobsConfigs.Add(jobConfig);
                 }
                 else
                 {

@@ -11,19 +11,19 @@ using System.Text.RegularExpressions;
 
 namespace Enable_Now_Konnektor.src.misc
 {
-    class Util
+    internal class Util
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Util));
         private static ResourceManager res;
 
-        public static string GetApplicationRoot()
+        internal static string GetApplicationRoot()
         {
 
             var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             return exePath[6..];
         }
 
-        public static string GetFormattedResource(string key, params object[] parameters)
+        internal static string GetFormattedResource(string key, params object[] parameters)
         {
             if (res == null)
             {
@@ -42,13 +42,13 @@ namespace Enable_Now_Konnektor.src.misc
             res = de_DE.ResourceManager;
         }
 
-        public static string ConvertToUnixTime(DateTime date)
+        internal static string ConvertToUnixTime(DateTime date)
         {
             TimeSpan timeSpan = date - new DateTime(1970, 1, 1);
             return timeSpan.TotalSeconds.ToString() + "000";
         }
 
-        public static string ConvertToUnixTime(string dateString)
+        internal static string ConvertToUnixTime(string dateString)
         {
             DateTime parsedDate = DateTime.Now;
             try
@@ -63,7 +63,7 @@ namespace Enable_Now_Konnektor.src.misc
             return ConvertToUnixTime(parsedDate);
         }
 
-        public static bool IsDirectoryWritable(string dirPath)
+        internal static bool IsDirectoryWritable(string dirPath)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Enable_Now_Konnektor.src.misc
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string RemoveMarkup(string text)
+        internal static string RemoveMarkup(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -101,12 +101,12 @@ namespace Enable_Now_Konnektor.src.misc
             return result;
         }
 
-        public static string JoinArray(params string[] array)
+        internal static string JoinArray(params string[] array)
         {
             return string.Join(" ", array.Where((v) => v != null));
         }
 
-        public static string JoinArray(IEnumerable<string> array)
+        internal static string JoinArray(IEnumerable<string> array)
         {
             return string.Join(" ", array.Where((v) => v != null));
         }

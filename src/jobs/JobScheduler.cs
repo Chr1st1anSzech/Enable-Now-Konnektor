@@ -3,35 +3,31 @@ using Enable_Now_Konnektor.src.crawler;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.jobs
 {
-    class JobScheduler
+    internal class JobScheduler
     {
         private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        public JobScheduler()
-        {
-        }
-
-        public void ScheduleJobs()
+        internal void ScheduleJobs()
         {
             DateTime startTime = DateTime.Now;
             log.Info(Util.GetFormattedResource("JobSchedulerMessage01", startTime));
             ConfigReader.Initialize();
             JobReader reader = new JobReader();
-            JobConfig[] jobConfigs = reader.ReadAllJobConfigs();
+            List<JobConfig> jobConfigs = reader.ReadAllJobConfigs();
             if (jobConfigs == null) { return; }
 
-            int jobCount = jobConfigs.Length;
+            int jobCount = jobConfigs.Count;
             Task[] tasks = new Task[jobCount];
             for (int i = 0; i < jobCount; i++)
             {
+                if (jobConfigs[i] == null) { continue; }
                 var jobConfig = jobConfigs[i];
-                if (jobConfig == null) { continue; }
 
                 tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
             }

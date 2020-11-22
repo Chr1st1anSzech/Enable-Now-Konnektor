@@ -14,19 +14,19 @@ using System.Web;
 
 namespace Enable_Now_Konnektor.src.indexing
 {
-    class ConverterService
+    internal class ConverterService
     {
-        public struct ConverterResult
+        internal struct ConverterResult
         {
-            public string Application { get; set; }
-            public string Body { get; set; }
-            public string MimeType { get; set; }
+            internal string Application { get; set; }
+            internal string Body { get; set; }
+            internal string MimeType { get; set; }
         }
 
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        public ConverterService(JobConfig jobConfig)
+        internal ConverterService(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
@@ -38,7 +38,7 @@ namespace Enable_Now_Konnektor.src.indexing
         /// <param name="fileName"></param>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
-        public async Task<ConverterResult> ConvertAttachementAsync(Element element, string fileName)
+        internal async Task<ConverterResult> ConvertAttachementAsync(Element element, string fileName)
         {
             string url = GetConverterRequestUrl(element, fileName);
             string result;

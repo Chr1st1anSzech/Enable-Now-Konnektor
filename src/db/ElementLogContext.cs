@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Enable_Now_Konnektor.src.db
 {
-    class ElementLogContext : DbContext
+    internal class ElementLogContext : DbContext
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string DatabasePath = Path.Combine(Util.GetApplicationRoot(), "db", "ElementLogging.db");

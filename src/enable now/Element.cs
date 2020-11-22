@@ -8,23 +8,23 @@ using System.Text;
 
 namespace Enable_Now_Konnektor.src.enable_now
 {
-    public class Element : ICloneable
+    internal class Element : ICloneable
     {
-        public string Id { get; set; }
-        public string Class { get; set; }
-        public Dictionary<string, List<string>> Fields { get; set; } = new Dictionary<string, List<string>>();
+        internal string Id { get; set; }
+        internal string Class { get; set; }
+        internal Dictionary<string, List<string>> Fields { get; set; } = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Hashwert der Felder, um zu überprüfen, ob ein Element veraltet ist
         /// </summary>
-        public string Hash { get; set; }
-        public string[] ChildrenIds { get; set; }
-        public string[] AttachementNames { get; set; }
+        internal string Hash { get; set; }
+        internal string[] ChildrenIds { get; set; }
+        internal string[] AttachementNames { get; set; }
 
-        public const string Group = "GR";
-        public const string Project = "PR";
-        public const string Slide = "SL";
-        public const string Media = "M";
+        internal const string Group = "GR";
+        internal const string Project = "PR";
+        internal const string Slide = "SL";
+        internal const string Media = "M";
 
         private readonly ILog _log = LogManager.GetLogger(typeof(Element));
 
@@ -33,7 +33,7 @@ namespace Enable_Now_Konnektor.src.enable_now
         /// </summary>
         /// <param name="id">Die ID es Enable Now Elements.</param>
         /// <exception cref="ArgumentException">Wirft eine Ausnahme, falls die ID ungültig ist.</exception>
-        public Element(string id)
+        internal Element(string id)
         {
             if (!Validator.Validate(id, Validator.EnableNowIdPattern))
             {
@@ -45,12 +45,12 @@ namespace Enable_Now_Konnektor.src.enable_now
             Class = Id.Split('_')[0];
         }
 
-        public void AddValues(string name, List<string> values)
+        internal void AddValues(string name, List<string> values)
         {
             AddValues(name, values.ToArray());
         }
 
-        public void AddValues(string name, params string[] values)
+        internal void AddValues(string name, params string[] values)
         {
             if (name == null)
             {
@@ -96,12 +96,12 @@ namespace Enable_Now_Konnektor.src.enable_now
             }
         }
 
-        public void ReplaceValues(string name, List<string> values)
+        internal void ReplaceValues(string name, List<string> values)
         {
             ReplaceValues(name, values.ToArray());
         }
 
-        public void ReplaceValues(string name, params string[] values)
+        internal void ReplaceValues(string name, params string[] values)
         {
             if (Fields.ContainsKey(name))
             {
@@ -111,7 +111,7 @@ namespace Enable_Now_Konnektor.src.enable_now
             AddValues(name, values);
         }
 
-        public List<string> GetValues(string name)
+        internal List<string> GetValues(string name)
         {
             if (Fields.ContainsKey(name))
             {
@@ -138,7 +138,7 @@ namespace Enable_Now_Konnektor.src.enable_now
             return copy;
         }
 
-        public string GenerateHashCode()
+        internal string GenerateHashCode()
         {
             var values = Fields.SelectMany(field => field.Value);
             string concatenatedString = string.Join(",", values);

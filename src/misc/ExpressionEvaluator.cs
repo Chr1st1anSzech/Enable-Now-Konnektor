@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace Enable_Now_Konnektor.src.misc
 {
-    class ExpressionEvaluator
+    internal class ExpressionEvaluator
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public bool IsExpression(string textToExamine, out string expression)
+        internal bool IsExpression(string textToExamine, out string expression)
         {
             string expressionPattern = @"(?<=\${).+(?=})";
             Match expressionMatch = Regex.Match(textToExamine, expressionPattern);
@@ -22,7 +22,7 @@ namespace Enable_Now_Konnektor.src.misc
         }
 
 
-        public bool IsVariableExpression(string expression, out string variableName)
+        internal bool IsVariableExpression(string expression, out string variableName)
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
             string variablePattern = $"^({cfg.EntityIdentifier}|{cfg.LessonIdentifier}|{cfg.SlideIdentifier})\\w+$";
@@ -32,7 +32,7 @@ namespace Enable_Now_Konnektor.src.misc
             return isVariableExpression;
         }
 
-        public bool IsConverterExpression(string expression, out string converterClassName, out string converterVariableName)
+        internal bool IsConverterExpression(string expression, out string converterClassName, out string converterVariableName)
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
             string variablePattern = $"({cfg.EntityIdentifier}|{cfg.LessonIdentifier}|{cfg.SlideIdentifier})\\w+";
@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.misc
         }
 
 
-        public string[] EvaluateAsConverter(string value, string converterClassName)
+        internal string[] EvaluateAsConverter(string value, string converterClassName)
         {
             Type converterType = GetConverterType(converterClassName);
             if (converterType == null) { return Array.Empty<string>(); }

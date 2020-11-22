@@ -13,22 +13,22 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.indexing
 {
-    class JsonIndexer : Indexer
+    internal class JsonIndexer : Indexer
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private struct IndexingElement
         {
-            public string id;
-            public Dictionary<string, List<string>> fields;
+            internal string id;
+            internal Dictionary<string, List<string>> fields;
         }
 
-        public JsonIndexer(JobConfig jobConfig)
+        internal JsonIndexer(JobConfig jobConfig)
         {
             base.jobConfig = jobConfig;
         }
 
-        public async override Task<bool> AddElementToIndexAsync(Element element)
+        internal async override Task<bool> AddElementToIndexAsync(Element element)
         {
             Config config = ConfigReader.LoadConnectorConfig();
             string paramString = GetIndexingParameterString(element);
@@ -45,12 +45,12 @@ namespace Enable_Now_Konnektor.src.indexing
             }
         }
 
-        public override Task<bool> RemoveElementFromIndexAsync(Element element)
+        internal override Task<bool> RemoveElementFromIndexAsync(Element element)
         {
             return RemoveElementFromIndexAsync(element.Id);
         }
 
-        public async override Task<bool> RemoveElementFromIndexAsync(string id)
+        internal async override Task<bool> RemoveElementFromIndexAsync(string id)
         {
             Config config = ConfigReader.LoadConnectorConfig();
             string url = $"{config.RemoveUrl}[{id}]";

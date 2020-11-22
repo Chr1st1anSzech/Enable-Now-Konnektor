@@ -15,17 +15,17 @@ namespace Enable_Now_Konnektor.src.metadata
     /// <summary>
     /// Eine Klasse, um die Metadateien von Enabe Now auszulesen. Relevant sind die entity.txt, slide.js und lesson.js.
     /// </summary>
-    class MetaAnalyzer
+    internal class MetaAnalyzer
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        public MetaAnalyzer(JobConfig jobConfig)
+        internal MetaAnalyzer(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
 
-        public void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
+        internal void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
         {
             Config config = ConfigReader.LoadConnectorConfig();
             log.Debug("Analysiere alle Kindselemente.");
@@ -48,7 +48,7 @@ namespace Enable_Now_Konnektor.src.metadata
                                     select asset[config.FileNameIdentifier].Value<string>()).ToArray();
         }
 
-        public string ExtractValue(MetaDataCollection metaData, string variableName)
+        internal string ExtractValue(MetaDataCollection metaData, string variableName)
         {
             if( variableName == null)
             {
@@ -89,7 +89,7 @@ namespace Enable_Now_Konnektor.src.metadata
             return Util.JoinArray(values);
         }
 
-        public async Task<MetaDataCollection> LoadMetaFiles(Element element)
+        internal async Task<MetaDataCollection> LoadMetaFiles(Element element)
         {
             MetaDataCollection metaData = new MetaDataCollection
             {

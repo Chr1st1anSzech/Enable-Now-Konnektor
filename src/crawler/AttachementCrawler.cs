@@ -14,17 +14,17 @@ using static Enable_Now_Konnektor.src.indexing.ConverterService;
 
 namespace Enable_Now_Konnektor.src.crawler
 {
-    class AttachementCrawler
+    internal class AttachementCrawler
     {
         private readonly JobConfig jobConfig;
         private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AttachementCrawler(JobConfig jobConfig)
+        internal AttachementCrawler(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
 
-        public async Task<List<Element>> CrawlAttachementsAsync(Element element)
+        internal async Task<List<Element>> CrawlAttachementsAsync(Element element)
         {
             ConverterService converter = new ConverterService(jobConfig);
             var attachements = new List<Element>();

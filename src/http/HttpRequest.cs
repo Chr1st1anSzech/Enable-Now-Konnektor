@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.http
 {
-    class HttpRequest
+    internal class HttpRequest
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static HttpClient _httpClient;
 
-        public HttpRequest()
+        internal HttpRequest()
         {
             if( _httpClient == null)
             {
@@ -32,7 +32,7 @@ namespace Enable_Now_Konnektor.src.http
             }
         }
 
-        public async Task<string> SendRequestAsync(string url)
+        internal async Task<string> SendRequestAsync(string url)
         {
 
             _log.Debug(Util.GetFormattedResource("HttpRequestMessage01", url));

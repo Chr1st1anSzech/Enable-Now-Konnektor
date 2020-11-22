@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.metadata
 {
-    class MetaFileReader : MetaReader
+    internal class MetaFileReader : MetaReader
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        public MetaFileReader(JobConfig jobConfig)
+        internal MetaFileReader(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
 
-        public override async Task<JObject> GetMetaData(Element element, string fileType)
+        internal override async Task<JObject> GetMetaData(Element element, string fileType)
         {
             string entityPath = GetMetaUrl(element.Class, element.Id, fileType);
             if (!File.Exists(entityPath))
@@ -42,12 +42,12 @@ namespace Enable_Now_Konnektor.src.metadata
             }
         }
 
-        public override string GetMetaUrl(string className, string id, string fileType)
+        internal override string GetMetaUrl(string className, string id, string fileType)
         {
             return jobConfig.EntityPath.Replace("${Class}", classNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
 
-        public override string GetContentUrl(string className, string id)
+        internal override string GetContentUrl(string className, string id)
         {
             return jobConfig.ContentPath.Replace("${Class}", classNames[className]).Replace("${Id}", id);
         }

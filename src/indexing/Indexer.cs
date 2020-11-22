@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.indexing
 {
-    abstract class Indexer
+    internal abstract class Indexer
     {
         protected JobConfig jobConfig;
 
-        public static Indexer GetIndexer(JobConfig jobConfig)
+        internal static Indexer GetIndexer(JobConfig jobConfig)
         {
             switch (jobConfig.IndexerType.ToLower())
             {
@@ -22,10 +22,10 @@ namespace Enable_Now_Konnektor.src.indexing
             }
         }
 
-        public abstract Task<bool> AddElementToIndexAsync(Element element);
+        internal abstract Task<bool> AddElementToIndexAsync(Element element);
 
-        public abstract Task<bool> RemoveElementFromIndexAsync(Element element);
+        internal abstract Task<bool> RemoveElementFromIndexAsync(Element element);
 
-        public abstract Task<bool> RemoveElementFromIndexAsync(string id);
+        internal abstract Task<bool> RemoveElementFromIndexAsync(string id);
     }
 }

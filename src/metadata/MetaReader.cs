@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.metadata
 {
-    abstract class MetaReader
+    internal abstract class MetaReader
     {
-        public static string EntityFile = "entity.txt";
-        public static string LessonFile = "lesson.js";
-        public static string SlideFile = "slide.js";
+        internal static string EntityFile = "entity.txt";
+        internal static string LessonFile = "lesson.js";
+        internal static string SlideFile = "slide.js";
 
         protected readonly Dictionary<string, string> classNames = new Dictionary<string, string>() {
             { "GR", "group" },
@@ -22,7 +22,7 @@ namespace Enable_Now_Konnektor.src.metadata
             { "M", "media" }
         };
 
-        public static MetaReader GetMetaAccess(JobConfig jobConfig)
+        internal static MetaReader GetMetaAccess(JobConfig jobConfig)
         {
             switch (jobConfig.PublicationSource.ToLower()) {
                 case "file":
@@ -37,10 +37,10 @@ namespace Enable_Now_Konnektor.src.metadata
             }
         }
 
-        public abstract Task<JObject> GetMetaData(Element element, string fileType);
+        internal abstract Task<JObject> GetMetaData(Element element, string fileType);
 
-        public abstract string GetMetaUrl(string className, string id, string fileType);
+        internal abstract string GetMetaUrl(string className, string id, string fileType);
 
-        public abstract string GetContentUrl(string className, string id);
+        internal abstract string GetContentUrl(string className, string id);
     }
 }

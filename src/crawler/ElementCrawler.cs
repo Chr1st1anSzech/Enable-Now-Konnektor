@@ -18,7 +18,7 @@ namespace Enable_Now_Konnektor.src.crawler
     /// Klasse, die sich um die Analyse eines Elements in Enable Now kümmmert.
     /// <para>Es wird ein Objekt erstellt, das dem Element in Enable Now entspricht. Das Objekt wird initial gefüllt.</para>
     /// </summary>
-    class ElementCrawler
+    internal class ElementCrawler
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
@@ -34,7 +34,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private List<string> groupMappingFields;
 
 
-        public ElementCrawler(JobConfig jobConfig)
+        internal ElementCrawler(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
             metaAnalyzer = new MetaAnalyzer(jobConfig);
@@ -78,7 +78,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         /// <param name="id">Die ID des Element, zum Beispiel GR_389F860B088563B1.</param>
         /// <returns>Ein Objekt, das die Daten des Elements in Enable Now enthält</returns>
-        public async Task<Element> CrawlElement(string id)
+        internal async Task<Element> CrawlElement(string id)
         {
             StatisticService.GetService(jobConfig.Id).IncreaseFoundDocumentsCount();
             Element element = new Element(id);
@@ -115,7 +115,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
         }
 
-        public void FillInitialFields(Element element)
+        internal void FillInitialFields(Element element)
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
             string fieldName = $"{cfg.StringIdentifier}.{cfg.UidFieldName}";
@@ -239,7 +239,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         /// <param name="element">Das Objekt, dessen Felder gefüllt werden sollen.</param>
         /// <param name="metaData">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
-        public void FillFields(Element element, MetaDataCollection metaData)
+        internal void FillFields(Element element, MetaDataCollection metaData)
         {
             var keys = element.Fields.Keys.ToList();
             ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();

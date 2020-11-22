@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Enable_Now_Konnektor.src.statistic
 {
-    class StatisticService
+    internal class StatisticService
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Dictionary<string, StatisticService> statisticServices = new Dictionary<string, StatisticService>();

@@ -5,19 +5,19 @@ using System.Net.Mail;
 
 namespace Enable_Now_Konnektor.src.misc
 {
-    class MailClient
+    internal class MailClient
     {
         private readonly ILog _log = LogManager.GetLogger(typeof(MailClient));
         private readonly JobConfig _jobConfig;
         private readonly SmtpClient _smtpClient;
 
-        public MailClient(JobConfig jobConfig)
+        internal MailClient(JobConfig jobConfig)
         {
             _jobConfig = jobConfig;
             _smtpClient = new SmtpClient(_jobConfig.EmailSmtpServer, _jobConfig.EmailPort);
         }
 
-        public void SendMail(string additionalText)
+        internal void SendMail(string additionalText)
         {
             if( !_jobConfig.EmailSend) { return; }
             try

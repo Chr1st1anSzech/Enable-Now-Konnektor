@@ -2,10 +2,10 @@
 
 namespace Enable_Now_Konnektor.src.metadata
 {
-    class MetaDataCollection
+    internal class MetaDataCollection
     {
-        public JObject Entity { get; set; }
-        public JObject Slide { get; set; }
-        public JObject Lesson { get; set; }
+        internal JObject Entity { get; set; }
+        internal JObject Slide { get; set; }
+        internal JObject Lesson { get; set; }
     }
 }
