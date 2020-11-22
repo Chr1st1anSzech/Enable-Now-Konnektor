@@ -151,8 +151,8 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void AddAssets(Element element, MetaDataCollection metaData)
         {
-            MetaAnalyzer metaFileReader = new MetaAnalyzer(jobConfig);
-            metaFileReader.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
+            MetaAnalyzer metaAnalyzer = new MetaAnalyzer(jobConfig);
+            metaAnalyzer.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;
         }

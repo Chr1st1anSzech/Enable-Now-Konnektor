@@ -331,11 +331,20 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die E-Mail konnte nicht verschickt werden. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Job {0} wurde um {1} abgeschlossen.\n\nGefundene Dokumente: {2}\nIndexierte Dokumente: {3}\nGelöschte Dokumente: {4} ähnelt.
         /// </summary>
         internal static string MailClientMessage01 {
             get {
                 return ResourceManager.GetString("MailClientMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die E-Mail konnte nicht verschickt werden. ähnelt.
+        /// </summary>
+        internal static string MailClientMessage02 {
+            get {
+                return ResourceManager.GetString("MailClientMessage02", resourceCulture);
             }
         }
         

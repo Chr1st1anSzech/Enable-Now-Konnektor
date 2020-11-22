@@ -138,7 +138,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 else
                 {
                     log.Debug(Util.GetFormattedResource("PublicationCrawlerMessage04"));
-                    Thread.Sleep(new Random().Next(50, 500));
+                    Thread.Sleep(new Random().Next(50, 1000));
                 }
 
                 int countElementsInQueue = idWorkQueue.Count;

@@ -1,4 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using System;
 using System.Net.Mail;
@@ -7,31 +8,37 @@ namespace Enable_Now_Konnektor.src.misc
 {
     internal class MailClient
     {
-        private readonly ILog _log = LogManager.GetLogger(typeof(MailClient));
-        private readonly JobConfig _jobConfig;
-        private readonly SmtpClient _smtpClient;
+        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig jobConfig;
 
         internal MailClient(JobConfig jobConfig)
         {
-            _jobConfig = jobConfig;
-            _smtpClient = new SmtpClient(_jobConfig.EmailSmtpServer, _jobConfig.EmailPort);
+            this.jobConfig = jobConfig;
         }
 
-        internal void SendMail(string additionalText)
+        internal void SendMail()
         {
-            if( !_jobConfig.EmailSend) { return; }
+            SmtpClient smtpClient = new SmtpClient(jobConfig.EmailSmtpServer, jobConfig.EmailPort);
+            if (!jobConfig.EmailSend) { return; }
+            StatisticService service = StatisticService.GetService(jobConfig.Id);
+            string text = Util.GetFormattedResource("MailClientMessage01",
+                jobConfig.Id,
+                DateTime.Now,
+                service.FoundDocumentsCount,
+                service.IndexedDocumentsCount,
+                service.RemovedDocumentsCount);
             try
             {
-                _smtpClient.SendAsync(
-                    _jobConfig.EmailSender,
-                    _jobConfig.EmailRecipient,
-                    _jobConfig.EmailSubject,
-                    additionalText,
-                    _jobConfig.Id);
+                smtpClient.SendAsync(
+                    jobConfig.EmailSender,
+                    jobConfig.EmailRecipient,
+                    jobConfig.EmailSubject,
+                    text,
+                    jobConfig.Id);
             }
             catch (Exception e)
             {
-                _log.Error( Util.GetFormattedResource("MailClientMessage01"),e );
+                log.Error(Util.GetFormattedResource("MailClientMessage02"), e);
             }
         }
     }

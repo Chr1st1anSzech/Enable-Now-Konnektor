@@ -11,9 +11,9 @@ namespace Enable_Now_Konnektor.src.jobs
 {
     internal class JobReader
     {
-        internal static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
+        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly ILog _log = LogManager.GetLogger(typeof(JobReader));
+        internal static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
 
         internal List<JobConfig> ReadAllJobConfigs()
         {
@@ -24,7 +24,7 @@ namespace Enable_Now_Konnektor.src.jobs
             }
             catch (Exception e)
             {
-                _log.Fatal( Util.GetFormattedResource("JobReaderMessage01", JobDirectory), e );
+                log.Fatal( Util.GetFormattedResource("JobReaderMessage01", JobDirectory), e );
                 return null;
             }
             int jobCount = fullFileNames.Count();
@@ -43,7 +43,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 }
                 catch (Exception e)
                 {
-                    _log.Error( Util.GetFormattedResource("JobReaderMessage02", i), e );
+                    log.Error( Util.GetFormattedResource("JobReaderMessage02", i), e );
                     continue;
                 }
                 
@@ -54,7 +54,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 }
                 else
                 {
-                    _log.Error( Util.GetFormattedResource("JobReaderMessage03", i));
+                    log.Error( Util.GetFormattedResource("JobReaderMessage03", i));
                 }
             }
             return jobsConfigs;
@@ -68,7 +68,7 @@ namespace Enable_Now_Konnektor.src.jobs
             }
             catch (Exception e)
             {
-                _log.Error( Util.GetFormattedResource("JobReaderMessage04", filePath), e );
+                log.Error( Util.GetFormattedResource("JobReaderMessage04", filePath), e );
                 return null;
             }
         }

@@ -46,7 +46,7 @@ namespace Enable_Now_Konnektor.src.jobs
             crawler.StartCrawling();
             crawler.CompleteCrawling();
             MailClient mail = new MailClient(jobConfig);
-            mail.SendMail("");
+            mail.SendMail();
         }
 
 

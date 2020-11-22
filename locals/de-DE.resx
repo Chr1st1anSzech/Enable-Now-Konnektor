@@ -208,6 +208,9 @@
     <value>Das Element konnte nicht aus dem Index entfernt werden.</value>
   </data>
   <data name="MailClientMessage01" xml:space="preserve">
+    <value>Der Job {0} wurde um {1} abgeschlossen.\n\nGefundene Dokumente: {2}\nIndexierte Dokumente: {3}\nGelöschte Dokumente: {4}</value>
+  </data>
+  <data name="MailClientMessage02" xml:space="preserve">
     <value>Die E-Mail konnte nicht verschickt werden.</value>
   </data>
   <data name="MetaAnalyzerMessage02" xml:space="preserve">
