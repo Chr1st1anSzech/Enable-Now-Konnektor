@@ -50,6 +50,11 @@ namespace Enable_Now_Konnektor.src.indexing
             return true;
         }
 
+        public override bool RemoveElementFromIndex(string id)
+        {
+            return true;
+        }
+
         private string GetParameterString(Element element)
         {
             IndexingElement indexingElement = new IndexingElement()

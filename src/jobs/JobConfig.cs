@@ -47,5 +47,8 @@ namespace Enable_Now_Konnektor.src.jobs
 
         public int ThreadCount { get; set; } = 2;
 
+        public int MaxErrorCount { get; set; } = 5;
+
+
     }
 }

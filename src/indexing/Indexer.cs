@@ -18,5 +18,7 @@ namespace Enable_Now_Konnektor.src.indexing
         public abstract Task<bool> AddElementToIndex(Element element);
 
         public abstract bool RemoveElementFromIndex(Element element);
+
+        public abstract bool RemoveElementFromIndex(string id);
     }
 }

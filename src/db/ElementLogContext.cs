@@ -18,7 +18,7 @@ namespace Enable_Now_Konnektor.src.db
         private readonly string _tableName;
         private DbSet<ElementLog> ElementLogs { get; set; }
 
-        public ElementLogContext(string tableName) {
+        internal ElementLogContext(string tableName) {
             if( string.IsNullOrWhiteSpace(tableName))
             {
                 _log.Fatal( Util.GetFormattedResource("ElementLogContextMessage01") );
@@ -28,7 +28,7 @@ namespace Enable_Now_Konnektor.src.db
             _tableName = tableName;
         }
 
-        public void Initialize()
+        internal void Initialize()
         {
             Database.EnsureCreated();
         }
@@ -59,12 +59,19 @@ namespace Enable_Now_Konnektor.src.db
             base.OnModelCreating(modelBuilder);
         }
 
-
+        internal void ResetAllFoundStatus()
+        {
+            foreach (var elementLog in ElementLogs)
+            {
+                elementLog.WasFound = false;
+                UpdateElementLog(elementLog);
+            }
+        }
 
         private void AddElementLog(Element element, bool wasFound = true)
         {
             Database.EnsureCreated();
-            var log = GetElementLog(element);
+            var log = GetElementLog(element.Id);
             if (log == null)
             {
                 ElementLogs.Add(new ElementLog { Id = element.Id, WasFound = wasFound, Hash = element.Hash });
@@ -79,35 +86,47 @@ namespace Enable_Now_Konnektor.src.db
             SaveChanges();
         }
 
-        public void RemoveElementLog(Element element)
+        internal void RemoveElementLog(string id)
         {
             Database.EnsureCreated();
-            var log = GetElementLog(element);
+            var log = GetElementLog(id);
             if (log != null)
             {
                 ElementLogs.Remove(log);
             }
-            
+
             SaveChanges();
         }
 
-        public ElementLog GetElementLog(Element element)
+        internal IEnumerable<ElementLog> GetAllElementLogs( Func<ElementLog, bool> condition)
+        {
+            Database.EnsureCreated();
+            return ElementLogs.Where(condition);
+        }
+
+        internal ElementLog GetElementLog(Element element)
         {
             Database.EnsureCreated();
             return ElementLogs.Find(element.Id);
         }
 
-        public void UpdateElementLog(ElementLog elementLog)
+        internal ElementLog GetElementLog(string id)
+        {
+            Database.EnsureCreated();
+            return ElementLogs.Find(id);
+        }
+
+        internal void UpdateElementLog(ElementLog elementLog)
         {
             Database.EnsureCreated();
             ElementLogs.Update(elementLog);
             SaveChanges();
         }
 
-        public void SetElementFound(Element element, bool wasFound = true)
+        internal void SetElementFound(Element element, bool wasFound = true)
         {
             Database.EnsureCreated();
-            var elementLog = GetElementLog(element);
+            var elementLog = GetElementLog(element.Id);
             if( elementLog == null)
             {
                 AddElementLog(element, wasFound);

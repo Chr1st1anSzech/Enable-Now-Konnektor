@@ -1,10 +1,14 @@
 ﻿using Enable_Now_Konnektor.src.config;
+using Enable_Now_Konnektor.src.db;
 using Enable_Now_Konnektor.src.enable_now;
+using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,8 +19,8 @@ namespace Enable_Now_Konnektor.src.crawler
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
-        ElementCrawler elementCrawler;
-        AttachementCrawler attachementCrawler;
+        private readonly ElementCrawler elementCrawler;
+        private readonly AttachementCrawler attachementCrawler;
 
 
         /// <summary>
@@ -41,6 +45,30 @@ namespace Enable_Now_Konnektor.src.crawler
             this.jobConfig = jobConfig;
             elementCrawler = new ElementCrawler(this.jobConfig);
             attachementCrawler = new AttachementCrawler(this.jobConfig);
+            InitializeCrawlerDatabase();
+            InitializeStatisticService();
+        }
+
+        private void InitializeCrawlerDatabase()
+        {
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            context.Initialize();
+            context.ResetAllFoundStatus();
+        }
+
+        private void RemoveAllUnfoundElements()
+        {
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            context.GetAllElementLogs(e => e.WasFound == false).ToList().ForEach(e =>
+           {
+               CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
+               crawlerIndexerInterface.RemoveElementCompletly(e.Id);
+           });
+        }
+
+        private void InitializeStatisticService()
+        {
+            StatisticService.Initialize(jobConfig.Id);
         }
 
 
@@ -80,6 +108,11 @@ namespace Enable_Now_Konnektor.src.crawler
             _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
+                if (TooMuchErrors())
+                {
+                    _log.Error(Util.GetFormattedResource("PublicationCrawlerMessage06"));
+                    break;
+                }
 
                 if (_idWorkQueue.TryDequeue(out string id))
                 {
@@ -103,7 +136,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
             }
 
-            _log.Info("Fertig mit der Arbeit");
+            _log.Info(Util.GetFormattedResource("PublicationCrawlerMessage08"));
         }
 
         private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
@@ -117,6 +150,7 @@ namespace Enable_Now_Konnektor.src.crawler
             catch
             {
                 _log.Error(Util.GetFormattedResource("PublicationCrawlerMessage07", id));
+                StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
                 return;
             }
             
@@ -150,6 +184,13 @@ namespace Enable_Now_Konnektor.src.crawler
                 isAnyTaskActive |= isActive;
             }
             return isAnyTaskActive;
+        }
+
+
+
+        private bool TooMuchErrors()
+        {
+            return StatisticService.GetService(jobConfig.Id).ErrorCount > jobConfig.MaxErrorCount;
         }
 
     }

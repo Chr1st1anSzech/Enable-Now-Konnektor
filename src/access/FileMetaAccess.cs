@@ -26,8 +26,20 @@ namespace Enable_Now_Konnektor.src.access
         public override async Task<JObject> GetMetaData(Element element, string fileType)
         {
             string entityPath = GetMetaUrl(element.Class, element.Id, fileType);
+            if( !File.Exists(entityPath) ) { return null; }
+
             string jsonString = await File.ReadAllTextAsync(entityPath);
-            return JsonConvert.DeserializeObject<JObject>(jsonString);
+            if ( string.IsNullOrWhiteSpace(jsonString) ) { return null; }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<JObject>(jsonString);
+            }
+            catch
+            {
+                log.Warn(Util.GetFormattedResource("MetaFileReaderMessage01", element.Id, fileType));
+                return null;
+            }
         }
 
         public override string GetMetaUrl(string className, string id, string fileType)

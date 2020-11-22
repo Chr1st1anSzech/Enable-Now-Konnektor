@@ -33,8 +33,6 @@ namespace Enable_Now_Konnektor.src.jobs
                 var jobConfig = jobConfigs[i];
                 if (jobConfig == null) { continue; }
 
-                using ElementLogContext context = new ElementLogContext(jobConfig.Id);
-                context.Initialize();
                 tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
             }
             Task.WaitAll(tasks);

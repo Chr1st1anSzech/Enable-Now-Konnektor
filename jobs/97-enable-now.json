@@ -19,7 +19,7 @@
     "IndexSlides": true,
     "IndexGroups": true,
     "IndexProjects": true,
-    "PublicationSource" : "Http",
+    "PublicationSource" : "File",
     "EntityPath": "D:\\Daten\\Dokumente\\test\\${Class}\\${Id}\\${File}",
     "EntityUrl": "http://192.168.178.28/${Class}/${Id}/${File}",
     "ContentPath": "D:\\Daten\\Dokumente\\test\\index.html#${Class}!${Id}",

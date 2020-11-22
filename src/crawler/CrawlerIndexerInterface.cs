@@ -3,6 +3,7 @@ using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor.src.statistic;
 using log4net;
 using System.Linq;
 using System.Reflection;
@@ -14,14 +15,14 @@ namespace Enable_Now_Konnektor.src.crawler
     class CrawlerIndexerInterface
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig _jobConfig;
+        private readonly JobConfig jobConfig;
         private readonly Indexer _indexer;
 
 
 
         public CrawlerIndexerInterface(JobConfig jobConfig)
         {
-            _jobConfig = jobConfig;
+            this.jobConfig = jobConfig;
             _indexer = new JsonIndexer(jobConfig);
         }
 
@@ -52,7 +53,7 @@ namespace Enable_Now_Konnektor.src.crawler
             bool hasContentChanged = HasContentChanged(element);
             bool isAlreadyIndexed = IsAlreadyIndexed(element);
 
-            using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             if (isAlreadyIndexed)
             {
                 if (hasContentChanged)
@@ -74,18 +75,29 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 context.SetElementFound(element, true);
                 _log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
+                StatisticService.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
+            }
+            else
+            {
+                StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
             }
         }
 
 
 
 
-        private void RemoveElementCompletly(Element element)
+        internal void RemoveElementCompletly(Element element)
         {
-            _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", element.Id));
-            using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
-            context.RemoveElementLog(element);
-            _indexer.RemoveElementFromIndex(element);
+            RemoveElementCompletly(element.Id);
+        }
+
+        internal void RemoveElementCompletly(string id)
+        {
+            _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            context.RemoveElementLog(id);
+            _indexer.RemoveElementFromIndex(id);
+            StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
 
 
@@ -98,7 +110,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Wahr, wenn es bereits vorhanden ist, ansonsten falsch.</returns>
         private bool IsAlreadyIndexed(Element element)
         {
-            using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             var elementLog = context.GetElementLog(element);
             return (elementLog != null);
         }
@@ -112,15 +124,15 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 case Element.Slide:
                     {
-                        return _jobConfig.IndexSlides;
+                        return jobConfig.IndexSlides;
                     }
                 case Element.Group:
                     {
-                        return _jobConfig.IndexGroups;
+                        return jobConfig.IndexGroups;
                     }
                 case Element.Project:
                     {
-                        return _jobConfig.IndexProjects;
+                        return jobConfig.IndexProjects;
                     }
                 default:
                     break;
@@ -155,7 +167,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Gibt wahr zurück, wenn es veraltet ist und indexiert werden muss, ansonsten falsch.</returns>
         private bool HasContentChanged(Element element)
         {
-            using ElementLogContext context = new ElementLogContext(_jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             var elementLog = context.GetElementLog(element);
             return elementLog == null || !elementLog.Hash.Equals(element.Hash);
         }
@@ -174,7 +186,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool HasBlacklistedValue(Element element)
         {
             // Werte, die in beiden Listen sind
-            var fieldnames = from fieldName in _jobConfig.BlacklistFields.Keys
+            var fieldnames = from fieldName in jobConfig.BlacklistFields.Keys
                              join key in element.Fields.Keys
                              on fieldName equals key
                              select fieldName;
@@ -185,7 +197,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 {
                     try
                     {
-                        if (Regex.IsMatch(value, _jobConfig.BlacklistFields[fieldName]))
+                        if (Regex.IsMatch(value, jobConfig.BlacklistFields[fieldName]))
                         {
                             return true;
                         }
@@ -212,7 +224,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Gibt wahr zurück, wenn alle Pflichtfelder mindestens einen nichtleeren Wert haben, ansonsten falsch.</returns>
         private bool HasAllMustHaveFields(Element element)
         {
-            var mustHaveFieldNames = from fieldName in _jobConfig.MustHaveFields
+            var mustHaveFieldNames = from fieldName in jobConfig.MustHaveFields
                                      join key in element.Fields.Keys
                                      on fieldName equals key
                                      select fieldName;

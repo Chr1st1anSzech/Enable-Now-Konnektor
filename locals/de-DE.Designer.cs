@@ -430,7 +430,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} konnte nicht vollständig indexiert werden. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Es wurden mehr Fehler festgestellt als erlaubt. Dieser Job wird beendet. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage06 {
             get {
@@ -444,6 +444,24 @@ namespace Enable_Now_Konnektor.locals {
         internal static string PublicationCrawlerMessage07 {
             get {
                 return ResourceManager.GetString("PublicationCrawlerMessage07", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Dieser Crawler-Thread beendet seine Arbeit. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage08 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage08", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden. ähnelt.
+        /// </summary>
+        internal static string StatisticServiceMessage01 {
+            get {
+                return ResourceManager.GetString("StatisticServiceMessage01", resourceCulture);
             }
         }
         

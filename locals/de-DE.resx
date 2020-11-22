@@ -241,10 +241,16 @@
     <value>Es sind noch {0} Elemente in der Warteschlange.</value>
   </data>
   <data name="PublicationCrawlerMessage06" xml:space="preserve">
-    <value>Das Element {0} konnte nicht vollständig indexiert werden.</value>
+    <value>Es wurden mehr Fehler festgestellt als erlaubt. Dieser Job wird beendet.</value>
   </data>
   <data name="PublicationCrawlerMessage07" xml:space="preserve">
     <value>Das Element {0} konnte nicht vollständig analysiert werden. Es wird daher übersprungen.</value>
+  </data>
+  <data name="PublicationCrawlerMessage08" xml:space="preserve">
+    <value>Dieser Crawler-Thread beendet seine Arbeit.</value>
+  </data>
+  <data name="StatisticServiceMessage01" xml:space="preserve">
+    <value>Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden.</value>
   </data>
   <data name="UtilMessage01" xml:space="preserve">
     <value>Das Datum {0} konnte nicht geparst werden. Es wird stattdessen das heutige Datum verwendet.</value>

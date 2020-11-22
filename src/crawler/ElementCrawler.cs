@@ -1,7 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.extension;
-using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
@@ -10,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Enable_Now_Konnektor.src.misc.MetaFileReader;
 
@@ -120,9 +116,12 @@ namespace Enable_Now_Konnektor.src.crawler
         public void FillInitialFields(Element element)
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
-            element.AddValues(cfg.UidFieldName, element.Id);
-            element.AddValues(cfg.ClassFieldName, element.Class);
-            element.AddValues(cfg.UrlFieldName, new access.HttpMetaAccess(jobConfig).GetContentUrl(element.Class, element.Id));
+            string fieldName = $"{cfg.StringIdentifier}.{cfg.UidFieldName}";
+            element.AddValues(fieldName, element.Id);
+            fieldName = $"{cfg.StringIdentifier}.{cfg.ClassFieldName}";
+            element.AddValues(fieldName, element.Class);
+            fieldName = $"{cfg.StringIdentifier}.{cfg.UrlFieldName}";
+            element.AddValues(fieldName, new access.HttpMetaAccess(jobConfig).GetContentUrl(element.Class, element.Id));
 
             foreach (var mapping in jobConfig.GlobalMappings)
             {
@@ -137,7 +136,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
             };
 
-            if( !mappings.ContainsKey(element.Class) ) { return; }
+            if (!mappings.ContainsKey(element.Class)) { return; }
 
             foreach (var mapping in mappings[element.Class])
             {
