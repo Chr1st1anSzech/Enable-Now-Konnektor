@@ -1,45 +1,35 @@
-﻿using Enable_Now_Konnektor.src.access;
-using Enable_Now_Konnektor.src.config;
+﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.misc;
 using log4net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Enable_Now_Konnektor.src.misc
+namespace Enable_Now_Konnektor.src.metadata
 {
     /// <summary>
     /// Eine Klasse, um die Metadateien von Enabe Now auszulesen. Relevant sind die entity.txt, slide.js und lesson.js.
     /// </summary>
-    class MetaFileReader
+    class MetaAnalyzer
     {
-        public struct MetaFiles
-        {
-            public JObject EntityFile { get; set; }
-            public JObject SlideFile { get; set; }
-            public JObject LessonFile { get; set; }
-        }
-
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private JobConfig jobConfig;
+        private readonly JobConfig jobConfig;
 
-        public MetaFileReader(JobConfig jobConfig)
+        public MetaAnalyzer(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
 
-        public void ExtractAssets(MetaFiles metaFiles, out string[] childrenIds, out string[] attachementNames)
+        public void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
         {
             Config config = ConfigReader.LoadConnectorConfig();
             log.Debug("Analysiere alle Kindselemente.");
-            var assets = metaFiles.EntityFile?[config.AssetsIdentifier];
+            var assets = metaData.Entity?[config.AssetsIdentifier];
             if (assets == null)
             {
                 childrenIds = new string[0];
@@ -58,7 +48,7 @@ namespace Enable_Now_Konnektor.src.misc
                                     select asset[config.FileNameIdentifier].Value<string>()).ToArray();
         }
 
-        public string ExtractValue(MetaFiles metaFiles, string variableName)
+        public string ExtractValue(MetaDataCollection metaData, string variableName)
         {
             if( variableName == null)
             {
@@ -68,15 +58,15 @@ namespace Enable_Now_Konnektor.src.misc
             Config config = ConfigReader.LoadConnectorConfig();
             if (variableName.StartsWith(config.EntityIdentifier))
             {
-                return ExtractValueFromEntityTxt(variableName[config.EntityIdentifier.Length..], metaFiles.EntityFile);
+                return ExtractValueFromEntityTxt(variableName[config.EntityIdentifier.Length..], metaData.Entity);
             }
             else if (variableName.StartsWith(config.LessonIdentifier))
             {
-                return ExtractValueFromJson(variableName[config.LessonIdentifier.Length..], metaFiles.LessonFile);
+                return ExtractValueFromJson(variableName[config.LessonIdentifier.Length..], metaData.Lesson);
             }
             else if (variableName.StartsWith(config.SlideIdentifier))
             {
-                return ExtractValueFromJson(variableName[config.SlideIdentifier.Length..], metaFiles.SlideFile);
+                return ExtractValueFromJson(variableName[config.SlideIdentifier.Length..], metaData.Slide);
             }
             return "";
         }
@@ -99,21 +89,21 @@ namespace Enable_Now_Konnektor.src.misc
             return Util.JoinArray(values);
         }
 
-        public async Task<MetaFiles> LoadMetaFiles(Element element)
+        public async Task<MetaDataCollection> LoadMetaFiles(Element element)
         {
-            MetaFiles files = new MetaFiles
+            MetaDataCollection metaData = new MetaDataCollection
             {
-                LessonFile = await GetJsonFileAsync(element, MetaAccess.LessonFile),
-                SlideFile = await GetJsonFileAsync(element, MetaAccess.SlideFile)
+                Lesson = await GetJsonFileAsync(element, MetaReader.LessonFile),
+                Slide = await GetJsonFileAsync(element, MetaReader.SlideFile)
             };
-            files.EntityFile = await GetJsonFileAsync(element, MetaAccess.EntityFile);
-            if(files.EntityFile == null)
+            metaData.Entity = await GetJsonFileAsync(element, MetaReader.EntityFile);
+            if(metaData.Entity == null)
             {
                 string message = Util.GetFormattedResource("MetaFileReaderMessage04");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }
-            return files;
+            return metaData;
         }
 
         /// <summary>
@@ -126,13 +116,13 @@ namespace Enable_Now_Konnektor.src.misc
         {
             // nur Projekte haben eine lesson.js
             // nur Buchseiten haben eine slide.js
-            if ((element.Class != Element.Project && fileType == MetaAccess.LessonFile) || (element.Class != Element.Slide && fileType == MetaAccess.SlideFile))
+            if ((element.Class != Element.Project && fileType == MetaReader.LessonFile) || (element.Class != Element.Slide && fileType == MetaReader.SlideFile))
             {
                 log.Debug($"Für {element.Class} gibt es keine {fileType}.");
                 return null;
             }
 
-            var access = MetaAccess.GetMetaAccess(jobConfig);
+            var access = MetaReader.GetMetaAccess(jobConfig);
             return await access.GetMetaData(element, fileType);
         }
     }

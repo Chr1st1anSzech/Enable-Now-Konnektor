@@ -1,6 +1,7 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.metadata;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using static Enable_Now_Konnektor.src.misc.MetaFileReader;
 
 namespace Enable_Now_Konnektor.src.crawler
 {
@@ -21,22 +21,22 @@ namespace Enable_Now_Konnektor.src.crawler
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
-        private readonly MetaFileReader metaFileReader;
+        private readonly MetaAnalyzer metaAnalyzer;
 
         /// <summary>
         /// Felder eines Projekts, die von einem Autostart-Element auf das andere Element abgebildet werden sollen
         /// </summary>
-        private List<string> _projectMappingFields;
+        private List<string> projectMappingFields;
         /// <summary>
         /// Felder einer Gruppe, die von einem Autostart-Element auf das andere Element abgebildet werden sollen
         /// </summary>
-        private List<string> _groupMappingFields;
+        private List<string> groupMappingFields;
 
 
         public ElementCrawler(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
-            metaFileReader = new MetaFileReader(jobConfig);
+            metaAnalyzer = new MetaAnalyzer(jobConfig);
             InitializeMappingFields();
         }
 
@@ -56,17 +56,17 @@ namespace Enable_Now_Konnektor.src.crawler
                 return;
             }
 
-            _projectMappingFields = new List<string>();
-            _groupMappingFields = new List<string>();
+            projectMappingFields = new List<string>();
+            groupMappingFields = new List<string>();
 
             // alle globalen Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, _projectMappingFields, _groupMappingFields);
+            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields, groupMappingFields);
 
             // alle Projekt-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, _projectMappingFields);
+            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields);
 
             // alle Gruppen-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, _groupMappingFields);
+            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, groupMappingFields);
         }
 
 
@@ -82,10 +82,10 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Debug($"Crawle das Objekt mit der ID '{id}'.");
             Element element = new Element(id);
             FillInitialFields(element);
-            MetaFiles metaFiles = await metaFileReader.LoadMetaFiles(element);
-            FillFields(element, metaFiles);
-            AddAssets(element, metaFiles);
-            string autostartId = GetAutostartId(metaFiles);
+            MetaDataCollection metaData = await metaAnalyzer.LoadMetaFiles(element);
+            FillFields(element, metaData);
+            AddAssets(element, metaData);
+            string autostartId = GetAutostartId(metaData);
             if (autostartId != null)
             {
                 try
@@ -121,7 +121,7 @@ namespace Enable_Now_Konnektor.src.crawler
             fieldName = $"{cfg.StringIdentifier}.{cfg.ClassFieldName}";
             element.AddValues(fieldName, element.Class);
             fieldName = $"{cfg.StringIdentifier}.{cfg.UrlFieldName}";
-            element.AddValues(fieldName, new access.HttpMetaAccess(jobConfig).GetContentUrl(element.Class, element.Id));
+            element.AddValues(fieldName, new MetaWebsiteReader(jobConfig).GetContentUrl(element.Class, element.Id));
 
             foreach (var mapping in jobConfig.GlobalMappings)
             {
@@ -147,10 +147,10 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-        private void AddAssets(Element element, MetaFiles metaFiles)
+        private void AddAssets(Element element, MetaDataCollection metaData)
         {
-            MetaFileReader metaFileReader = new MetaFileReader(jobConfig);
-            metaFileReader.ExtractAssets(metaFiles, out string[] childrenIds, out string[] attachementIds);
+            MetaAnalyzer metaFileReader = new MetaAnalyzer(jobConfig);
+            metaFileReader.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;
         }
@@ -189,7 +189,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (element.Class == Element.Slide) { return; }
 
-            if (!jobConfig.AutostartMetaMapping || _projectMappingFields == null || _groupMappingFields == null) { return; }
+            if (!jobConfig.AutostartMetaMapping || projectMappingFields == null || groupMappingFields == null) { return; }
 
             List<string> mappingFieldList = GetMappingListForClass(element);
             if (mappingFieldList == null) { return; }
@@ -217,11 +217,11 @@ namespace Enable_Now_Konnektor.src.crawler
             List<string> mappingFieldList = null;
             if (element.Class == Element.Project)
             {
-                mappingFieldList = _projectMappingFields;
+                mappingFieldList = projectMappingFields;
             }
             else if (element.Class == Element.Group)
             {
-                mappingFieldList = _groupMappingFields;
+                mappingFieldList = groupMappingFields;
             }
 
             return mappingFieldList;
@@ -236,8 +236,8 @@ namespace Enable_Now_Konnektor.src.crawler
         /// statische Werte oder Variablen. Die Variablen werden durch die Inhalte in den Metadateien ersetzt.</para>
         /// </summary>
         /// <param name="element">Das Objekt, dessen Felder gefüllt werden sollen.</param>
-        /// <param name="metaFiles">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
-        public void FillFields(Element element, MetaFiles metaFiles)
+        /// <param name="metaData">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
+        public void FillFields(Element element, MetaDataCollection metaData)
         {
             var keys = element.Fields.Keys.ToList();
             ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();
@@ -248,7 +248,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 for (int valueIndex = lastIndex; valueIndex >= 0; valueIndex--)
                 {
                     string temporaryValue = values[valueIndex];
-                    string[] resultValues = EvaluateField(temporaryValue, expressionEvaluator, metaFiles);
+                    string[] resultValues = EvaluateField(temporaryValue, expressionEvaluator, metaData);
                     AddOrRemoveFields(values, valueIndex, resultValues);
                 }
 
@@ -264,9 +264,9 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         /// <param name="temporaryValue"></param>
         /// <param name="expressionEvaluator"></param>
-        /// <param name="metaFiles"></param>
+        /// <param name="metaData"></param>
         /// <returns>Eine Liste mit den Werten oder null, wenn der Ausdruck kein Ergebnis liefert.</returns>
-        private string[] EvaluateField(string temporaryValue, ExpressionEvaluator expressionEvaluator, MetaFiles metaFiles)
+        private string[] EvaluateField(string temporaryValue, ExpressionEvaluator expressionEvaluator, MetaDataCollection metaData)
         {
             if (!expressionEvaluator.IsExpression(temporaryValue, out string expression))
             {
@@ -276,13 +276,13 @@ namespace Enable_Now_Konnektor.src.crawler
 
             if (expressionEvaluator.IsVariableExpression(expression, out string variableName))
             {
-                string value = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, variableName));
+                string value = Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, variableName));
                 log.Debug(Util.GetFormattedResource("ElementCrawlerMessage03", expression, value));
                 return string.IsNullOrWhiteSpace(value) ? null : new string[] { value };
             }
             if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string converterVariableName))
             {
-                string value = Util.RemoveMarkup(metaFileReader.ExtractValue(metaFiles, converterVariableName));
+                string value = Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, converterVariableName));
                 log.Debug(Util.GetFormattedResource("ElementCrawlerMessage04", expression, converterClassName, converterVariableName));
                 return expressionEvaluator.EvaluateAsConverter(value, converterClassName);
             }
@@ -331,17 +331,17 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <summary>
         /// Die Autostart-ID eines Elements bestimmen.
         /// </summary>
-        /// <param name="metaFiles"></param>
+        /// <param name="metaData"></param>
         /// <returns>Gibt entweder die ID des Autostart-Elements zurück oder null, falls kein Autostart-Element definiert ist.</returns>
-        private string GetAutostartId(MetaFiles metaFiles)
+        private string GetAutostartId(MetaDataCollection metaData)
         {
             Config config = ConfigReader.LoadConnectorConfig();
-            if (metaFiles.EntityFile?[config.AutostartIdentifier] == null)
+            if (metaData.Entity?[config.AutostartIdentifier] == null)
             {
                 return null;
             }
 
-            return metaFiles.EntityFile[config.AutostartIdentifier]?.Value<string>().Split('!')[1];
+            return metaData.Entity[config.AutostartIdentifier]?.Value<string>().Split('!')[1];
         }
 
 

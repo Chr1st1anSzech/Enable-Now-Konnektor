@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Enable_Now_Konnektor.src.access
+namespace Enable_Now_Konnektor.src.metadata
 {
-    abstract class MetaAccess
+    abstract class MetaReader
     {
         public static string EntityFile = "entity.txt";
         public static string LessonFile = "lesson.js";
@@ -22,17 +22,17 @@ namespace Enable_Now_Konnektor.src.access
             { "M", "media" }
         };
 
-        public static MetaAccess GetMetaAccess(JobConfig jobConfig)
+        public static MetaReader GetMetaAccess(JobConfig jobConfig)
         {
             switch (jobConfig.PublicationSource) {
                 case "File":
                     {
-                        return new FileMetaAccess(jobConfig);
+                        return new MetaFileReader(jobConfig);
                     }
                 case "Http":
                 default:
                     {
-                        return new HttpMetaAccess(jobConfig);
+                        return new MetaWebsiteReader(jobConfig);
                     }
             }
         }

@@ -1,12 +1,11 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.crawler;
+﻿using Enable_Now_Konnektor.src.crawler;
 using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.metadata;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using static Enable_Now_Konnektor.src.misc.MetaFileReader;
+
 
 namespace Enable_Now_Konnektor.tst
 {
@@ -29,17 +28,17 @@ namespace Enable_Now_Konnektor.tst
             await crawlerIndexerInterface.SendToIndexerAsync(element);
         }
 
-        private static MetaFiles ReadFile(Element element)
+        private static MetaDataCollection ReadFile(Element element)
         {
             string path = Path.Combine(@"C:\Users\Christian\Source\Repos\Enable Now Connector for iFinder5", "tst", "samples", element.Id + "_entity.txt");
             string jsonString = File.ReadAllText(path);
-            MetaFiles files = new MetaFiles();
-            files.EntityFile = JsonConvert.DeserializeObject<JObject>(jsonString);
+            MetaDataCollection metaData = new MetaDataCollection();
+            metaData.Entity = JsonConvert.DeserializeObject<JObject>(jsonString);
 
             path = Path.Combine(@"C:\Users\Christian\Source\Repos\Enable Now Connector for iFinder5", "tst", "samples", element.Id + "_lesson.js");
             jsonString = File.ReadAllText(path);
-            files.LessonFile = JsonConvert.DeserializeObject<JObject>(jsonString);
-            return files;
+            metaData.Lesson = JsonConvert.DeserializeObject<JObject>(jsonString);
+            return metaData;
         }
     }
 }

@@ -44,7 +44,9 @@ namespace Enable_Now_Konnektor.src.jobs
         private void StartJob(JobConfig jobConfig)
         {
             PublicationCrawler crawler = new PublicationCrawler(jobConfig);
-            crawler.StartCrawlingThreads();
+            crawler.Initialize();
+            crawler.StartCrawling();
+            crawler.CompleteCrawling();
             MailClient mail = new MailClient(jobConfig);
             mail.SendMail("");
         }

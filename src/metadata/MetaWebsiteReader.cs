@@ -10,14 +10,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Enable_Now_Konnektor.src.access
+namespace Enable_Now_Konnektor.src.metadata
 {
-    class HttpMetaAccess : MetaAccess
+    class MetaWebsiteReader : MetaReader
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        public HttpMetaAccess(JobConfig jobConfig)
+        public MetaWebsiteReader(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }

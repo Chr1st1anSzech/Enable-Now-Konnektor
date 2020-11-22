@@ -1,16 +1,14 @@
-﻿using Enable_Now_Konnektor.src.access;
-using Enable_Now_Konnektor.src.config;
+﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.metadata;
 using Enable_Now_Konnektor.src.misc;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -123,7 +121,7 @@ namespace Enable_Now_Konnektor.src.indexing
 
         private string GetConverterRequestUrl(Element element, string fileName)
         {
-            string attachementUrl = new HttpMetaAccess(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            string attachementUrl = new MetaWebsiteReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
             string contentUrl = HttpUtility.UrlEncode(attachementUrl);
             Config config = ConfigReader.LoadConnectorConfig();
             return config.ConverterUrl + contentUrl;

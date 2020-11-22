@@ -11,14 +11,14 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Enable_Now_Konnektor.src.access
+namespace Enable_Now_Konnektor.src.metadata
 {
-    class FileMetaAccess : MetaAccess
+    class MetaFileReader : MetaReader
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        public FileMetaAccess(JobConfig jobConfig)
+        public MetaFileReader(JobConfig jobConfig)
         {
             this.jobConfig = jobConfig;
         }
