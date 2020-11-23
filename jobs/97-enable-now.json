@@ -123,7 +123,7 @@
             "${E_description}"
         ],
         "_str.demourl": [
-            ""
+            "${DemoUrlConverter(E_uid,http://192.168.178.28/index.html?show=project!${Id}:demo)}"
         ]
     },
     "SlideMappings": {

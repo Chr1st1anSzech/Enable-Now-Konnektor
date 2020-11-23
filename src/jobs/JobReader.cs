@@ -24,7 +24,7 @@ namespace Enable_Now_Konnektor.src.jobs
             }
             catch (Exception e)
             {
-                log.Fatal( Util.GetFormattedResource("JobReaderMessage01", JobDirectory), e );
+                log.Error( Util.GetFormattedResource("JobReaderMessage01", JobDirectory), e );
                 return null;
             }
             int jobCount = fullFileNames.Count();

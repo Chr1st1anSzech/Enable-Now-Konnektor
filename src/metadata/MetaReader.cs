@@ -22,7 +22,7 @@ namespace Enable_Now_Konnektor.src.metadata
             { "M", "media" }
         };
 
-        internal static MetaReader GetMetaAccess(JobConfig jobConfig)
+        internal static MetaReader GetMetaReader(JobConfig jobConfig)
         {
             switch (jobConfig.PublicationSource.ToLower()) {
                 case "file":

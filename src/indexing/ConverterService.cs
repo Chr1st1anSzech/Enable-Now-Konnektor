@@ -121,7 +121,7 @@ namespace Enable_Now_Konnektor.src.indexing
 
         private string GetConverterRequestUrl(Element element, string fileName)
         {
-            string attachementUrl = new MetaWebsiteReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            string attachementUrl = MetaReader.GetMetaReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
             string contentUrl = HttpUtility.UrlEncode(attachementUrl);
             Config config = ConfigReader.LoadConnectorConfig();
             return config.ConverterUrl + contentUrl;

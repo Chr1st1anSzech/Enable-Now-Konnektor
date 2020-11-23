@@ -12,8 +12,16 @@ namespace Enable_Now_Konnektor.src.misc
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// Prüft, ob es sich bei dem Text, um einen Ausdruck, der interpretiert werden soll, handelt.
+        /// </summary>
+        /// <param name="textToExamine">Der Text, der geprüft werden soll.</param>
+        /// <param name="expression">Der Ausdruck, falls einer gefunden wird. Andernfalls wird null zurückgegeben.</param>
+        /// <returns>Wahr, wenn es ein Ausdruck ist.</returns>
         internal bool IsExpression(string textToExamine, out string expression)
         {
+            if (string.IsNullOrWhiteSpace(textToExamine)) { expression = null; return false; }
+
             string expressionPattern = @"(?<=\${).+(?=})";
             Match expressionMatch = Regex.Match(textToExamine, expressionPattern);
             bool isExpression = expressionMatch.Success;
@@ -21,7 +29,12 @@ namespace Enable_Now_Konnektor.src.misc
             return isExpression;
         }
 
-
+        /// <summary>
+        /// Prüft, ob es sich bei dem Ausdruck, um eine Variable handelt.
+        /// </summary>
+        /// <param name="expression">Der Ausdruck, der geprüft werden soll.</param>
+        /// <param name="variableName">Die Variable, falls eine gefunden wird. Andernfalls wird null zurückgegeben.</param>
+        /// <returns>Wahr, wenn es eine Variable ist.</returns>
         internal bool IsVariableExpression(string expression, out string variableName)
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
@@ -32,20 +45,17 @@ namespace Enable_Now_Konnektor.src.misc
             return isVariableExpression;
         }
 
-        internal bool IsConverterExpression(string expression, out string converterClassName, out string converterVariableName)
+        internal bool IsConverterExpression(string expression, out string converterClassName, out string[] converterParameterNames)
         {
-            Config cfg = ConfigReader.LoadConnectorConfig();
-            string variablePattern = $"({cfg.EntityIdentifier}|{cfg.LessonIdentifier}|{cfg.SlideIdentifier})\\w+";
-            string converterPattern = $"^\\w+\\({variablePattern}\\)$";
-            Match converterMatch = Regex.Match(expression, converterPattern);
-            bool isConverterExpression = converterMatch.Success;
-            converterClassName = isConverterExpression ? converterMatch.Value.Split('(')[0] : null;
-            converterVariableName = isConverterExpression ? converterMatch.Value.Split('(')[1].Replace(")", "") : null;
-            return isConverterExpression;
+            Match converterClassNameMatch = Regex.Match(expression, "^\\w+(?=\\(([^,]+,?)+\\)$)");
+            converterClassName = converterClassNameMatch.Success ? converterClassNameMatch.Value : null;
+            Match parametersMatch = Regex.Match(expression, "(?<=^\\w+\\()([^,]+,?)+(?=\\)$)");
+            converterParameterNames = parametersMatch.Success ? parametersMatch.Value.Split(',') : null;
+            return converterClassNameMatch.Success && parametersMatch.Success;
         }
 
 
-        internal string[] EvaluateAsConverter(string value, string converterClassName)
+        internal string[] EvaluateAsConverter(string converterClassName, params string[] parameters)
         {
             Type converterType = GetConverterType(converterClassName);
             if (converterType == null) { return Array.Empty<string>(); }
@@ -54,11 +64,11 @@ namespace Enable_Now_Konnektor.src.misc
             {
                 var o = Activator.CreateInstance(converterType) as IParameterConverter;
                 MethodInfo method = converterType.GetMethod("TransformParameter");
-                return method.Invoke(o, new object[] { new string[] { value } }) as string[];
+                return method.Invoke(o, new object[] { parameters }) as string[];
             }
             catch (Exception e)
             {
-                log.Warn(Util.GetFormattedResource("ExpressionEvaluatorMessage01", converterClassName, value), e);
+                log.Warn(Util.GetFormattedResource("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
             }
             return Array.Empty<string>();
         }

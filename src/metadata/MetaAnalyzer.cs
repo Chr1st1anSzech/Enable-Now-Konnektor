@@ -122,7 +122,7 @@ namespace Enable_Now_Konnektor.src.metadata
                 return null;
             }
 
-            var access = MetaReader.GetMetaAccess(jobConfig);
+            var access = MetaReader.GetMetaReader(jobConfig);
             return await access.GetMetaData(element, fileType);
         }
     }

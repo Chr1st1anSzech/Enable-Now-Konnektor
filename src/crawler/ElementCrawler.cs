@@ -151,7 +151,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void AddAssets(Element element, MetaDataCollection metaData)
         {
-            MetaAnalyzer metaAnalyzer = new MetaAnalyzer(jobConfig);
             metaAnalyzer.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;
@@ -282,11 +281,20 @@ namespace Enable_Now_Konnektor.src.crawler
                 log.Debug(Util.GetFormattedResource("ElementCrawlerMessage03", expression, value));
                 return string.IsNullOrWhiteSpace(value) ? null : new string[] { value };
             }
-            if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string converterVariableName))
+            if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string[] converterParameterNames))
             {
-                string value = Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, converterVariableName));
-                log.Debug(Util.GetFormattedResource("ElementCrawlerMessage04", expression, converterClassName, converterVariableName));
-                return expressionEvaluator.EvaluateAsConverter(value, converterClassName);
+                int parameterCount = converterParameterNames.Length;
+                string[] converterParameterValues = new string[parameterCount];
+                for (int i = 0; i < parameterCount; i++)
+                {
+                    string converterParameter = converterParameterNames[i];
+                    bool isVariable = expressionEvaluator.IsVariableExpression(converterParameter, out string converterVariableName);
+                    converterParameterValues[i] = isVariable ?
+                        Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, converterVariableName)) :
+                        converterParameterNames[i];
+                }
+                log.Debug(Util.GetFormattedResource("ElementCrawlerMessage04", expression, converterClassName, ""));
+                return expressionEvaluator.EvaluateAsConverter(converterClassName, converterParameterValues);
             }
             return null;
         }
@@ -307,14 +315,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 return;
             }
 
-            if (resultValues[0] == null)
-            {
-                values.RemoveAt(valueIndex);
-            }
-            else
-            {
-                values[valueIndex] = resultValues[0];
-            }
+            values[valueIndex] = resultValues[0];
 
             int length = resultValues.Length;
             for (int i = 1; i < length; i++)
