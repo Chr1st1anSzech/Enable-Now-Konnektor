@@ -520,7 +520,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der Fehler: {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Fehler: {0}. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage11 {
             get {
@@ -529,7 +529,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der indexierten Dokumente: {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Indexierten Dokumente: {0}. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage12 {
             get {
@@ -538,7 +538,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Anzahl der entfernten Dokumente: {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Entfernten Dokumente: {0}. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage13 {
             get {
@@ -556,11 +556,29 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Davon Autostart-Elemente: {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Autostart-Elemente: {0}. ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage15 {
             get {
                 return ResourceManager.GetString("PublicationCrawlerMessage15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Unveränderten Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage16 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Übersprungene Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string PublicationCrawlerMessage17 {
+            get {
+                return ResourceManager.GetString("PublicationCrawlerMessage17", resourceCulture);
             }
         }
         

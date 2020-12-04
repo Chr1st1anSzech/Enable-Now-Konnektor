@@ -88,6 +88,8 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage11", errorControl.ErrorCount));
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage14", statistic.FoundDocumentsCount));
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage15", statistic.AutostartElementsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage16", statistic.UnchangedDocumentsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage17", statistic.SkippedDocumentsCount));
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage12", statistic.IndexedDocumentsCount));
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage13", statistic.RemovedDocumentsCount));
         }

@@ -42,11 +42,11 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="element">Das Element, das indexiert werden soll.</param>
         internal async Task SendToIndexerAsync(Element element)
         {
-
             bool isAlreadyIndexed = IsAlreadyIndexed(element);
             if (!ShouldBeIndexed(element))
             {
-                log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage01", element.Id));
+                log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage01", element.Id));
+                Statistics.GetService(jobConfig.Id).IncreaseSkippedDocumentsCount();
                 if (isAlreadyIndexed) { RemoveElementCompletly(element); };
                 return;
             }
@@ -58,12 +58,13 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 if (hasContentChanged)
                 {
-                    log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage02", element.Id));
+                    log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage02", element.Id));
                     RemoveElementCompletly(element);
                 }
                 else
                 {
-                    log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage07", element.Id));
+                    log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage07", element.Id));
+                    Statistics.GetService(jobConfig.Id).IncreaseUnchangedDocumentsCount();
                     context.SetElementFound(element, true);
                     return;
                 }
@@ -71,12 +72,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
             log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage03", element.Id));
             bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
-            Statistics statisticService = Statistics.GetService(jobConfig.Id);
             if (isIndexingSuccess)
             {
                 context.SetElementFound(element, true);
                 log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
-                statisticService.IncreaseIndexedDocumentsCount();
+                Statistics.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
             }
             else
             {

@@ -80,21 +80,20 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Ein Objekt, das die Daten des Elements in Enable Now enthält</returns>
         internal async Task<Element> CrawlElement(string id)
         {
-            Statistics statisticService = Statistics.GetService(jobConfig.Id);
-            statisticService.IncreaseFoundDocumentsCount();
             Element element = new Element(id);
             FillInitialFields(element);
             MetaDataCollection metaData = await metaAnalyzer.LoadMetaFiles(element);
             FillFields(element, metaData);
             AddAssets(element, metaData);
             string autostartId = GetAutostartId(metaData);
-            if (autostartId != null)
+            Statistics statisticService = Statistics.GetService(jobConfig.Id);
+            if (autostartId != null )
             {
                 try
                 {
-                    statisticService.IncreaseAutostartElementsCount();
                     Element autostartElement = await CrawlElement(autostartId);
                     OverwriteValuesByAutostartElement(element, autostartElement);
+                    statisticService.IncreaseAutostartElementsCount();
                 }
                 catch
                 {
@@ -103,6 +102,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             element.Hash = element.GenerateHashCode();
             SetDateValue(element);
+            statisticService.IncreaseFoundDocumentsCount();
             return element;
         }
 

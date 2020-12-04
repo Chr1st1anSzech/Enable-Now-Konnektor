@@ -271,19 +271,25 @@
     <value>Die nicht gefundenen Elemente wurden gelöscht.</value>
   </data>
   <data name="PublicationCrawlerMessage11" xml:space="preserve">
-    <value>Anzahl der Fehler: {0}.</value>
+    <value>Fehler: {0}.</value>
   </data>
   <data name="PublicationCrawlerMessage12" xml:space="preserve">
-    <value>Anzahl der indexierten Dokumente: {0}.</value>
+    <value>Indexierten Dokumente: {0}.</value>
   </data>
   <data name="PublicationCrawlerMessage13" xml:space="preserve">
-    <value>Anzahl der entfernten Dokumente: {0}.</value>
+    <value>Entfernten Dokumente: {0}.</value>
   </data>
   <data name="PublicationCrawlerMessage14" xml:space="preserve">
     <value>Gefundene Dokumente: {0}.</value>
   </data>
   <data name="PublicationCrawlerMessage15" xml:space="preserve">
-    <value>Davon Autostart-Elemente: {0}.</value>
+    <value>Autostart-Elemente: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage16" xml:space="preserve">
+    <value>Unveränderten Dokumente: {0}.</value>
+  </data>
+  <data name="PublicationCrawlerMessage17" xml:space="preserve">
+    <value>Übersprungene Dokumente: {0}.</value>
   </data>
   <data name="StatisticServiceMessage01" xml:space="preserve">
     <value>Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden.</value>

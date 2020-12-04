@@ -28,6 +28,8 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             ConverterService converter = new ConverterService(jobConfig);
             var attachements = new List<Element>();
+            Statistics statisticService = Statistics.GetService(jobConfig.Id);
+            
             foreach (var attachementName in element.AttachementNames)
             {
                 ConverterResult res;
@@ -44,6 +46,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 Element attachement = element.Clone() as Element;
                 OverwriteAttachementValues(attachement, res, attachementName);
                 attachements.Add(attachement);
+                statisticService.IncreaseFoundDocumentsCount();
             }
             return attachements;
         }
@@ -60,7 +63,9 @@ namespace Enable_Now_Konnektor.src.crawler
             element.ReplaceValues($"{cfg.FacetIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
 
-            element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UidFieldName}", $"{element.Id}_{fileName}");
+            string newId = $"{element.Id}_{fileName}";
+            element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UidFieldName}", newId);
+            element.Id = newId;
         }
     }
 }
