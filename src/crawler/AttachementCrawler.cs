@@ -4,7 +4,7 @@ using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
-using Enable_Now_Konnektor.src.statistic;
+using Enable_Now_Konnektor.src.service;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 catch
                 {
                     _log.Error( Util.GetFormattedResource("AttachementCrawlerMessage01", attachementName, element.Id) );
-                    StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
+                    ErrorControl.GetService().IncreaseErrorCount();
                     continue;
                 }
                 Element attachement = element.Clone() as Element;

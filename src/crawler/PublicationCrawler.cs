@@ -2,7 +2,7 @@
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
-using Enable_Now_Konnektor.src.statistic;
+using Enable_Now_Konnektor.src.service;
 using log4net;
 using System;
 using System.Collections.Concurrent;
@@ -66,7 +66,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void InitializeStatisticService()
         {
-            StatisticService.Initialize(jobConfig.Id);
+            Statistics.Initialize(jobConfig.Id);
         }
 
         internal void Initialize()
@@ -83,12 +83,13 @@ namespace Enable_Now_Konnektor.src.crawler
 
         internal void WriteStatistics()
         {
-            StatisticService service = StatisticService.GetService(jobConfig.Id);
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage11", service.ErrorCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage14", service.FoundDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage15", service.AutostartElementsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage12", service.IndexedDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage13", service.RemovedDocumentsCount));
+            Statistics statistic = Statistics.GetService(jobConfig.Id);
+            ErrorControl errorControl = ErrorControl.GetService();
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage11", errorControl.ErrorCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage14", statistic.FoundDocumentsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage15", statistic.AutostartElementsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage12", statistic.IndexedDocumentsCount));
+            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage13", statistic.RemovedDocumentsCount));
         }
 
 
@@ -125,12 +126,6 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
-                if (TooMuchErrors())
-                {
-                    log.Error(Util.GetFormattedResource("PublicationCrawlerMessage06"));
-                    break;
-                }
-
                 if (idWorkQueue.TryDequeue(out string id))
                 {
                     await CrawlElementAsync(crawlerIndexerInterface, id);
@@ -167,7 +162,7 @@ namespace Enable_Now_Konnektor.src.crawler
             catch
             {
                 log.Error(Util.GetFormattedResource("PublicationCrawlerMessage07", id));
-                StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
+                ErrorControl.GetService().IncreaseErrorCount();
                 return;
             }
 
@@ -201,13 +196,6 @@ namespace Enable_Now_Konnektor.src.crawler
                 isAnyTaskActive |= isActive;
             }
             return isAnyTaskActive;
-        }
-
-
-
-        private bool TooMuchErrors()
-        {
-            return StatisticService.GetService(jobConfig.Id).ErrorCount > jobConfig.MaxErrorCount;
         }
 
     }

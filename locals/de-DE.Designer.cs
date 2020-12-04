@@ -205,6 +205,24 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Anwendung läuft bereits seit {0} Minuten. Das übersteigt der maximal erlaubten Laufzeit. Das Programm wird daher beendet. ähnelt.
+        /// </summary>
+        internal static string ErrorControlMessage01 {
+            get {
+                return ResourceManager.GetString("ErrorControlMessage01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Beim Ablauf des Prozesses wurden {0} Fehler festgestellt. Das übersteigt die maximal erlaubte Anzahl. Das Programm wird daher beendet. ähnelt.
+        /// </summary>
+        internal static string ErrorControlMessage02 {
+            get {
+                return ResourceManager.GetString("ErrorControlMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Der Aufruf der Erweiterungsmethode &quot;{0}&quot; mit dem Wert &quot;{1}&quot; ist fehlgeschlagen. Das Feld wird gelöscht. ähnelt.
         /// </summary>
         internal static string ExpressionEvaluatorMessage01 {
@@ -444,15 +462,6 @@ namespace Enable_Now_Konnektor.locals {
         internal static string PublicationCrawlerMessage05 {
             get {
                 return ResourceManager.GetString("PublicationCrawlerMessage05", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Es wurden mehr Fehler festgestellt als erlaubt. Dieser Job wird beendet. ähnelt.
-        /// </summary>
-        internal static string PublicationCrawlerMessage06 {
-            get {
-                return ResourceManager.GetString("PublicationCrawlerMessage06", resourceCulture);
             }
         }
         

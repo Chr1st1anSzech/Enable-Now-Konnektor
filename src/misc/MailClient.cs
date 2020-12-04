@@ -1,5 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.jobs;
-using Enable_Now_Konnektor.src.statistic;
+using Enable_Now_Konnektor.src.service;
 using log4net;
 using System;
 using System.Net.Mail;
@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.misc
         {
             SmtpClient smtpClient = new SmtpClient(jobConfig.EmailSmtpServer, jobConfig.EmailPort);
             if (!jobConfig.EmailSend) { return; }
-            StatisticService service = StatisticService.GetService(jobConfig.Id);
+            Statistics service = Statistics.GetService(jobConfig.Id);
             string text = Util.GetFormattedResource("MailClientMessage01",
                 jobConfig.Id,
                 DateTime.Now,

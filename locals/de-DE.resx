@@ -165,6 +165,12 @@
   <data name="ElementMessage01" xml:space="preserve">
     <value>Die ID "{0}" entspricht nicht dem gültigen Muster von Enable Now.</value>
   </data>
+  <data name="ErrorControlMessage01" xml:space="preserve">
+    <value>Die Anwendung läuft bereits seit {0} Minuten. Das übersteigt der maximal erlaubten Laufzeit. Das Programm wird daher beendet.</value>
+  </data>
+  <data name="ErrorControlMessage02" xml:space="preserve">
+    <value>Beim Ablauf des Prozesses wurden {0} Fehler festgestellt. Das übersteigt die maximal erlaubte Anzahl. Das Programm wird daher beendet.</value>
+  </data>
   <data name="ExpressionEvaluatorMessage01" xml:space="preserve">
     <value>Der Aufruf der Erweiterungsmethode "{0}" mit dem Wert "{1}" ist fehlgeschlagen. Das Feld wird gelöscht.</value>
   </data>
@@ -245,9 +251,6 @@
   </data>
   <data name="PublicationCrawlerMessage05" xml:space="preserve">
     <value>Es sind noch {0} Elemente in der Warteschlange.</value>
-  </data>
-  <data name="PublicationCrawlerMessage06" xml:space="preserve">
-    <value>Es wurden mehr Fehler festgestellt als erlaubt. Dieser Job wird beendet.</value>
   </data>
   <data name="PublicationCrawlerMessage07" xml:space="preserve">
     <value>Das Element {0} konnte nicht vollständig analysiert werden. Es wird daher übersprungen.</value>

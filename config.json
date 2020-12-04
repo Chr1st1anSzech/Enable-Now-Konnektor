@@ -40,5 +40,8 @@
 		"Microsoft PowerPoint" : "PowerPoint"
 	},
 
-	"ConverterApplicationDefaultMapping" : "HTML"
+	"ConverterApplicationDefaultMapping" : "HTML",
+
+	"MaxErrorCount" : 5,
+	"MaxMinutesRuntime" : 60
 }

@@ -48,5 +48,8 @@ namespace Enable_Now_Konnektor.src.config
             {"Microsoft PowerPoint", "PowerPoint" }
         };
         public string ConverterApplicationDefaultMapping { get; } = "HTML";
+
+        public int MaxErrorCount { get; set; } = 5;
+        public int MaxMinutesRuntime { get; set; } = 30;
     }
 }

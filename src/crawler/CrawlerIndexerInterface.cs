@@ -3,7 +3,7 @@ using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.misc;
-using Enable_Now_Konnektor.src.statistic;
+using Enable_Now_Konnektor.src.service;
 using log4net;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +14,7 @@ namespace Enable_Now_Konnektor.src.crawler
 {
     internal class CrawlerIndexerInterface
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
         private readonly Indexer indexer;
 
@@ -46,7 +46,7 @@ namespace Enable_Now_Konnektor.src.crawler
             bool isAlreadyIndexed = IsAlreadyIndexed(element);
             if (!ShouldBeIndexed(element))
             {
-                _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage01", element.Id));
+                log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage01", element.Id));
                 if (isAlreadyIndexed) { RemoveElementCompletly(element); };
                 return;
             }
@@ -58,7 +58,7 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 if (hasContentChanged)
                 {
-                    _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage02", element.Id));
+                    log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage02", element.Id));
                     RemoveElementCompletly(element);
                 }
                 else
@@ -69,17 +69,18 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
             }
 
-            _log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage03", element.Id));
+            log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage03", element.Id));
             bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
+            Statistics statisticService = Statistics.GetService(jobConfig.Id);
             if (isIndexingSuccess)
             {
                 context.SetElementFound(element, true);
-                _log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
-                StatisticService.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
+                log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
+                statisticService.IncreaseIndexedDocumentsCount();
             }
             else
             {
-                StatisticService.GetService(jobConfig.Id).IncreaseErrorCount();
+                ErrorControl.GetService().IncreaseErrorCount();
             }
         }
 
@@ -93,11 +94,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
         internal void RemoveElementCompletly(string id)
         {
-            _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
+            log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
             using ElementLogContext context = new ElementLogContext(jobConfig.Id);
             context.RemoveElementLog(id);
             indexer.RemoveElementFromIndexAsync(id);
-            StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
+            Statistics.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
 
 
@@ -204,7 +205,7 @@ namespace Enable_Now_Konnektor.src.crawler
                     }
                     catch
                     {
-                        _log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage05", element.Id));
+                        log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage05", element.Id));
                     }
                 }
             }
