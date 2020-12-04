@@ -63,7 +63,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 else
                 {
-
+                    log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage07", element.Id));
                     context.SetElementFound(element, true);
                     return;
                 }
@@ -80,6 +80,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             else
             {
+                log.Error(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage08", element.Id));
                 ErrorControl.GetService().IncreaseErrorCount();
             }
         }

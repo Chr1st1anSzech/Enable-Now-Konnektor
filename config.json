@@ -6,7 +6,7 @@
 
 	"ProxyUrl" : "http://proxy.de",
 	"ProxyPort" : 12,
-	"bool UseProxy" : false,
+	"UseProxy" : false,
 
 	"StringIdentifier" : "_str",
 	"FacetIdentifier" : "_facet",

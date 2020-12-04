@@ -14,7 +14,8 @@ namespace Enable_Now_Konnektor.src.db
     internal class ElementLogContext : DbContext
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string DatabasePath = Path.Combine(Util.GetApplicationRoot(), "db", "ElementLogging.db");
+        private static readonly string DatabaseDirPath = Path.Combine(Util.GetApplicationRoot(), "db");
+        private static readonly string DatabaseFilePath = Path.Combine(DatabaseDirPath, "ElementLogging.db");
         private readonly string _tableName;
         private DbSet<ElementLog> ElementLogs { get; set; }
 
@@ -36,7 +37,11 @@ namespace Enable_Now_Konnektor.src.db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Filename=" + DatabasePath, options =>
+            if( !Directory.Exists(DatabaseDirPath))
+            {
+                Directory.CreateDirectory(DatabaseDirPath);
+            }
+            optionsBuilder.UseSqlite(@"Filename=" + DatabaseFilePath, options =>
             {
                 options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
             });

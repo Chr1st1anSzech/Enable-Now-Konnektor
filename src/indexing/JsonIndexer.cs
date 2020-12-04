@@ -10,18 +10,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Enable_Now_Konnektor.src.indexing
 {
     internal class JsonIndexer : Indexer
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private struct IndexingElement
-        {
-            internal string id;
-            internal Dictionary<string, List<string>> fields;
-        }
 
         internal JsonIndexer(JobConfig jobConfig)
         {
@@ -53,7 +48,8 @@ namespace Enable_Now_Konnektor.src.indexing
         internal async override Task<bool> RemoveElementFromIndexAsync(string id)
         {
             Config config = ConfigReader.LoadConnectorConfig();
-            string url = $"{config.RemoveUrl}[{id}]";
+            string encodedParam = HttpUtility.UrlEncode($"[{GetElasticsearchId(id)}]");
+            string url = $"{config.RemoveUrl}{encodedParam}";
             try
             {
                 await new HttpRequest().SendRequestAsync(url);
@@ -70,12 +66,16 @@ namespace Enable_Now_Konnektor.src.indexing
         {
             IndexingElement indexingElement = new IndexingElement()
             {
-                id = element.Id,
+                id = GetElasticsearchId(element.Id),
                 fields = element.Fields
             };
             var jsonString = JsonConvert.SerializeObject(indexingElement);
-            jsonString = "[" + jsonString + "]";
-            return jsonString;
+            return HttpUtility.UrlEncode( "[" + jsonString + "]" );
+        }
+
+        private string GetElasticsearchId(string elementId)
+        {
+            return jobConfig.Id + "-" + elementId;
         }
     }
 }

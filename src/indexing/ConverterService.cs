@@ -64,10 +64,10 @@ namespace Enable_Now_Konnektor.src.indexing
         /// <returns></returns>
         private ConverterResult ExtractValues(string jsonString)
         {
-            JObject json;
+            JArray json;
             try
             {
-                json = JsonConvert.DeserializeObject<JObject>(jsonString);
+                json = JsonConvert.DeserializeObject<JArray>(jsonString);
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace Enable_Now_Konnektor.src.indexing
                 throw;
             }
             Config config = ConfigReader.LoadConnectorConfig();
-            var fields = json[config.ConverterFieldsIdentifier];
+            var fields = json[0][config.ConverterFieldsIdentifier];
             if (fields == null)
             {
                 var message = Util.GetFormattedResource("ConverterServiceMessage03", config.ConverterFieldsIdentifier);

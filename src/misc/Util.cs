@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.misc
         internal static string ConvertToUnixTime(DateTime date)
         {
             TimeSpan timeSpan = date - new DateTime(1970, 1, 1);
-            return timeSpan.TotalSeconds.ToString() + "000";
+            return timeSpan.TotalSeconds.ToString().Substring(0,10) + "000";
         }
 
         internal static string ConvertToUnixTime(string dateString)

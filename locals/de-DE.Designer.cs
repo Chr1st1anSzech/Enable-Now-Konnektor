@@ -106,7 +106,7 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Lösche das Element {0} aus dem Index. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} ist bereits im Index. Es existiert aber eine neuere Version. Lösche das Element {0} aus dem Index. ähnelt.
         /// </summary>
         internal static string CrawlerIndexerInterfaceMessage02 {
             get {
@@ -147,6 +147,24 @@ namespace Enable_Now_Konnektor.locals {
         internal static string CrawlerIndexerInterfaceMessage06 {
             get {
                 return ResourceManager.GetString("CrawlerIndexerInterfaceMessage06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Element {0} befindet sich bereits im Index. Es hat sich aber nicht verändert. ähnelt.
+        /// </summary>
+        internal static string CrawlerIndexerInterfaceMessage07 {
+            get {
+                return ResourceManager.GetString("CrawlerIndexerInterfaceMessage07", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Indexieren des Elements {0} war nicht erfolgreich. ähnelt.
+        /// </summary>
+        internal static string CrawlerIndexerInterfaceMessage08 {
+            get {
+                return ResourceManager.GetString("CrawlerIndexerInterfaceMessage08", resourceCulture);
             }
         }
         

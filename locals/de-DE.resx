@@ -133,7 +133,7 @@
     <value>Das Element {0} soll nicht indexiert werden.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage02" xml:space="preserve">
-    <value>Lösche das Element {0} aus dem Index.</value>
+    <value>Das Element {0} ist bereits im Index. Es existiert aber eine neuere Version. Lösche das Element {0} aus dem Index.</value>
   </data>
   <data name="CrawlerIndexerInterfaceMessage03" xml:space="preserve">
     <value>Sende das Element {0} zum Indexieren.</value>
@@ -146,6 +146,12 @@
   </data>
   <data name="CrawlerIndexerInterfaceMessage06" xml:space="preserve">
     <value>Das Element {0} wurde erfolgreich indexiert.</value>
+  </data>
+  <data name="CrawlerIndexerInterfaceMessage07" xml:space="preserve">
+    <value>Das Element {0} befindet sich bereits im Index. Es hat sich aber nicht verändert.</value>
+  </data>
+  <data name="CrawlerIndexerInterfaceMessage08" xml:space="preserve">
+    <value>Das Indexieren des Elements {0} war nicht erfolgreich.</value>
   </data>
   <data name="ElementCrawlerMessage01" xml:space="preserve">
     <value>Das Autostart-Element konnte nicht analysiert werden. Es wird übersprungen.</value>
