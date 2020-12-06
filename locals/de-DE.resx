@@ -177,6 +177,9 @@
   <data name="ErrorControlMessage02" xml:space="preserve">
     <value>Beim Ablauf des Prozesses wurden {0} Fehler festgestellt. Das übersteigt die maximal erlaubte Anzahl. Das Programm wird daher beendet.</value>
   </data>
+  <data name="ErrorControlMessage3" xml:space="preserve">
+    <value>Fehler: {0}.</value>
+  </data>
   <data name="ExpressionEvaluatorMessage01" xml:space="preserve">
     <value>Der Aufruf der Erweiterungsmethode "{0}" mit dem Wert "{1}" ist fehlgeschlagen. Das Feld wird gelöscht.</value>
   </data>
@@ -270,29 +273,26 @@
   <data name="PublicationCrawlerMessage10" xml:space="preserve">
     <value>Die nicht gefundenen Elemente wurden gelöscht.</value>
   </data>
-  <data name="PublicationCrawlerMessage11" xml:space="preserve">
-    <value>Fehler: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage12" xml:space="preserve">
-    <value>Indexierten Dokumente: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage13" xml:space="preserve">
-    <value>Entfernten Dokumente: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage14" xml:space="preserve">
-    <value>Gefundene Dokumente: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage15" xml:space="preserve">
-    <value>Autostart-Elemente: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage16" xml:space="preserve">
-    <value>Unveränderten Dokumente: {0}.</value>
-  </data>
-  <data name="PublicationCrawlerMessage17" xml:space="preserve">
-    <value>Übersprungene Dokumente: {0}.</value>
-  </data>
   <data name="StatisticServiceMessage01" xml:space="preserve">
     <value>Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden.</value>
+  </data>
+  <data name="StatisticsMessage02" xml:space="preserve">
+    <value>Gefundene Dokumente: {0}.</value>
+  </data>
+  <data name="StatisticsMessage03" xml:space="preserve">
+    <value>Autostart-Elemente: {0}.</value>
+  </data>
+  <data name="StatisticsMessage04" xml:space="preserve">
+    <value>Unveränderten Dokumente: {0}.</value>
+  </data>
+  <data name="StatisticsMessage05" xml:space="preserve">
+    <value>Übersprungene Dokumente: {0}.</value>
+  </data>
+  <data name="StatisticsMessage06" xml:space="preserve">
+    <value>Indexierten Dokumente: {0}.</value>
+  </data>
+  <data name="StatisticsMessage07" xml:space="preserve">
+    <value>Entfernten Dokumente: {0}.</value>
   </data>
   <data name="UtilMessage01" xml:space="preserve">
     <value>Das Datum {0} konnte nicht geparst werden. Es wird stattdessen das heutige Datum verwendet.</value>

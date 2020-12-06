@@ -241,6 +241,15 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Fehler: {0}. ähnelt.
+        /// </summary>
+        internal static string ErrorControlMessage3 {
+            get {
+                return ResourceManager.GetString("ErrorControlMessage3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Der Aufruf der Erweiterungsmethode &quot;{0}&quot; mit dem Wert &quot;{1}&quot; ist fehlgeschlagen. Das Feld wird gelöscht. ähnelt.
         /// </summary>
         internal static string ExpressionEvaluatorMessage01 {
@@ -520,74 +529,65 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fehler: {0}. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden. ähnelt.
         /// </summary>
-        internal static string PublicationCrawlerMessage11 {
+        internal static string StatisticServiceMessage01 {
             get {
-                return ResourceManager.GetString("PublicationCrawlerMessage11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Indexierten Dokumente: {0}. ähnelt.
-        /// </summary>
-        internal static string PublicationCrawlerMessage12 {
-            get {
-                return ResourceManager.GetString("PublicationCrawlerMessage12", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Entfernten Dokumente: {0}. ähnelt.
-        /// </summary>
-        internal static string PublicationCrawlerMessage13 {
-            get {
-                return ResourceManager.GetString("PublicationCrawlerMessage13", resourceCulture);
+                return ResourceManager.GetString("StatisticServiceMessage01", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Gefundene Dokumente: {0}. ähnelt.
         /// </summary>
-        internal static string PublicationCrawlerMessage14 {
+        internal static string StatisticsMessage02 {
             get {
-                return ResourceManager.GetString("PublicationCrawlerMessage14", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage02", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Autostart-Elemente: {0}. ähnelt.
         /// </summary>
-        internal static string PublicationCrawlerMessage15 {
+        internal static string StatisticsMessage03 {
             get {
-                return ResourceManager.GetString("PublicationCrawlerMessage15", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage03", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Unveränderten Dokumente: {0}. ähnelt.
         /// </summary>
-        internal static string PublicationCrawlerMessage16 {
+        internal static string StatisticsMessage04 {
             get {
-                return ResourceManager.GetString("PublicationCrawlerMessage16", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage04", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Übersprungene Dokumente: {0}. ähnelt.
         /// </summary>
-        internal static string PublicationCrawlerMessage17 {
+        internal static string StatisticsMessage05 {
             get {
-                return ResourceManager.GetString("PublicationCrawlerMessage17", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage05", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Indexierten Dokumente: {0}. ähnelt.
         /// </summary>
-        internal static string StatisticServiceMessage01 {
+        internal static string StatisticsMessage06 {
             get {
-                return ResourceManager.GetString("StatisticServiceMessage01", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Entfernten Dokumente: {0}. ähnelt.
+        /// </summary>
+        internal static string StatisticsMessage07 {
+            get {
+                return ResourceManager.GetString("StatisticsMessage07", resourceCulture);
             }
         }
         

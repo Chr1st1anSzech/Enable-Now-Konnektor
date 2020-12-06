@@ -43,6 +43,11 @@ namespace Enable_Now_Konnektor.src.service
             });
         }
 
+        internal void PrintErrorStatistic()
+        {
+            log.Info(Util.GetFormattedResource("ErrorControlMessage3", ErrorCount));
+        }
+
         internal void IncreaseErrorCount()
         {
             ErrorCount++;

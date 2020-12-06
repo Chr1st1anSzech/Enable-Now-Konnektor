@@ -36,6 +36,16 @@ namespace Enable_Now_Konnektor.src.service
             return statisticServices[jobId];
         }
 
+        internal void PrintStatistic()
+        {
+            log.Info(Util.GetFormattedResource("StatisticsMessage02", FoundDocumentsCount));
+            log.Info(Util.GetFormattedResource("StatisticsMessage03", AutostartElementsCount));
+            log.Info(Util.GetFormattedResource("StatisticsMessage04", UnchangedDocumentsCount));
+            log.Info(Util.GetFormattedResource("StatisticsMessage05", SkippedDocumentsCount));
+            log.Info(Util.GetFormattedResource("StatisticsMessage06", IndexedDocumentsCount));
+            log.Info(Util.GetFormattedResource("StatisticsMessage07", RemovedDocumentsCount));
+        }
+
         internal void IncreaseSkippedDocumentsCount()
         {
             SkippedDocumentsCount++;

@@ -31,7 +31,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 if (jobConfigs[i] == null) { continue; }
                 var jobConfig = jobConfigs[i];
 
-                tasks[i] = Task.Run(delegate () { StartJob(jobConfig); });
+                tasks[i] = Task.Run(delegate () { RunJob(jobConfig); });
             }
             Task.WaitAll(tasks);
             DateTime endTime = DateTime.Now;
@@ -41,12 +41,14 @@ namespace Enable_Now_Konnektor.src.jobs
             
         }
 
-        private void StartJob(JobConfig jobConfig)
+        private void RunJob(JobConfig jobConfig)
         {
             PublicationCrawler crawler = new PublicationCrawler(jobConfig);
             crawler.Initialize();
             crawler.StartCrawling();
             crawler.CompleteCrawling();
+            Statistics.GetService(jobConfig.Id).PrintStatistic();
+            ErrorControl.GetService().PrintErrorStatistic();
             MailClient mail = new MailClient(jobConfig);
             mail.SendMail();
         }

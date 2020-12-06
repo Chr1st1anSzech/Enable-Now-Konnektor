@@ -78,20 +78,6 @@ namespace Enable_Now_Konnektor.src.crawler
         internal void CompleteCrawling()
         {
             RemoveAllUnfoundElements();
-            WriteStatistics();
-        }
-
-        internal void WriteStatistics()
-        {
-            Statistics statistic = Statistics.GetService(jobConfig.Id);
-            ErrorControl errorControl = ErrorControl.GetService();
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage11", errorControl.ErrorCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage14", statistic.FoundDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage15", statistic.AutostartElementsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage16", statistic.UnchangedDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage17", statistic.SkippedDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage12", statistic.IndexedDocumentsCount));
-            log.Info(Util.GetFormattedResource("PublicationCrawlerMessage13", statistic.RemovedDocumentsCount));
         }
 
 
