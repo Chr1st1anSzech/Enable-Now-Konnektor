@@ -53,7 +53,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
             bool hasContentChanged = HasContentChanged(element);
 
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext();
             if (isAlreadyIndexed)
             {
                 if (hasContentChanged)
@@ -65,7 +65,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 {
                     log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage07", element.Id));
                     Statistics.GetService(jobConfig.Id).IncreaseUnchangedDocumentsCount();
-                    context.SetElementFound(element, true);
+                    context.SetElementFound(element, jobConfig.Id, true);
                     return;
                 }
             }
@@ -74,7 +74,7 @@ namespace Enable_Now_Konnektor.src.crawler
             bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
             if (isIndexingSuccess)
             {
-                context.SetElementFound(element, true);
+                context.SetElementFound(element, jobConfig.Id, true);
                 log.Info(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage06", element.Id));
                 Statistics.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
             }
@@ -96,8 +96,8 @@ namespace Enable_Now_Konnektor.src.crawler
         internal void RemoveElementCompletly(string id)
         {
             log.Debug(Util.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
-            context.RemoveElementLog(id);
+            using ElementLogContext context = new ElementLogContext();
+            context.RemoveElementLog(id, jobConfig.Id);
             indexer.RemoveElementFromIndexAsync(id);
             Statistics.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
@@ -112,8 +112,8 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Wahr, wenn es bereits vorhanden ist, ansonsten falsch.</returns>
         private bool IsAlreadyIndexed(Element element)
         {
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
-            var elementLog = context.GetElementLog(element);
+            using ElementLogContext context = new ElementLogContext();
+            var elementLog = context.GetElementLog(element, jobConfig.Id);
             return (elementLog != null);
         }
 
@@ -169,8 +169,8 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Gibt wahr zurück, wenn es veraltet ist und indexiert werden muss, ansonsten falsch.</returns>
         private bool HasContentChanged(Element element)
         {
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
-            var elementLog = context.GetElementLog(element);
+            using ElementLogContext context = new ElementLogContext();
+            var elementLog = context.GetElementLog(element, jobConfig.Id);
             return elementLog == null || !elementLog.Hash.Equals(element.Hash);
         }
 

@@ -47,15 +47,15 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void InitializeCrawlerDatabase()
         {
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext();
             context.Initialize();
-            context.ResetAllFoundStatus();
+            context.ResetAllFoundStatus(jobConfig.Id);
             log.Info(Util.GetFormattedResource("PublicationCrawlerMessage09"));
         }
 
         private void RemoveAllUnfoundElements()
         {
-            using ElementLogContext context = new ElementLogContext(jobConfig.Id);
+            using ElementLogContext context = new ElementLogContext();
             context.GetAllElementLogs(e => e.WasFound == false).ToList().ForEach(e =>
            {
                CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);

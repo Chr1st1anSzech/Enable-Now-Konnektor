@@ -358,6 +358,24 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Job-ID &quot;{0}&quot; tritt mehrfach auf. Vergeben Sie eine andere ID. ähnelt.
+        /// </summary>
+        internal static string JobSchedulerMessage04 {
+            get {
+                return ResourceManager.GetString("JobSchedulerMessage04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Job &quot;{0}&quot; wird übersprungen, da er nicht als Parameter übergeben wurde. ähnelt.
+        /// </summary>
+        internal static string JobSchedulerMessage05 {
+            get {
+                return ResourceManager.GetString("JobSchedulerMessage05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Das Element konnte nicht an den Index übermittelt werden. ähnelt.
         /// </summary>
         internal static string JsonIndexerMessage01 {
@@ -448,6 +466,15 @@ namespace Enable_Now_Konnektor.locals {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Argument &quot;{0}&quot; wurde als Job-ID erkannt. ähnelt.
+        /// </summary>
+        internal static string ProgramMessage02 {
+            get {
+                return ResourceManager.GetString("ProgramMessage02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Starte alle Crawling Tasks ähnelt.
         /// </summary>
         internal static string PublicationCrawlerMessage01 {
@@ -531,9 +558,9 @@ namespace Enable_Now_Konnektor.locals {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden. ähnelt.
         /// </summary>
-        internal static string StatisticServiceMessage01 {
+        internal static string StatisticsMessage01 {
             get {
-                return ResourceManager.GetString("StatisticServiceMessage01", resourceCulture);
+                return ResourceManager.GetString("StatisticsMessage01", resourceCulture);
             }
         }
         

@@ -16,28 +16,23 @@ namespace Enable_Now_Konnektor.src.db
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string DatabaseDirPath = Path.Combine(Util.GetApplicationRoot(), "db");
         private static readonly string DatabaseFilePath = Path.Combine(DatabaseDirPath, "ElementLogging.db");
-        private readonly string _tableName;
         private DbSet<ElementLog> ElementLogs { get; set; }
 
-        internal ElementLogContext(string tableName) {
-            if( string.IsNullOrWhiteSpace(tableName))
-            {
-                _log.Fatal( Util.GetFormattedResource("ElementLogContextMessage01") );
-                throw new ArgumentException( Util.GetFormattedResource("ElementLogContextMessage01") );
-            }
-            
-            _tableName = tableName;
-        }
+        private static readonly object objLock = new object();
+
 
         internal void Initialize()
         {
-            Database.EnsureCreated();
+            lock (objLock)
+            {
+                Database.EnsureCreated();
+            }
         }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if( !Directory.Exists(DatabaseDirPath))
+            if (!Directory.Exists(DatabaseDirPath))
             {
                 Directory.CreateDirectory(DatabaseDirPath);
             }
@@ -54,32 +49,34 @@ namespace Enable_Now_Konnektor.src.db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ElementLog>().ToTable(_tableName);
+            modelBuilder.Entity<ElementLog>().ToTable("Enable_Now_Data");
             modelBuilder.Entity<ElementLog>(entity =>
             {
-                entity.HasKey(e => e.Id);
+                entity.HasKey(e => new { e.Id, e.JobId });
                 entity.Property(e => e.WasFound);
                 entity.Property(e => e.Hash);
             });
             base.OnModelCreating(modelBuilder);
         }
 
-        internal async void ResetAllFoundStatus()
+        internal void ResetAllFoundStatus(string jobId)
         {
-            await ElementLogs.ForEachAsync(elementLog =>
-           {
-               elementLog.WasFound = false;
-           });
+            Database.EnsureCreated();
+            var elementLogs = GetAllElementLogs(e => e.JobId == jobId);
+            foreach (var elementLog in elementLogs)
+            {
+                elementLog.WasFound = false;
+            }
             SaveChanges();
         }
 
-        private void AddElementLog(Element element, bool wasFound = true)
+        private void AddElementLog(Element element, string jobId, bool wasFound = true)
         {
             Database.EnsureCreated();
-            var log = GetElementLog(element.Id);
+            var log = GetElementLog(element.Id, jobId);
             if (log == null)
             {
-                ElementLogs.Add(new ElementLog { Id = element.Id, WasFound = wasFound, Hash = element.Hash });
+                ElementLogs.Add(new ElementLog { Id = element.Id, WasFound = wasFound, Hash = element.Hash, JobId = jobId });
             }
             else
             {
@@ -87,14 +84,14 @@ namespace Enable_Now_Konnektor.src.db
                 log.Hash = element.Hash;
                 UpdateElementsLog(log);
             }
-            
+
             SaveChanges();
         }
 
-        internal void RemoveElementLog(string id)
+        internal void RemoveElementLog(string elementId, string jobId)
         {
             Database.EnsureCreated();
-            var log = GetElementLog(id);
+            var log = GetElementLog(elementId, jobId);
             if (log != null)
             {
                 ElementLogs.Remove(log);
@@ -103,22 +100,22 @@ namespace Enable_Now_Konnektor.src.db
             SaveChanges();
         }
 
-        internal IEnumerable<ElementLog> GetAllElementLogs( Func<ElementLog, bool> condition)
+        internal IEnumerable<ElementLog> GetAllElementLogs(Func<ElementLog, bool> condition)
         {
             Database.EnsureCreated();
             return ElementLogs.Where(condition);
         }
 
-        internal ElementLog GetElementLog(Element element)
+        internal ElementLog GetElementLog(Element element, string jobId)
         {
             Database.EnsureCreated();
-            return ElementLogs.Find(element.Id);
+            return ElementLogs.Find(element.Id, jobId);
         }
 
-        internal ElementLog GetElementLog(string id)
+        internal ElementLog GetElementLog(string elementId, string jobId)
         {
             Database.EnsureCreated();
-            return ElementLogs.Find(id);
+            return ElementLogs.Find(elementId, jobId);
         }
 
         internal void UpdateElementsLog(params ElementLog[] elementLogs)
@@ -128,13 +125,13 @@ namespace Enable_Now_Konnektor.src.db
             SaveChanges();
         }
 
-        internal void SetElementFound(Element element, bool wasFound = true)
+        internal void SetElementFound(Element element, string jobId, bool wasFound = true)
         {
             Database.EnsureCreated();
-            var elementLog = GetElementLog(element.Id);
-            if( elementLog == null)
+            var elementLog = GetElementLog(element.Id, jobId);
+            if (elementLog == null)
             {
-                AddElementLog(element, wasFound);
+                AddElementLog(element, jobId, wasFound);
             }
             else
             {

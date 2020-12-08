@@ -47,7 +47,7 @@ namespace Enable_Now_Konnektor.src.enable_now
 
         internal void AddValues(string name, List<string> values)
         {
-            AddValues(name, values.ToArray());
+            AddValues(name, values?.ToArray());
         }
 
         internal void AddValues(string name, params string[] values)
@@ -98,11 +98,13 @@ namespace Enable_Now_Konnektor.src.enable_now
 
         internal void ReplaceValues(string name, List<string> values)
         {
-            ReplaceValues(name, values.ToArray());
+            ReplaceValues(name, values?.ToArray());
         }
 
         internal void ReplaceValues(string name, params string[] values)
         {
+            if (values == null) { return; }
+
             if (Fields.ContainsKey(name))
             {
                 Fields[name].Clear();

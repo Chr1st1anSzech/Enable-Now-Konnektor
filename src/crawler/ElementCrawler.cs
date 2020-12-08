@@ -169,7 +169,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             foreach (string field in values)
             {
-                if (blacklist == null || blacklist.Contains(field))
+                if (blacklist == null || !blacklist.Contains(field))
                 {
                     foreach (var list in lists)
                     {

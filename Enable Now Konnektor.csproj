@@ -9,12 +9,16 @@
 
   <ItemGroup>
     <None Remove="config.json" />
+    <None Remove="jobs\09-enable-now.json" />
     <None Remove="jobs\97-enable-now.json" />
     <None Remove="log4net.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="jobs\09-enable-now.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="jobs\97-enable-now.json">

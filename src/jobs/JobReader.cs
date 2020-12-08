@@ -9,13 +9,13 @@ using System.Text;
 
 namespace Enable_Now_Konnektor.src.jobs
 {
-    internal class JobReader
+    public class JobReader
     {
         private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        internal static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
+        private static string JobDirectory = Path.Combine(Util.GetApplicationRoot(), "jobs");
 
-        internal List<JobConfig> ReadAllJobConfigs()
+        public List<JobConfig> ReadAllJobConfigs()
         {
             IEnumerable<string> fullFileNames;
             try

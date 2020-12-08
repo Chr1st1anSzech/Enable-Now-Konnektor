@@ -1,14 +1,12 @@
 ﻿using Enable_Now_Konnektor.src.config;
 using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor.src.metadata;
 using Enable_Now_Konnektor.src.misc;
 using Enable_Now_Konnektor.src.service;
 using log4net;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using static Enable_Now_Konnektor.src.indexing.ConverterService;
 
@@ -62,6 +60,9 @@ namespace Enable_Now_Konnektor.src.crawler
 
             element.ReplaceValues($"{cfg.FacetIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
+
+            string attachementUrl = MetaReader.GetMetaReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UrlFieldName}", attachementUrl );
 
             string newId = $"{element.Id}_{fileName}";
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UidFieldName}", newId);

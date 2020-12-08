@@ -216,6 +216,12 @@
   <data name="JobSchedulerMessage03" xml:space="preserve">
     <value>Ende: {0}.</value>
   </data>
+  <data name="JobSchedulerMessage04" xml:space="preserve">
+    <value>Die Job-ID "{0}" tritt mehrfach auf. Vergeben Sie eine andere ID.</value>
+  </data>
+  <data name="JobSchedulerMessage05" xml:space="preserve">
+    <value>Der Job "{0}" wird übersprungen, da er nicht als Parameter übergeben wurde.</value>
+  </data>
   <data name="JsonIndexerMessage01" xml:space="preserve">
     <value>Das Element konnte nicht an den Index übermittelt werden.</value>
   </data>
@@ -246,6 +252,9 @@
   <data name="ProgramMessage01" xml:space="preserve">
     <value>Das Programm kann nicht ins standardmäßige Protokollverzeichnis schreiben.</value>
   </data>
+  <data name="ProgramMessage02" xml:space="preserve">
+    <value>Das Argument "{0}" wurde als Job-ID erkannt.</value>
+  </data>
   <data name="PublicationCrawlerMessage01" xml:space="preserve">
     <value>Starte alle Crawling Tasks</value>
   </data>
@@ -273,7 +282,7 @@
   <data name="PublicationCrawlerMessage10" xml:space="preserve">
     <value>Die nicht gefundenen Elemente wurden gelöscht.</value>
   </data>
-  <data name="StatisticServiceMessage01" xml:space="preserve">
+  <data name="StatisticsMessage01" xml:space="preserve">
     <value>Die ID des Jobs darf nicht leer sein. Der Statistik-Service konnte nicht erstellt werden.</value>
   </data>
   <data name="StatisticsMessage02" xml:space="preserve">

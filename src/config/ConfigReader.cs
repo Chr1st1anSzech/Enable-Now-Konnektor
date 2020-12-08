@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Enable_Now_Konnektor.src.config
 {
-    internal class ConfigReader
+    public class ConfigReader
     {
         private static string filePath = Path.Combine(Util.GetApplicationRoot(), "config.json");
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -15,7 +15,7 @@ namespace Enable_Now_Konnektor.src.config
 
         private ConfigReader() { }
 
-        internal static void Initialize()
+        public static void Initialize()
         {
             if (config == null)
             {
@@ -33,7 +33,7 @@ namespace Enable_Now_Konnektor.src.config
             }
         }
 
-        internal static Config LoadConnectorConfig()
+        public static Config LoadConnectorConfig()
         {
             return config;
         }

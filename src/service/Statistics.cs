@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.service
         {
             if ( string.IsNullOrWhiteSpace(jobId))
             {
-                string message = Util.GetFormattedResource("StatisticServiceMessage01");
+                string message = Util.GetFormattedResource("StatisticsMessage01");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }
