@@ -56,7 +56,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private void RemoveAllUnfoundElements()
         {
             using ElementLogContext context = new ElementLogContext();
-            context.GetAllElementLogs(e => e.WasFound == false).ToList().ForEach(e =>
+            context.GetAllElementLogs(e => e.WasFound == false && e.JobId == jobConfig.Id).ToList().ForEach(e =>
            {
                CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
                crawlerIndexerInterface.RemoveElementCompletly(e.Id);
