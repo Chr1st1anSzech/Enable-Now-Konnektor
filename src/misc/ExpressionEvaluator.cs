@@ -1,12 +1,13 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.extension;
+﻿using Enable_Now_Konnektor.src.extension;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Enable_Now_Konnektor.src.misc
+namespace Enable_Now_Konnektor_Bibliothek.src.misc
 {
     internal class ExpressionEvaluator
     {
@@ -68,7 +69,7 @@ namespace Enable_Now_Konnektor.src.misc
             }
             catch (Exception e)
             {
-                log.Warn(Util.GetFormattedResource("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
+                log.Warn(LocalizationService.GetFormattedResource("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
             }
             return Array.Empty<string>();
         }

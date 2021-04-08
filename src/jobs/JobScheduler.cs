@@ -1,7 +1,8 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.crawler;
-using Enable_Now_Konnektor.src.misc;
+﻿using Enable_Now_Konnektor.src.crawler;
 using Enable_Now_Konnektor.src.service;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace Enable_Now_Konnektor.src.jobs
         internal void ScheduleJobs(List<string> jobIdParameters)
         {
             DateTime startTime = DateTime.Now;
-            log.Info(Util.GetFormattedResource("JobSchedulerMessage01", startTime));
+            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage01", startTime));
             ConfigReader.Initialize();
-            ErrorControl.GetService().StartRuntimeStopwatch();
+            ErrorControlService.GetService().StartRuntimeStopwatch();
             JobReader reader = new JobReader();
             List<JobConfig> jobConfigs = reader.ReadAllJobConfigs();
             if (jobConfigs == null) { return; }
@@ -34,7 +35,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 var jobConfig = jobConfigs[i];
                 if (jobIds.Contains(jobConfig.Id) || string.IsNullOrWhiteSpace(jobConfig.Id) )
                 {
-                    log.Fatal(Util.GetFormattedResource("JobSchedulerMessage04", jobConfig.Id));
+                    log.Fatal(LocalizationService.GetFormattedResource("JobSchedulerMessage04", jobConfig.Id));
                     Environment.Exit(-1);
                 }
 
@@ -46,7 +47,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 }
                 else
                 {
-                    log.Info(Util.GetFormattedResource("JobSchedulerMessage05", jobConfig.Id));
+                    log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage05", jobConfig.Id));
                 }
 
             }
@@ -54,8 +55,8 @@ namespace Enable_Now_Konnektor.src.jobs
             Task.WaitAll(tasks.ToArray());
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime - startTime;
-            log.Info(Util.GetFormattedResource("JobSchedulerMessage02", duration));
-            log.Info(Util.GetFormattedResource("JobSchedulerMessage03", endTime));
+            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage02", duration));
+            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage03", endTime));
 
         }
 
@@ -65,10 +66,16 @@ namespace Enable_Now_Konnektor.src.jobs
             crawler.Initialize();
             crawler.StartCrawling();
             crawler.CompleteCrawling();
-            Statistics.GetService(jobConfig.Id).PrintStatistic();
-            ErrorControl.GetService().PrintErrorStatistic();
-            MailClient mail = new MailClient(jobConfig);
-            mail.SendMail();
+            StatisticService.GetService(jobConfig.Id).PrintStatistic();
+            ErrorControlService.GetService().PrintErrorStatistic();
+            StatisticService service = StatisticService.GetService(jobConfig.Id);
+            string text = LocalizationService.GetFormattedResource("MailClientMessage01",
+                jobConfig.Id,
+                DateTime.Now,
+                service.FoundDocumentsCount,
+                service.IndexedDocumentsCount,
+                service.RemovedDocumentsCount);
+            new MailService(jobConfig).SendMail(text);
         }
 
 

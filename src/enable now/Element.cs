@@ -1,4 +1,5 @@
-﻿using Enable_Now_Konnektor.src.misc;
+﻿using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace Enable_Now_Konnektor.src.enable_now
         {
             if (!Validator.Validate(id, Validator.EnableNowIdPattern))
             {
-                string message = Util.GetFormattedResource("ElementMessage01", id);
+                string message = LocalizationService.GetFormattedResource("ElementMessage01", id);
                 _log.Error(message);
                 throw new ArgumentException(message);
             }

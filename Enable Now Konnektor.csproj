@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Enable_Now_Konnektor</RootNamespace>
     <ApplicationIcon>enable-now-konnektor.ico</ApplicationIcon>
   </PropertyGroup>
@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <Content Include="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="jobs\09-enable-now.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -33,27 +33,17 @@
     <Folder Include="db\" />
     <Folder Include="logs\" />
     <Folder Include="lib\" />
+    <Folder Include="src\config\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="locals\de-DE.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>de-DE.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="locals\de-DE.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>de-DE.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Enable Now Konnektor Bibliothek\Enable Now Konnektor Bibliothek.csproj" />
   </ItemGroup>
 
   <ItemGroup>

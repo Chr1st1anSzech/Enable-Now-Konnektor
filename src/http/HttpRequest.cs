@@ -1,13 +1,11 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.misc;
+﻿using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.http
@@ -35,7 +33,7 @@ namespace Enable_Now_Konnektor.src.http
         internal async Task<string> SendRequestAsync(string url)
         {
 
-            _log.Debug(Util.GetFormattedResource("HttpRequestMessage01", url));
+            _log.Debug(LocalizationService.GetFormattedResource("HttpRequestMessage01", url));
             try
             {
                 var response = await _httpClient.GetAsync(url);
@@ -45,12 +43,12 @@ namespace Enable_Now_Konnektor.src.http
             }
             catch (TaskCanceledException timeoutException)
             {
-                _log.Error(Util.GetFormattedResource("HttpRequestMessage02"), timeoutException);
+                _log.Error(LocalizationService.GetFormattedResource("HttpRequestMessage02"), timeoutException);
                 throw;
             }
             catch (Exception e)
             {
-                _log.Error(Util.GetFormattedResource("HttpRequestMessage03"), e);
+                _log.Error(LocalizationService.GetFormattedResource("HttpRequestMessage03"), e);
                 throw;
             }
         }

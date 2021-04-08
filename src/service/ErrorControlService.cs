@@ -1,5 +1,5 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.misc;
+﻿using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
 using System.Diagnostics;
@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Enable_Now_Konnektor.src.service
 {
-    class ErrorControl
+    class ErrorControlService
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly ErrorControl service = new ErrorControl();
+        private static readonly ErrorControlService service = new ErrorControlService();
         private readonly int maxErrorCount;
         private readonly int maxMinutesRuntime;
         private readonly Stopwatch watch = new Stopwatch();
@@ -19,12 +19,12 @@ namespace Enable_Now_Konnektor.src.service
         internal int ErrorCount { get; private set; } = 0;
 
 
-        internal static ErrorControl GetService()
+        internal static ErrorControlService GetService()
         {
             return service;
         }
 
-        private ErrorControl()
+        private ErrorControlService()
         {
             Config cfg = ConfigReader.LoadConnectorConfig();
             maxErrorCount = cfg.MaxErrorCount;
@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.service
 
         internal void PrintErrorStatistic()
         {
-            log.Info(Util.GetFormattedResource("ErrorControlMessage3", ErrorCount));
+            log.Info(LocalizationService.GetFormattedResource("ErrorControlMessage3", ErrorCount));
         }
 
         internal void IncreaseErrorCount()
@@ -59,7 +59,7 @@ namespace Enable_Now_Konnektor.src.service
             int elapsedMinutes = (int) watch.ElapsedMilliseconds / 1000 / 60;
             if( elapsedMinutes > maxMinutesRuntime)
             {
-                log.Fatal(Util.GetFormattedResource("ErrorControlMessage01", elapsedMinutes));
+                log.Fatal(LocalizationService.GetFormattedResource("ErrorControlMessage01", elapsedMinutes));
                 Environment.Exit(-1);
             }
         }
@@ -68,7 +68,7 @@ namespace Enable_Now_Konnektor.src.service
         {
             if (ErrorCount > maxErrorCount)
             {
-                log.Fatal(Util.GetFormattedResource("ErrorControlMessage02", ErrorCount));
+                log.Fatal(LocalizationService.GetFormattedResource("ErrorControlMessage02", ErrorCount));
                 Environment.Exit(-1);
             }
         }

@@ -1,7 +1,8 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.jobs;
-using Enable_Now_Konnektor.src.misc;
+﻿using Enable_Now_Konnektor.src.enable_now;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using Newtonsoft.Json.Linq;
 using System;
@@ -80,7 +81,7 @@ namespace Enable_Now_Konnektor.src.metadata
         {
             if (json == null)
             {
-                log.Warn( Util.GetFormattedResource("MetaAnalyzerMessage02"));
+                log.Warn( LocalizationService.GetFormattedResource("MetaAnalyzerMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -99,7 +100,7 @@ namespace Enable_Now_Konnektor.src.metadata
             metaData.Entity = await GetJsonFileAsync(element, MetaReader.EntityFile);
             if(metaData.Entity == null)
             {
-                string message = Util.GetFormattedResource("MetaAnalyzerMessage04");
+                string message = LocalizationService.GetFormattedResource("MetaAnalyzerMessage04");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }

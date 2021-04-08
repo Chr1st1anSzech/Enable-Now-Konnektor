@@ -1,9 +1,6 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.jobs;
-using System;
+﻿using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Enable_Now_Konnektor.tst
 {
@@ -63,8 +60,8 @@ namespace Enable_Now_Konnektor.tst
                 ThreadCount = 5
             };
 
-            ConfigWriter writer = new ConfigWriter();
-            writer.SaveConfig(config);
+            ConfigWriter writer = new ConfigWriter("");
+            writer.Write(config);
         }
 
         public static void ReadSettings()

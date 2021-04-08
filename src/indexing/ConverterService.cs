@@ -1,9 +1,11 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.enable_now;
+﻿using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
 using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.metadata;
-using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,7 +50,7 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch
             {
-                _log.Error(Util.GetFormattedResource("ConverterServiceMessage02"));
+                _log.Error(LocalizationService.GetFormattedResource("ConverterServiceMessage02"));
                 throw;
             }
 
@@ -71,14 +73,14 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch (Exception e)
             {
-                _log.Error(Util.GetFormattedResource("ConverterServiceMessage01"), e);
+                _log.Error(LocalizationService.GetFormattedResource("ConverterServiceMessage01"), e);
                 throw;
             }
             Config config = ConfigReader.LoadConnectorConfig();
             var fields = json[0][config.ConverterFieldsIdentifier];
             if (fields == null)
             {
-                var message = Util.GetFormattedResource("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
+                var message = LocalizationService.GetFormattedResource("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
                 _log.Error(message);
                 throw new ArgumentNullException(message);
             }
@@ -112,7 +114,7 @@ namespace Enable_Now_Konnektor.src.indexing
             var field = fields[fieldName]?[0];
             if ( field == null)
             {
-                string message = Util.GetFormattedResource("ConverterServiceMessage03", fieldName);
+                string message = LocalizationService.GetFormattedResource("ConverterServiceMessage03", fieldName);
                 _log.Error(message);
                 throw new ArgumentNullException(message);
             }

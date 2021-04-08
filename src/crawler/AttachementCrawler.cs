@@ -1,14 +1,14 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.enable_now;
+﻿using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.indexing;
-using Enable_Now_Konnektor.src.jobs;
 using Enable_Now_Konnektor.src.metadata;
-using Enable_Now_Konnektor.src.misc;
-using Enable_Now_Konnektor.src.service;
+using Enable_Now_Konnektor_Bibliothek.src.service;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
 using log4net;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Enable_Now_Konnektor.src.indexing.ConverterService;
+using Enable_Now_Konnektor.src.service;
 
 namespace Enable_Now_Konnektor.src.crawler
 {
@@ -26,7 +26,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             ConverterService converter = new ConverterService(jobConfig);
             var attachements = new List<Element>();
-            Statistics statisticService = Statistics.GetService(jobConfig.Id);
+            StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
             
             foreach (var attachementName in element.AttachementNames)
             {
@@ -37,8 +37,8 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 catch
                 {
-                    _log.Error( Util.GetFormattedResource("AttachementCrawlerMessage01", attachementName, element.Id) );
-                    ErrorControl.GetService().IncreaseErrorCount();
+                    _log.Error( LocalizationService.GetFormattedResource("AttachementCrawlerMessage01", attachementName, element.Id) );
+                    ErrorControlService.GetService().IncreaseErrorCount();
                     continue;
                 }
                 Element attachement = element.Clone() as Element;

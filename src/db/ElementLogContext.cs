@@ -1,5 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Enable_Now_Konnektor.src.db
 {

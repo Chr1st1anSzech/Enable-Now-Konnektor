@@ -1,8 +1,9 @@
-﻿using Enable_Now_Konnektor.src.config;
-using Enable_Now_Konnektor.src.enable_now;
+﻿using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.http;
-using Enable_Now_Konnektor.src.jobs;
-using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.config;
+using Enable_Now_Konnektor_Bibliothek.src.jobs;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using Newtonsoft.Json;
 using System;
@@ -33,7 +34,7 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch (Exception e)
             {
-                log.Error(Util.GetFormattedResource("JsonIndexerMessage01"), e);
+                log.Error(LocalizationService.GetFormattedResource("JsonIndexerMessage01"), e);
                 return false;
             }
         }
@@ -55,7 +56,7 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch (Exception e)
             {
-                log.Error(Util.GetFormattedResource("JsonIndexerMessage02"), e);
+                log.Error(LocalizationService.GetFormattedResource("JsonIndexerMessage02"), e);
                 return false;
             }
         }

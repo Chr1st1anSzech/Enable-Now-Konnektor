@@ -1,8 +1,8 @@
 ﻿using Enable_Now_Konnektor.src.jobs;
-using Enable_Now_Konnektor.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.misc;
+using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using log4net.Config;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace Enable_Now_Konnektor
             List<string> parameters = args.Where(arg => !string.IsNullOrWhiteSpace(arg)).ToList();
             foreach (string p in parameters)
             {
-                log.Info(Util.GetFormattedResource("ProgramMessage02", p));
+                log.Info(LocalizationService.GetFormattedResource("ProgramMessage02", p));
             }
             return parameters;
         }
@@ -41,7 +41,7 @@ namespace Enable_Now_Konnektor
             var logDirectory = Path.Combine(Util.GetApplicationRoot(), "logs");
             if ( Util.IsDirectoryWritable(logDirectory))
             {
-                log.Warn(Util.GetFormattedResource("ProgramMessage01"));
+                log.Warn(LocalizationService.GetFormattedResource("ProgramMessage01"));
             }
             XmlConfigurator.Configure(new FileInfo(logFile));
         }
