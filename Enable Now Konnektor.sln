@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor", "Enable Now Konnektor.csproj", "{DFA26985-D1A3-44CB-B60D-0AFAC32BA8E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Editor", "..\Connector Editor\Enable Now Konnektor Editor.csproj", "{C670A578-49CC-4A26-9BC8-BBC97F2998A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Editor", "..\Enable Now Konnektor Editor\Enable Now Konnektor Editor.csproj", "{C670A578-49CC-4A26-9BC8-BBC97F2998A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enable Now Konnektor Bibliothek", "..\Enable Now Konnektor Bibliothek\Enable Now Konnektor Bibliothek.csproj", "{ED59E3EB-871B-4FBB-9D43-992428BFDC3E}"
 EndProject
