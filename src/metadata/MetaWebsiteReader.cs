@@ -1,7 +1,6 @@
 ﻿using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.http;
+using Enable_Now_Konnektor_Bibliothek.src.http;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
-using Enable_Now_Konnektor_Bibliothek.src.misc;
 using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using Newtonsoft.Json;
@@ -26,7 +25,7 @@ namespace Enable_Now_Konnektor.src.metadata
             string entityUrl = GetMetaUrl(element.Class, element.Id, fileType);
             try
             {
-                string jsonString = await new HttpRequest().SendRequestAsync(entityUrl);
+                string jsonString = await new HttpRequest(jobConfig).SendRequestAsync(entityUrl);
                 return JsonConvert.DeserializeObject<JObject>(jsonString);
             }
             catch

@@ -23,11 +23,11 @@ namespace Enable_Now_Konnektor.src.metadata
         internal static MetaReader GetMetaReader(JobConfig jobConfig)
         {
             switch (jobConfig.PublicationSource.ToLower()) {
-                case "file":
+                case "datei":
                     {
                         return new MetaFileReader(jobConfig);
                     }
-                case "website":
+                case "webseite":
                 default:
                     {
                         return new MetaWebsiteReader(jobConfig);

@@ -4,8 +4,8 @@
 	"ConverterUrl": "http://192.168.178.28/json/converter?method=convertLocation&param0=&param1=",
 	"FetchUrl": "http://192.168.178.28/json/index?method=fetch&param0=[_id]&param1=",
 
-	"ProxyUrl" : "http://proxy.de",
-	"ProxyPort" : 12,
+	"ProxyUrl" : "127.0.0.1",
+	"ProxyPort" : 8888,
 	"UseProxy" : false,
 
 	"StringIdentifier" : "_str",

@@ -1,6 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.enable_now;
-using Enable_Now_Konnektor.src.http;
-using Enable_Now_Konnektor.src.jobs;
+using Enable_Now_Konnektor_Bibliothek.src.http;
 using Enable_Now_Konnektor.src.metadata;
 using Enable_Now_Konnektor_Bibliothek.src.config;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
@@ -46,7 +45,7 @@ namespace Enable_Now_Konnektor.src.indexing
             string result;
             try
             {
-                result = await new HttpRequest().SendRequestAsync(url);
+                result = await new HttpRequest(jobConfig).SendRequestAsync(url);
             }
             catch
             {
