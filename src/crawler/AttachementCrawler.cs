@@ -17,14 +17,14 @@ namespace Enable_Now_Konnektor.src.crawler
         private readonly JobConfig jobConfig;
         private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        internal AttachementCrawler(JobConfig jobConfig)
+        internal AttachementCrawler()
         {
-            this.jobConfig = jobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
         internal async Task<List<Element>> CrawlAttachementsAsync(Element element)
         {
-            ConverterService converter = new ConverterService(jobConfig);
+            ConverterService converter = new ConverterService();
             var attachements = new List<Element>();
             StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
             
@@ -51,7 +51,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void OverwriteAttachementValues(Element element, ConverterResult res, string fileName)
         {
-            Config cfg = ConfigReader.LoadConnectorConfig();
+            Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
 
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.BodyFieldName}", res.Body);
 
@@ -61,7 +61,7 @@ namespace Enable_Now_Konnektor.src.crawler
             element.ReplaceValues($"{cfg.FacetIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.MimeTypeFieldName}", res.MimeType);
 
-            string attachementUrl = MetaReader.GetMetaReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            string attachementUrl = MetaReader.GetMetaReader().GetMetaUrl(element.Class, element.Id, fileName);
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UrlFieldName}", attachementUrl );
 
             string newId = $"{element.Id}_{fileName}";

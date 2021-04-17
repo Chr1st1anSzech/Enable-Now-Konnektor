@@ -8,9 +8,9 @@ namespace Enable_Now_Konnektor.src.indexing
     {
         protected JobConfig jobConfig;
 
-        internal static Indexer GetIndexer(JobConfig jobConfig)
+        internal static Indexer GetIndexer()
         {
-            switch (jobConfig.IndexerType.ToLower())
+            switch (JobManager.GetJobManager().SelectedJobConfig.IndexerType.ToLower())
             {
                 case "hessian":
                     {
@@ -18,7 +18,7 @@ namespace Enable_Now_Konnektor.src.indexing
                     }
                 case "json":
                 default:
-                    return new JsonIndexer(jobConfig);
+                    return new JsonIndexer();
             }
         }
 

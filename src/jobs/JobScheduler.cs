@@ -19,20 +19,18 @@ namespace Enable_Now_Konnektor.src.jobs
         {
             DateTime startTime = DateTime.Now;
             log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage01", startTime));
-            ConfigReader.Initialize();
             ErrorControlService.GetService().StartRuntimeStopwatch();
-            JobReader reader = new JobReader();
-            List<JobConfig> jobConfigs = reader.ReadAllJobConfigs();
-            if (jobConfigs == null) { return; }
+            JobManager manager = JobManager.GetJobManager();
+            if (manager.AllJobs == null) { return; }
 
-            int jobCount = jobConfigs.Count;
-            List<Task> tasks = new List<Task>();
-            List<string> jobIds = new List<string>(jobCount);
+            int jobCount = manager.AllJobs.Count;
+            List<Task> tasks = new();
+            List<string> jobIds = new(jobCount);
 
             for (int i = 0; i < jobCount; i++)
             {
-                if (jobConfigs[i] == null) { continue; }
-                var jobConfig = jobConfigs[i];
+                if (manager.AllJobs[i] == null) { continue; }
+                JobConfig jobConfig = manager.AllJobs[i];
                 if (jobIds.Contains(jobConfig.Id) || string.IsNullOrWhiteSpace(jobConfig.Id) )
                 {
                     log.Fatal(LocalizationService.GetFormattedResource("JobSchedulerMessage04", jobConfig.Id));
@@ -43,7 +41,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 {
                     jobIds.Add(jobConfig.Id);
                     Task t = Task.Run(delegate () { RunJob(jobConfig); });
-                    tasks.Add(t);
+                    t.Wait();
                 }
                 else
                 {
@@ -52,7 +50,7 @@ namespace Enable_Now_Konnektor.src.jobs
 
             }
             
-            Task.WaitAll(tasks.ToArray());
+            //Task.WaitAll(tasks.ToArray());
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime - startTime;
             log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage02", duration));
@@ -62,7 +60,8 @@ namespace Enable_Now_Konnektor.src.jobs
 
         private void RunJob(JobConfig jobConfig)
         {
-            PublicationCrawler crawler = new PublicationCrawler(jobConfig);
+            JobManager.GetJobManager().SelectedJobConfig = jobConfig;
+            PublicationCrawler crawler = new();
             crawler.Initialize();
             crawler.StartCrawling();
             crawler.CompleteCrawling();

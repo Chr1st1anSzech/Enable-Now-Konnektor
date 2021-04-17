@@ -38,7 +38,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
         /// <returns>Wahr, wenn es eine Variable ist.</returns>
         internal bool IsVariableExpression(string expression, out string variableName)
         {
-            Config cfg = ConfigReader.LoadConnectorConfig();
+            Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
             string variablePattern = $"^({cfg.EntityIdentifier}|{cfg.LessonIdentifier}|{cfg.SlideIdentifier})\\w+$";
             Match variableMatch = Regex.Match(expression, variablePattern);
             bool isVariableExpression = variableMatch.Success;

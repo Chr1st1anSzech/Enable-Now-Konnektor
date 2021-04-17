@@ -26,7 +26,7 @@ namespace Enable_Now_Konnektor.src.service
 
         private ErrorControlService()
         {
-            Config cfg = ConfigReader.LoadConnectorConfig();
+            Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
             maxErrorCount = cfg.MaxErrorCount;
             maxMinutesRuntime = cfg.MaxMinutesRuntime;
         }

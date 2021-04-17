@@ -6,7 +6,7 @@ namespace Enable_Now_Konnektor.src.indexing
 {
     public class IndexingElement
     {
-        public string id { get; set; }
-        public Dictionary<string, List<string>> fields { get; set; }
+        public string Id { get; set; }
+        public Dictionary<string, List<string>> Fields { get; set; }
     }
 }

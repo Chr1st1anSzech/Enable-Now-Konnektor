@@ -1,8 +1,8 @@
 {
-	"IndexUrl": "http://192.168.178.28/json/index?method=index&param0=",
-	"RemoveUrl": "http://192.168.178.28/json/index?method=delete&param0=",
-	"ConverterUrl": "http://192.168.178.28/json/converter?method=convertLocation&param0=&param1=",
-	"FetchUrl": "http://192.168.178.28/json/index?method=fetch&param0=[_id]&param1=",
+	"IndexUrl": "http://localhost/json/index?method=index&param0=",
+	"RemoveUrl": "http://localhost/json/index?method=delete&param0=",
+	"ConverterUrl": "http://localhost/json/converter?method=convertLocation&param0=&param1=",
+	"FetchUrl": "http://localhost/json/index?method=fetch&param0=[_id]&param1=",
 
 	"ProxyUrl" : "127.0.0.1",
 	"ProxyPort" : 8888,

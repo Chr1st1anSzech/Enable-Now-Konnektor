@@ -27,9 +27,9 @@ namespace Enable_Now_Konnektor.src.indexing
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        internal ConverterService(JobConfig jobConfig)
+        internal ConverterService()
         {
-            this.jobConfig = jobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Enable_Now_Konnektor.src.indexing
                 _log.Error(LocalizationService.GetFormattedResource("ConverterServiceMessage01"), e);
                 throw;
             }
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             var fields = json[0][config.ConverterFieldsIdentifier];
             if (fields == null)
             {
@@ -122,9 +122,9 @@ namespace Enable_Now_Konnektor.src.indexing
 
         private string GetConverterRequestUrl(Element element, string fileName)
         {
-            string attachementUrl = MetaReader.GetMetaReader(jobConfig).GetMetaUrl(element.Class, element.Id, fileName);
+            string attachementUrl = MetaReader.GetMetaReader().GetMetaUrl(element.Class, element.Id, fileName);
             string contentUrl = HttpUtility.UrlEncode(attachementUrl);
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             return config.ConverterUrl + contentUrl;
         }
 

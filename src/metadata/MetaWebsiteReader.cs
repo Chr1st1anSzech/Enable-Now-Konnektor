@@ -14,9 +14,9 @@ namespace Enable_Now_Konnektor.src.metadata
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        internal MetaWebsiteReader(JobConfig jobConfig)
+        internal MetaWebsiteReader()
         {
-            this.jobConfig = jobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
 
@@ -37,12 +37,12 @@ namespace Enable_Now_Konnektor.src.metadata
 
         internal override string GetContentUrl(string className, string id)
         {
-            return jobConfig.ContentUrl.Replace("${Class}", classNames[className]).Replace("${Id}", id);
+            return jobConfig.ContentUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id);
         }
 
         internal override string GetMetaUrl(string className, string id, string fileType)
         {
-            return jobConfig.EntityUrl.Replace("${Class}", classNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
+            return jobConfig.EntityUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
 
         private string GetDemoUrl(string id)

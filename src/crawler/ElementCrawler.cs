@@ -35,10 +35,10 @@ namespace Enable_Now_Konnektor.src.crawler
         private List<string> groupMappingFields;
 
 
-        internal ElementCrawler(JobConfig jobConfig)
+        internal ElementCrawler()
         {
-            this.jobConfig = jobConfig;
-            metaAnalyzer = new MetaAnalyzer(jobConfig);
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            metaAnalyzer = new MetaAnalyzer();
             InitializeMappingFields();
         }
 
@@ -109,7 +109,7 @@ namespace Enable_Now_Konnektor.src.crawler
 
         private void SetDateValue(Element element)
         {
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             string dateFieldName = $"{config.LongIdentifier}.{config.DateFieldName}";
             if (!element.Fields.ContainsKey(dateFieldName))
             {
@@ -119,13 +119,13 @@ namespace Enable_Now_Konnektor.src.crawler
 
         internal void FillInitialFields(Element element)
         {
-            Config cfg = ConfigReader.LoadConnectorConfig();
+            Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
             string fieldName = $"{cfg.StringIdentifier}.{cfg.UidFieldName}";
             element.AddValues(fieldName, element.Id);
             fieldName = $"{cfg.StringIdentifier}.{cfg.ClassFieldName}";
             element.AddValues(fieldName, element.Class);
             fieldName = $"{cfg.StringIdentifier}.{cfg.UrlFieldName}";
-            element.AddValues(fieldName, new MetaWebsiteReader(jobConfig).GetContentUrl(element.Class, element.Id));
+            element.AddValues(fieldName, new MetaWebsiteReader().GetContentUrl(element.Class, element.Id));
 
             foreach (var mapping in jobConfig.GlobalMappings)
             {
@@ -136,7 +136,9 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 { Element.Project, jobConfig.ProjectMappings },
                 { Element.Slide, jobConfig.SlideMappings},
-                { Element.Group, jobConfig.GroupMappings }
+                { Element.Group, jobConfig.GroupMappings },
+                { Element.Book, jobConfig.BookMappings},
+                { Element.Text, jobConfig.TextMappings }
 
             };
 
@@ -340,7 +342,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Gibt entweder die ID des Autostart-Elements zurück oder null, falls kein Autostart-Element definiert ist.</returns>
         private string GetAutostartId(MetaDataCollection metaData)
         {
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             if (metaData.Entity?[config.AutostartIdentifier] == null)
             {
                 return null;

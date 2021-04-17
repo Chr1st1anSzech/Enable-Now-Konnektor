@@ -16,14 +16,14 @@ namespace Enable_Now_Konnektor.src.indexing
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        internal JsonIndexer(JobConfig jobConfig)
+        internal JsonIndexer()
         {
-            base.jobConfig = jobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
         internal async override Task<bool> AddElementToIndexAsync(Element element)
         {
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             string paramString = GetIndexingParameterString(element);
             string url = $"{config.IndexUrl}{paramString}";
             try
@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.indexing
 
         internal async override Task<bool> RemoveElementFromIndexAsync(string id)
         {
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             string encodedParam = HttpUtility.UrlEncode($"[{GetElasticsearchId(id)}]");
             string url = $"{config.RemoveUrl}{encodedParam}";
             try
@@ -64,8 +64,8 @@ namespace Enable_Now_Konnektor.src.indexing
         {
             IndexingElement indexingElement = new IndexingElement()
             {
-                id = GetElasticsearchId(element.Id),
-                fields = element.Fields
+                Id = GetElasticsearchId(element.Id),
+                Fields = element.Fields
             };
             var jsonString = JsonConvert.SerializeObject(indexingElement);
             return HttpUtility.UrlEncode( "[" + jsonString + "]" );

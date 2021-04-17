@@ -13,24 +13,26 @@ namespace Enable_Now_Konnektor.src.metadata
         internal static string LessonFile = "lesson.js";
         internal static string SlideFile = "slide.js";
 
-        protected readonly Dictionary<string, string> classNames = new Dictionary<string, string>() {
-            { "GR", "group" },
-            { "SL", "slide" },
-            { "PR", "project" },
-            { "M", "media" }
+        protected Dictionary<string, string> ClassNames { get; } = new Dictionary<string, string>() {
+            { Element.Group, "group" },
+            { Element.Slide, "slide" },
+            { Element.Project, "project" },
+            { Element.Media, "media" },
+            { Element.Book, "book" },
+            { Element.Text, "cdoc" }
         };
 
-        internal static MetaReader GetMetaReader(JobConfig jobConfig)
+        internal static MetaReader GetMetaReader()
         {
-            switch (jobConfig.PublicationSource.ToLower()) {
+            switch (JobManager.GetJobManager().SelectedJobConfig.PublicationSource.ToLower()) {
                 case "datei":
                     {
-                        return new MetaFileReader(jobConfig);
+                        return new MetaFileReader();
                     }
                 case "webseite":
                 default:
                     {
-                        return new MetaWebsiteReader(jobConfig);
+                        return new MetaWebsiteReader();
                     }
             }
         }

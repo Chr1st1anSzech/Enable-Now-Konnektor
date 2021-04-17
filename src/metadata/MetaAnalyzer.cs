@@ -21,14 +21,14 @@ namespace Enable_Now_Konnektor.src.metadata
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly JobConfig jobConfig;
 
-        internal MetaAnalyzer(JobConfig jobConfig)
+        internal MetaAnalyzer()
         {
-            this.jobConfig = jobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
         internal void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
         {
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             log.Debug("Analysiere alle Kindselemente.");
             var assets = metaData.Entity?[config.AssetsIdentifier];
             if (assets == null)
@@ -56,7 +56,7 @@ namespace Enable_Now_Konnektor.src.metadata
                 return null;
             }
 
-            Config config = ConfigReader.LoadConnectorConfig();
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             if (variableName.StartsWith(config.EntityIdentifier))
             {
                 return ExtractValueFromEntityTxt(variableName[config.EntityIdentifier.Length..], metaData.Entity);
@@ -92,7 +92,7 @@ namespace Enable_Now_Konnektor.src.metadata
 
         internal async Task<MetaDataCollection> LoadMetaFiles(Element element)
         {
-            MetaDataCollection metaData = new MetaDataCollection
+            MetaDataCollection metaData = new()
             {
                 Lesson = await GetJsonFileAsync(element, MetaReader.LessonFile),
                 Slide = await GetJsonFileAsync(element, MetaReader.SlideFile)
@@ -123,7 +123,7 @@ namespace Enable_Now_Konnektor.src.metadata
                 return null;
             }
 
-            var access = MetaReader.GetMetaReader(jobConfig);
+            var access = MetaReader.GetMetaReader();
             return await access.GetMetaData(element, fileType);
         }
     }

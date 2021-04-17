@@ -26,6 +26,8 @@ namespace Enable_Now_Konnektor.src.enable_now
         internal const string Project = "PR";
         internal const string Slide = "SL";
         internal const string Media = "M";
+        internal const string Text = "CD";
+        internal const string Book = "BO";
 
         private readonly ILog _log = LogManager.GetLogger(typeof(Element));
 

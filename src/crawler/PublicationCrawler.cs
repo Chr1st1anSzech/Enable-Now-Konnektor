@@ -39,11 +39,11 @@ namespace Enable_Now_Konnektor.src.crawler
         /// Konstruktor der Klasse PublicationCrawler.
         /// </summary>
         /// <param name="jobConfig">Die Konfiguration des Jobs.</param>
-        internal PublicationCrawler(JobConfig jobConfig)
+        internal PublicationCrawler()
         {
-            this.jobConfig = jobConfig;
-            elementCrawler = new ElementCrawler(this.jobConfig);
-            attachementCrawler = new AttachementCrawler(this.jobConfig);
+            this.jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            elementCrawler = new ElementCrawler();
+            attachementCrawler = new AttachementCrawler();
         }
 
         private void InitializeCrawlerDatabase()
@@ -59,7 +59,7 @@ namespace Enable_Now_Konnektor.src.crawler
             using ElementLogContext context = new ElementLogContext();
             context.GetAllElementLogs(e => e.WasFound == false && e.JobId == jobConfig.Id).ToList().ForEach(e =>
            {
-               CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
+               CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface();
                crawlerIndexerInterface.RemoveElementCompletly(e.Id);
            });
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage10"));
@@ -111,7 +111,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="threadNumber">Die Nummer des Threads</param>
         private async Task EnterCrawlingLoopAsync(int threadNumber)
         {
-            CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface(jobConfig);
+            CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface();
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {

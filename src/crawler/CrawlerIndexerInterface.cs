@@ -21,10 +21,10 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-        internal CrawlerIndexerInterface(JobConfig jobConfig)
+        internal CrawlerIndexerInterface()
         {
-            this.jobConfig = jobConfig;
-            indexer = new JsonIndexer(jobConfig);
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            indexer = new JsonIndexer();
         }
 
 
@@ -136,6 +136,14 @@ namespace Enable_Now_Konnektor.src.crawler
                 case Element.Project:
                     {
                         return jobConfig.IndexProjects;
+                    }
+                case Element.Book:
+                    {
+                        return jobConfig.IndexBooks;
+                    }
+                case Element.Text:
+                    {
+                        return jobConfig.IndexText;
                     }
                 default:
                     break;
