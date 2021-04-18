@@ -2,7 +2,6 @@
 using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.service;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
-using Enable_Now_Konnektor_Bibliothek.src.misc;
 using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
@@ -41,11 +40,16 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="jobConfig">Die Konfiguration des Jobs.</param>
         internal PublicationCrawler()
         {
-            this.jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
             elementCrawler = new ElementCrawler();
             attachementCrawler = new AttachementCrawler();
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitializeCrawlerDatabase()
         {
             using ElementLogContext context = new ElementLogContext();
@@ -54,6 +58,11 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage09"));
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void RemoveAllUnfoundElements()
         {
             using ElementLogContext context = new ElementLogContext();
@@ -65,21 +74,37 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage10"));
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitializeStatisticService()
         {
             StatisticService.Initialize(jobConfig.Id);
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         internal void Initialize()
         {
             InitializeCrawlerDatabase();
             InitializeStatisticService();
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         internal void CompleteCrawling()
         {
             RemoveAllUnfoundElements();
         }
+
 
 
         /// <summary>
@@ -101,7 +126,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
             Task.WaitAll(tasks);
         }
-
 
 
 
@@ -140,13 +164,21 @@ namespace Enable_Now_Konnektor.src.crawler
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage08"));
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="crawlerIndexerInterface"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
         {
             log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage02", id));
             Element element;
             try
             {
-                element = await elementCrawler.CrawlElement(id);
+                element = await elementCrawler.CrawlElementAsync(id);
             }
             catch
             {
@@ -169,7 +201,6 @@ namespace Enable_Now_Konnektor.src.crawler
                 await crawlerIndexerInterface.SendToIndexerAsync(attachements[i]);
             }
         }
-
 
 
 

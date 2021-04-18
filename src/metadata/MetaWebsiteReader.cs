@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.metadata
         }
 
 
-        internal override async Task<JObject> GetMetaData(Element element, string fileType)
+        internal override async Task<JObject> GetMetaDataAsync(Element element, string fileType)
         {
             string entityUrl = GetMetaUrl(element.Class, element.Id, fileType);
             try
@@ -44,11 +44,5 @@ namespace Enable_Now_Konnektor.src.metadata
         {
             return jobConfig.EntityUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
-
-        private string GetDemoUrl(string id)
-        {
-            return jobConfig.DemoUrl.Replace("${Id}", id);
-        }
-
     }
 }

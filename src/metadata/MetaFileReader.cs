@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.metadata
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
-        internal override async Task<JObject> GetMetaData(Element element, string fileType)
+        internal override async Task<JObject> GetMetaDataAsync(Element element, string fileType)
         {
             string entityPath = GetMetaUrl(element.Class, element.Id, fileType);
             if (!File.Exists(entityPath))

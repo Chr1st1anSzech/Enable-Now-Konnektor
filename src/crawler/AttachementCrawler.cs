@@ -22,10 +22,17 @@ namespace Enable_Now_Konnektor.src.crawler
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         internal async Task<List<Element>> CrawlAttachementsAsync(Element element)
         {
-            ConverterService converter = new ConverterService();
-            var attachements = new List<Element>();
+            ConverterService converter = new();
+            List<Element> attachements = new();
             StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
             
             foreach (var attachementName in element.AttachementNames)
@@ -49,6 +56,14 @@ namespace Enable_Now_Konnektor.src.crawler
             return attachements;
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="res"></param>
+        /// <param name="fileName"></param>
         private void OverwriteAttachementValues(Element element, ConverterResult res, string fileName)
         {
             Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;

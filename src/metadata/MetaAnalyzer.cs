@@ -90,7 +90,7 @@ namespace Enable_Now_Konnektor.src.metadata
             return Util.JoinArray(values);
         }
 
-        internal async Task<MetaDataCollection> LoadMetaFiles(Element element)
+        internal async Task<MetaDataCollection> LoadMetaFilesAsync(Element element)
         {
             MetaDataCollection metaData = new()
             {
@@ -124,7 +124,7 @@ namespace Enable_Now_Konnektor.src.metadata
             }
 
             var access = MetaReader.GetMetaReader();
-            return await access.GetMetaData(element, fileType);
+            return await access.GetMetaDataAsync(element, fileType);
         }
     }
 }

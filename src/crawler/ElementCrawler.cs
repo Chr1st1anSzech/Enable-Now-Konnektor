@@ -44,7 +44,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
         /// <summary>
         /// Initialisiert die Felder, die vom Autostart-Element gemappt werden sollen, außer sie stehen auf der Blacklist.
         /// <para>Diese Liste ist für den gesamten Job immer gleich. Deswegen reicht es, das einmal zu machen, anstatt bei jedem 
@@ -73,17 +72,16 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
         /// <summary>
         /// Die Daten eines Elements analysieren und daraus ein Objekt erstellen.
         /// </summary>
         /// <param name="id">Die ID des Element, zum Beispiel GR_389F860B088563B1.</param>
         /// <returns>Ein Objekt, das die Daten des Elements in Enable Now enthält</returns>
-        internal async Task<Element> CrawlElement(string id)
+        internal async Task<Element> CrawlElementAsync(string id)
         {
-            Element element = new Element(id);
+            Element element = new(id);
             FillInitialFields(element);
-            MetaDataCollection metaData = await metaAnalyzer.LoadMetaFiles(element);
+            MetaDataCollection metaData = await metaAnalyzer.LoadMetaFilesAsync(element);
             FillFields(element, metaData);
             AddAssets(element, metaData);
             string autostartId = GetAutostartId(metaData);
@@ -92,7 +90,7 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 try
                 {
-                    Element autostartElement = await CrawlElement(autostartId);
+                    Element autostartElement = await CrawlElementAsync(autostartId);
                     OverwriteValuesByAutostartElement(element, autostartElement);
                     statisticService.IncreaseAutostartElementsCount();
                 }
@@ -107,6 +105,12 @@ namespace Enable_Now_Konnektor.src.crawler
             return element;
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
         private void SetDateValue(Element element)
         {
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
@@ -117,6 +121,12 @@ namespace Enable_Now_Konnektor.src.crawler
             }
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
         internal void FillInitialFields(Element element)
         {
             Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
@@ -152,7 +162,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="metaData"></param>
         private void AddAssets(Element element, MetaDataCollection metaData)
         {
             metaAnalyzer.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
@@ -181,7 +195,6 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
             }
         }
-
 
 
 
@@ -216,7 +229,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private List<string> GetMappingListForClass(Element element)
         {
             List<string> mappingFieldList = null;
@@ -234,7 +251,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
         /// <summary>
         /// Analysiere die Metadateien, extrahiere die passenden Werte und fülle damit die Felder des Objekts.
         /// <para>Es wird durch alle Feldnamen, die indexiert werden sollen, iteriert. Den Feldern sind Listen zugeordnet. Sie enthalten
@@ -245,7 +261,7 @@ namespace Enable_Now_Konnektor.src.crawler
         internal void FillFields(Element element, MetaDataCollection metaData)
         {
             var keys = element.Fields.Keys.ToList();
-            ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();
+            ExpressionEvaluator expressionEvaluator = new();
             foreach (string fieldName in keys)
             {
                 List<string> values = element.Fields[fieldName];
@@ -263,6 +279,8 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
             }
         }
+
+
 
         /// <summary>
         /// 
@@ -303,6 +321,8 @@ namespace Enable_Now_Konnektor.src.crawler
             return null;
         }
 
+
+
         /// <summary>
         /// Fügt die Werte aus der Ergebnisliste der Werteliste des Feldes hinzu.
         /// <para>Falls die Ergebnisliste leer ist, wird der bisherige Feldwert entfernt.</para>
@@ -331,7 +351,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
             }
         }
-
 
 
 

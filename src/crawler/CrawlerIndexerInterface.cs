@@ -3,7 +3,6 @@ using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor.src.indexing;
 using Enable_Now_Konnektor.src.service;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
-using Enable_Now_Konnektor_Bibliothek.src.misc;
 using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System.Linq;
@@ -88,16 +87,25 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
         internal void RemoveElementCompletly(Element element)
         {
             RemoveElementCompletly(element.Id);
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
         internal void RemoveElementCompletly(string id)
         {
             log.Debug(LocalizationService.GetFormattedResource("CrawlerIndexerInterfaceMessage04", id));
-            using ElementLogContext context = new ElementLogContext();
+            using ElementLogContext context = new();
             context.RemoveElementLog(id, jobConfig.Id);
             indexer.RemoveElementFromIndexAsync(id);
             StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
@@ -120,7 +128,11 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private bool IsAllowedClassForIndexing(Element element)
         {
             switch (element.Class)
@@ -153,7 +165,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -165,7 +176,6 @@ namespace Enable_Now_Konnektor.src.crawler
                 && HasAllMustHaveFields(element)
                 && IsAllowedClassForIndexing(element);
         }
-
 
 
 
@@ -182,8 +192,6 @@ namespace Enable_Now_Konnektor.src.crawler
             var elementLog = context.GetElementLog(element, jobConfig.Id);
             return elementLog == null || !elementLog.Hash.Equals(element.Hash);
         }
-
-
 
 
 
@@ -221,7 +229,6 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             return false;
         }
-
 
 
 

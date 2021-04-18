@@ -1,7 +1,6 @@
 ﻿using Enable_Now_Konnektor.src.enable_now;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -37,7 +36,7 @@ namespace Enable_Now_Konnektor.src.metadata
             }
         }
 
-        internal abstract Task<JObject> GetMetaData(Element element, string fileType);
+        internal abstract Task<JObject> GetMetaDataAsync(Element element, string fileType);
 
         internal abstract string GetMetaUrl(string className, string id, string fileType);
 

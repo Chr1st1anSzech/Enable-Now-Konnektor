@@ -16,11 +16,23 @@ namespace Enable_Now_Konnektor.src.indexing
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         internal JsonIndexer()
         {
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         internal async override Task<bool> AddElementToIndexAsync(Element element)
         {
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
@@ -38,11 +50,25 @@ namespace Enable_Now_Konnektor.src.indexing
             }
         }
 
-        internal override Task<bool> RemoveElementFromIndexAsync(Element element)
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        internal async override Task<bool> RemoveElementFromIndexAsync(Element element)
         {
-            return RemoveElementFromIndexAsync(element.Id);
+            return await RemoveElementFromIndexAsync(element.Id);
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal async override Task<bool> RemoveElementFromIndexAsync(string id)
         {
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
@@ -60,20 +86,34 @@ namespace Enable_Now_Konnektor.src.indexing
             }
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private string GetIndexingParameterString(Element element)
         {
-            IndexingElement indexingElement = new IndexingElement()
+            IndexingElement indexingElement = new()
             {
                 Id = GetElasticsearchId(element.Id),
                 Fields = element.Fields
             };
             var jsonString = JsonConvert.SerializeObject(indexingElement);
-            return HttpUtility.UrlEncode( "[" + jsonString + "]" );
+            return HttpUtility.UrlEncode( $"[{jsonString}]" );
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <returns></returns>
         private string GetElasticsearchId(string elementId)
         {
-            return jobConfig.Id + "-" + elementId;
+            return $"{jobConfig.Id}-{elementId}";
         }
     }
 }

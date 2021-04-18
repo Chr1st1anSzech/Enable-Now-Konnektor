@@ -8,6 +8,12 @@ namespace Enable_Now_Konnektor.src.indexing
     {
         protected JobConfig jobConfig;
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         internal static Indexer GetIndexer()
         {
             switch (JobManager.GetJobManager().SelectedJobConfig.IndexerType.ToLower())
@@ -22,10 +28,31 @@ namespace Enable_Now_Konnektor.src.indexing
             }
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         internal abstract Task<bool> AddElementToIndexAsync(Element element);
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         internal abstract Task<bool> RemoveElementFromIndexAsync(Element element);
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal abstract Task<bool> RemoveElementFromIndexAsync(string id);
     }
 }

@@ -25,12 +25,12 @@ namespace Enable_Now_Konnektor.src.indexing
         }
 
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
 
         internal ConverterService()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
+
+
 
         /// <summary>
         /// 
@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.indexing
             string result;
             try
             {
-                result = await new HttpRequest(jobConfig).SendRequestAsync(url);
+                result = await new HttpRequest(JobManager.GetJobManager().SelectedJobConfig).SendRequestAsync(url);
             }
             catch
             {
@@ -56,6 +56,8 @@ namespace Enable_Now_Konnektor.src.indexing
             return ExtractValues(result);
 
         }
+
+
 
         /// <summary>
         /// 
@@ -101,6 +103,8 @@ namespace Enable_Now_Konnektor.src.indexing
             return res;
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -120,6 +124,14 @@ namespace Enable_Now_Konnektor.src.indexing
             return field.Value<string>();
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         private string GetConverterRequestUrl(Element element, string fileName)
         {
             string attachementUrl = MetaReader.GetMetaReader().GetMetaUrl(element.Class, element.Id, fileName);
