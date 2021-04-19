@@ -17,13 +17,14 @@ namespace Enable_Now_Konnektor.src.crawler
         private readonly JobConfig jobConfig;
         private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region constructor
         internal AttachementCrawler()
         {
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
+        #endregion
 
-
-
+        #region internal-methods
         /// <summary>
         /// 
         /// </summary>
@@ -55,9 +56,9 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             return attachements;
         }
+        #endregion
 
-
-
+        #region private-methods
         /// <summary>
         /// 
         /// </summary>
@@ -83,5 +84,6 @@ namespace Enable_Now_Konnektor.src.crawler
             element.ReplaceValues($"{cfg.StringIdentifier}.{cfg.UidFieldName}", newId);
             element.Id = newId;
         }
+        #endregion
     }
 }

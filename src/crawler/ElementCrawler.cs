@@ -34,44 +34,16 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         private List<string> groupMappingFields;
 
-
+        #region constructors
         internal ElementCrawler()
         {
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
             metaAnalyzer = new MetaAnalyzer();
             InitializeMappingFields();
         }
+        #endregion
 
-
-
-        /// <summary>
-        /// Initialisiert die Felder, die vom Autostart-Element gemappt werden sollen, außer sie stehen auf der Blacklist.
-        /// <para>Diese Liste ist für den gesamten Job immer gleich. Deswegen reicht es, das einmal zu machen, anstatt bei jedem 
-        /// Mapping zu prüfen, ob der Wert auf der Blacklist steht.</para>
-        /// </summary>
-        private void InitializeMappingFields()
-        {
-            // Mapping und Überschreiben ist deaktiviert
-            if (!jobConfig.AutostartMetaMapping && !jobConfig.AutostartChildOverwrite)
-            {
-                return;
-            }
-
-            projectMappingFields = new List<string>();
-            groupMappingFields = new List<string>();
-
-            // alle globalen Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields, groupMappingFields);
-
-            // alle Projekt-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields);
-
-            // alle Gruppen-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, groupMappingFields);
-        }
-
-
-
+        #region internal-methods
         /// <summary>
         /// Die Daten eines Elements analysieren und daraus ein Objekt erstellen.
         /// </summary>
@@ -86,7 +58,7 @@ namespace Enable_Now_Konnektor.src.crawler
             AddAssets(element, metaData);
             string autostartId = GetAutostartId(metaData);
             StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
-            if (autostartId != null )
+            if (autostartId != null)
             {
                 try
                 {
@@ -104,30 +76,14 @@ namespace Enable_Now_Konnektor.src.crawler
             statisticService.IncreaseFoundDocumentsCount();
             return element;
         }
+        #endregion
 
-
-
+        #region private-methods
         /// <summary>
         /// 
         /// </summary>
         /// <param name="element"></param>
-        private void SetDateValue(Element element)
-        {
-            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
-            string dateFieldName = $"{config.LongIdentifier}.{config.DateFieldName}";
-            if (!element.Fields.ContainsKey(dateFieldName))
-            {
-                element.AddValues(dateFieldName, Util.ConvertToUnixTime(DateTime.Now));
-            }
-        }
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="element"></param>
-        internal void FillInitialFields(Element element)
+        private void FillInitialFields(Element element)
         {
             Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
             string fieldName = $"{cfg.StringIdentifier}.{cfg.UidFieldName}";
@@ -157,6 +113,81 @@ namespace Enable_Now_Konnektor.src.crawler
             foreach (var mapping in mappings[element.Class])
             {
                 element.AddValues(mapping.Key, mapping.Value);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Analysiere die Metadateien, extrahiere die passenden Werte und fülle damit die Felder des Objekts.
+        /// <para>Es wird durch alle Feldnamen, die indexiert werden sollen, iteriert. Den Feldern sind Listen zugeordnet. Sie enthalten
+        /// statische Werte oder Variablen. Die Variablen werden durch die Inhalte in den Metadateien ersetzt.</para>
+        /// </summary>
+        /// <param name="element">Das Objekt, dessen Felder gefüllt werden sollen.</param>
+        /// <param name="metaData">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
+        private void FillFields(Element element, MetaDataCollection metaData)
+        {
+            var keys = element.Fields.Keys.ToList();
+            ExpressionEvaluator expressionEvaluator = new();
+            foreach (string fieldName in keys)
+            {
+                List<string> values = element.Fields[fieldName];
+                int lastIndex = values.Count - 1;
+                for (int valueIndex = lastIndex; valueIndex >= 0; valueIndex--)
+                {
+                    string temporaryValue = values[valueIndex];
+                    string[] resultValues = EvaluateField(temporaryValue, expressionEvaluator, metaData);
+                    AddOrRemoveFields(values, valueIndex, resultValues);
+                }
+
+                if (values.Count == 0)
+                {
+                    element.Fields.Remove(fieldName);
+                }
+            }
+        }
+
+
+        
+        /// <summary>
+        /// Initialisiert die Felder, die vom Autostart-Element gemappt werden sollen, außer sie stehen auf der Blacklist.
+        /// <para>Diese Liste ist für den gesamten Job immer gleich. Deswegen reicht es, das einmal zu machen, anstatt bei jedem 
+        /// Mapping zu prüfen, ob der Wert auf der Blacklist steht.</para>
+        /// </summary>
+        private void InitializeMappingFields()
+        {
+            // Mapping und Überschreiben ist deaktiviert
+            if (!jobConfig.AutostartMetaMapping && !jobConfig.AutostartChildOverwrite)
+            {
+                return;
+            }
+
+            projectMappingFields = new List<string>();
+            groupMappingFields = new List<string>();
+
+            // alle globalen Felder hinzufügen außer sie stehen auf der Blacklist
+            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields, groupMappingFields);
+
+            // alle Projekt-Felder hinzufügen außer sie stehen auf der Blacklist
+            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields);
+
+            // alle Gruppen-Felder hinzufügen außer sie stehen auf der Blacklist
+            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, groupMappingFields);
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        private void SetDateValue(Element element)
+        {
+            Config config = ConfigManager.GetConfigManager().ConnectorConfig;
+            string dateFieldName = $"{config.LongIdentifier}.{config.DateFieldName}";
+            if (!element.Fields.ContainsKey(dateFieldName))
+            {
+                element.AddValues(dateFieldName, Util.ConvertToUnixTime(DateTime.Now));
             }
         }
 
@@ -252,37 +283,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
 
         /// <summary>
-        /// Analysiere die Metadateien, extrahiere die passenden Werte und fülle damit die Felder des Objekts.
-        /// <para>Es wird durch alle Feldnamen, die indexiert werden sollen, iteriert. Den Feldern sind Listen zugeordnet. Sie enthalten
-        /// statische Werte oder Variablen. Die Variablen werden durch die Inhalte in den Metadateien ersetzt.</para>
-        /// </summary>
-        /// <param name="element">Das Objekt, dessen Felder gefüllt werden sollen.</param>
-        /// <param name="metaData">Die Metadateien mit dem Inhalt, zum Beispiel entity.txt, lesson.js und slide.js.</param>
-        internal void FillFields(Element element, MetaDataCollection metaData)
-        {
-            var keys = element.Fields.Keys.ToList();
-            ExpressionEvaluator expressionEvaluator = new();
-            foreach (string fieldName in keys)
-            {
-                List<string> values = element.Fields[fieldName];
-                int lastIndex = values.Count - 1;
-                for (int valueIndex = lastIndex; valueIndex >= 0; valueIndex--)
-                {
-                    string temporaryValue = values[valueIndex];
-                    string[] resultValues = EvaluateField(temporaryValue, expressionEvaluator, metaData);
-                    AddOrRemoveFields(values, valueIndex, resultValues);
-                }
-
-                if (values.Count == 0)
-                {
-                    element.Fields.Remove(fieldName);
-                }
-            }
-        }
-
-
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="temporaryValue"></param>
@@ -369,9 +369,6 @@ namespace Enable_Now_Konnektor.src.crawler
 
             return metaData.Entity[config.AutostartIdentifier]?.Value<string>().Split('!')[1];
         }
-
-
-
-
+        #endregion
     }
 }

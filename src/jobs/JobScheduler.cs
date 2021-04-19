@@ -13,9 +13,15 @@ namespace Enable_Now_Konnektor.src.jobs
 {
     internal class JobScheduler
     {
-        private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        internal void ScheduleJobs(List<string> jobIdParameters)
+
+        #region internal-methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jobIdParameters"></param>
+        internal static void ScheduleJobs(List<string> jobIdParameters)
         {
             DateTime startTime = DateTime.Now;
             log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage01", startTime));
@@ -24,41 +30,82 @@ namespace Enable_Now_Konnektor.src.jobs
             if (manager.AllJobs == null) { return; }
 
             int jobCount = manager.AllJobs.Count;
-            List<Task> tasks = new();
             List<string> jobIds = new(jobCount);
 
             for (int i = 0; i < jobCount; i++)
             {
-                if (manager.AllJobs[i] == null) { continue; }
                 JobConfig jobConfig = manager.AllJobs[i];
-                if (jobIds.Contains(jobConfig.Id) || string.IsNullOrWhiteSpace(jobConfig.Id) )
-                {
-                    log.Fatal(LocalizationService.FormatResourceString("JobSchedulerMessage04", jobConfig.Id));
-                    Environment.Exit(-1);
-                }
+                if (jobConfig == null) { continue; }
 
-                if(jobIdParameters.Count == 0 || jobIdParameters.Contains(jobConfig.Id))
-                {
-                    jobIds.Add(jobConfig.Id);
-                    Task t = Task.Run(delegate () { RunJob(jobConfig); });
-                    t.Wait();
-                }
-                else
-                {
-                    log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage05", jobConfig.Id));
-                }
+                ExitWhenInvalidId(jobIds, jobConfig.Id);
+
+                InitNewThread(jobIdParameters, jobIds, jobConfig);
 
             }
-            
-            //Task.WaitAll(tasks.ToArray());
+
+            LogTime(startTime);
+
+        }
+        #endregion
+
+        #region private-methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startTime"></param>
+        private static void LogTime(DateTime startTime)
+        {
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime - startTime;
             log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage02", duration));
             log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage03", endTime));
-
         }
 
-        private void RunJob(JobConfig jobConfig)
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jobIdParameters"></param>
+        /// <param name="jobIds"></param>
+        /// <param name="jobConfig"></param>
+        private static void InitNewThread(List<string> jobIdParameters, List<string> jobIds, JobConfig jobConfig)
+        {
+            if (jobIdParameters.Count == 0 || jobIdParameters.Contains(jobConfig.Id))
+            {
+                jobIds.Add(jobConfig.Id);
+                Task t = Task.Run(delegate () { RunJob(jobConfig); });
+                t.Wait();
+            }
+            else
+            {
+                log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage05", jobConfig.Id));
+            }
+        }
+
+
+
+        /// <summary>
+        /// Das Programm beenden, wenn die JobId leer ist oder doppelt auftritt.
+        /// </summary>
+        /// <param name="jobIds">Liste der JobIds, die bereits abgearbeitet sind</param>
+        /// <param name="jobConfig"></param>
+        private static void ExitWhenInvalidId(List<string> jobIds, string jobId)
+        {
+            if (jobIds.Contains(jobId) || string.IsNullOrWhiteSpace(jobId))
+            {
+                log.Fatal(LocalizationService.FormatResourceString("JobSchedulerMessage04", jobId));
+                Environment.Exit(-1);
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jobConfig"></param>
+        private static void RunJob(JobConfig jobConfig)
         {
             JobManager.GetJobManager().SelectedJobConfig = jobConfig;
             PublicationCrawler crawler = new();
@@ -76,7 +123,6 @@ namespace Enable_Now_Konnektor.src.jobs
                 service.RemovedDocumentsCount);
             new MailService(jobConfig).SendMail(text);
         }
-
-
+        #endregion
     }
 }

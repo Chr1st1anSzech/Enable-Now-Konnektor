@@ -19,16 +19,16 @@ namespace Enable_Now_Konnektor.src.crawler
         private readonly Indexer indexer;
 
 
-
+        #region constructors
         internal CrawlerIndexerInterface()
         {
             jobConfig = JobManager.GetJobManager().SelectedJobConfig;
             indexer = new JsonIndexer();
         }
+        #endregion
 
 
-
-
+        #region internal-methods
         /// <summary>
         /// Prüfe das Element zuvor, bevor man es zum Indexieren schickt.
         /// <para>Es werden mehrere Parameter geprüft.
@@ -43,46 +43,18 @@ namespace Enable_Now_Konnektor.src.crawler
         internal async Task SendToIndexerAsync(Element element)
         {
             bool isAlreadyIndexed = IsAlreadyIndexed(element);
-            if (!ShouldBeIndexed(element))
-            {
-                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage01", element.Id));
-                StatisticService.GetService(jobConfig.Id).IncreaseSkippedDocumentsCount();
-                if (isAlreadyIndexed) { RemoveElementCompletly(element); };
-                return;
-            }
+            bool isForbidden = RemoveWhenForbidden(element, isAlreadyIndexed);
+            if (isForbidden) return;
 
+            using ElementLogContext context = new();
             bool hasContentChanged = HasContentChanged(element);
-
-            using ElementLogContext context = new ElementLogContext();
-            if (isAlreadyIndexed)
-            {
-                if (hasContentChanged)
-                {
-                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage02", element.Id));
-                    RemoveElementCompletly(element);
-                }
-                else
-                {
-                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage07", element.Id));
-                    StatisticService.GetService(jobConfig.Id).IncreaseUnchangedDocumentsCount();
-                    context.SetElementFound(element, jobConfig.Id, true);
-                    return;
-                }
-            }
+            bool isIndexingNeeded = RemoveWhenChanged(element, isAlreadyIndexed, hasContentChanged, context);
+            if (isIndexingNeeded == false) return;
 
             log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage03", element.Id));
+
             bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
-            if (isIndexingSuccess)
-            {
-                context.SetElementFound(element, jobConfig.Id, true);
-                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage06", element.Id));
-                StatisticService.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
-            }
-            else
-            {
-                log.Error(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage08", element.Id));
-                ErrorControlService.GetService().IncreaseErrorCount();
-            }
+            MarkElementFound(element, context, isIndexingSuccess);
         }
 
 
@@ -110,10 +82,10 @@ namespace Enable_Now_Konnektor.src.crawler
             indexer.RemoveElementFromIndexAsync(id);
             StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
+        #endregion
 
 
-
-
+        #region private-methods
         /// <summary>
         /// Prüft, ob das Element bereits im Index ist.
         /// </summary>
@@ -124,6 +96,82 @@ namespace Enable_Now_Konnektor.src.crawler
             using ElementLogContext context = new ElementLogContext();
             var elementLog = context.GetElementLog(element, jobConfig.Id);
             return (elementLog != null);
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="isAlreadyIndexed"></param>
+        private bool RemoveWhenForbidden(Element element, bool isAlreadyIndexed)
+        {
+            if (!ShouldBeIndexed(element))
+            {
+                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage01", element.Id));
+                StatisticService.GetService(jobConfig.Id).IncreaseSkippedDocumentsCount();
+                if (isAlreadyIndexed)
+                {
+                    RemoveElementCompletly(element);
+                };
+                return true;
+            }
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="isAlreadyIndexed"></param>
+        /// <param name="hasContentChanged"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private bool RemoveWhenChanged(Element element, bool isAlreadyIndexed, bool hasContentChanged, ElementLogContext context)
+        {
+            if (isAlreadyIndexed)
+            {
+                if (hasContentChanged)
+                {
+                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage02", element.Id));
+                    RemoveElementCompletly(element);
+                    return true;
+                }
+                else
+                {
+                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage07", element.Id));
+                    StatisticService.GetService(jobConfig.Id).IncreaseUnchangedDocumentsCount();
+                    context.SetElementFound(element, jobConfig.Id, true);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
+        /// <param name="isIndexingSuccess"></param>
+        private void MarkElementFound(Element element, ElementLogContext context, bool isIndexingSuccess)
+        {
+            if (isIndexingSuccess)
+            {
+                context.SetElementFound(element, jobConfig.Id, true);
+                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage06", element.Id));
+                StatisticService.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
+            }
+            else
+            {
+                log.Error(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage08", element.Id));
+                ErrorControlService.GetService().IncreaseErrorCount();
+            }
         }
 
 
@@ -263,5 +311,6 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             return true;
         }
+        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace Enable_Now_Konnektor
             ConfigLogging();
             var jobIdParameters = GetJobParameter(args);
             JobScheduler scheduler = new JobScheduler();
-            scheduler.ScheduleJobs(jobIdParameters);
+            JobScheduler.ScheduleJobs(jobIdParameters);
 
             
         }
