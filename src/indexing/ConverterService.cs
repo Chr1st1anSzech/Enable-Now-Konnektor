@@ -49,7 +49,7 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch
             {
-                _log.Error(LocalizationService.GetFormattedResource("ConverterServiceMessage02"));
+                _log.Error(LocalizationService.FormatResourceString("ConverterServiceMessage02"));
                 throw;
             }
 
@@ -74,14 +74,14 @@ namespace Enable_Now_Konnektor.src.indexing
             }
             catch (Exception e)
             {
-                _log.Error(LocalizationService.GetFormattedResource("ConverterServiceMessage01"), e);
+                _log.Error(LocalizationService.FormatResourceString("ConverterServiceMessage01"), e);
                 throw;
             }
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
             var fields = json[0][config.ConverterFieldsIdentifier];
             if (fields == null)
             {
-                var message = LocalizationService.GetFormattedResource("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
+                var message = LocalizationService.FormatResourceString("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
                 _log.Error(message);
                 throw new ArgumentNullException(message);
             }
@@ -117,7 +117,7 @@ namespace Enable_Now_Konnektor.src.indexing
             var field = fields[fieldName]?[0];
             if ( field == null)
             {
-                string message = LocalizationService.GetFormattedResource("ConverterServiceMessage03", fieldName);
+                string message = LocalizationService.FormatResourceString("ConverterServiceMessage03", fieldName);
                 _log.Error(message);
                 throw new ArgumentNullException(message);
             }

@@ -1,14 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Enable_Now_Konnektor</RootNamespace>
     <ApplicationIcon>enable-now-konnektor.ico</ApplicationIcon>
+    <Authors>Christian Szech</Authors>
+    <Company />
+    <PackageProjectUrl>https://github.com/Chr1st1anSzech/Enable-Now-Konnektor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Chr1st1anSzech/Enable-Now-Konnektor</RepositoryUrl>
+    <PackageId>EnableNowKonnektor</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="config.json" />
+    <None Remove="enable-now-konnektor.ico" />
     <None Remove="jobs\00-sap-enable-now.json" />
     <None Remove="log4net.xml" />
   </ItemGroup>
@@ -42,9 +48,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Enable Now Konnektor.runtimeconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Resource Include="enable-now-konnektor.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

@@ -25,7 +25,7 @@ namespace Enable_Now_Konnektor.src.metadata
             string entityPath = GetMetaUrl(element.Class, element.Id, fileType);
             if (!File.Exists(entityPath))
             {
-                log.Warn(LocalizationService.GetFormattedResource("MetaFileReaderMessage01", entityPath));
+                log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage01", entityPath));
                 return null;
             }
 
@@ -38,7 +38,7 @@ namespace Enable_Now_Konnektor.src.metadata
             }
             catch
             {
-                log.Warn(LocalizationService.GetFormattedResource("MetaFileReaderMessage02"));
+                log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage02"));
                 return null;
             }
         }

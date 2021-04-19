@@ -51,8 +51,8 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         private void InitializeMappingFields()
         {
-            // Mapping ist komplett deaktiviert oder das Überschreiben ist deaktiviert
-            if (!jobConfig.AutostartMetaMapping || !jobConfig.AutostartChildOverwrite)
+            // Mapping und Überschreiben ist deaktiviert
+            if (!jobConfig.AutostartMetaMapping && !jobConfig.AutostartChildOverwrite)
             {
                 return;
             }
@@ -96,7 +96,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 catch
                 {
-                    log.Warn(LocalizationService.GetFormattedResource("ElementCrawlerMessage01"));
+                    log.Warn(LocalizationService.FormatResourceString("ElementCrawlerMessage01"));
                 }
             }
             element.Hash = element.GenerateHashCode();
@@ -293,14 +293,14 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (!expressionEvaluator.IsExpression(temporaryValue, out string expression))
             {
-                log.Debug(LocalizationService.GetFormattedResource("ElementCrawlerMessage02", temporaryValue));
+                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage02", temporaryValue));
                 return string.IsNullOrWhiteSpace(temporaryValue) ? null : new string[] { temporaryValue };
             }
 
             if (expressionEvaluator.IsVariableExpression(expression, out string variableName))
             {
                 string value = Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, variableName));
-                log.Debug(LocalizationService.GetFormattedResource("ElementCrawlerMessage03", expression, value));
+                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage03", expression, value));
                 return string.IsNullOrWhiteSpace(value) ? null : new string[] { value };
             }
             if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string[] converterParameterNames))
@@ -315,7 +315,7 @@ namespace Enable_Now_Konnektor.src.crawler
                         Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, converterVariableName)) :
                         converterParameterNames[i];
                 }
-                log.Debug(LocalizationService.GetFormattedResource("ElementCrawlerMessage04", expression, converterClassName, ""));
+                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage04", expression, converterClassName, ""));
                 return expressionEvaluator.EvaluateAsConverter(converterClassName, converterParameterValues);
             }
             return null;

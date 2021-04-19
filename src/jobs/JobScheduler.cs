@@ -18,7 +18,7 @@ namespace Enable_Now_Konnektor.src.jobs
         internal void ScheduleJobs(List<string> jobIdParameters)
         {
             DateTime startTime = DateTime.Now;
-            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage01", startTime));
+            log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage01", startTime));
             ErrorControlService.GetService().StartRuntimeStopwatch();
             JobManager manager = JobManager.GetJobManager();
             if (manager.AllJobs == null) { return; }
@@ -33,7 +33,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 JobConfig jobConfig = manager.AllJobs[i];
                 if (jobIds.Contains(jobConfig.Id) || string.IsNullOrWhiteSpace(jobConfig.Id) )
                 {
-                    log.Fatal(LocalizationService.GetFormattedResource("JobSchedulerMessage04", jobConfig.Id));
+                    log.Fatal(LocalizationService.FormatResourceString("JobSchedulerMessage04", jobConfig.Id));
                     Environment.Exit(-1);
                 }
 
@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.jobs
                 }
                 else
                 {
-                    log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage05", jobConfig.Id));
+                    log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage05", jobConfig.Id));
                 }
 
             }
@@ -53,8 +53,8 @@ namespace Enable_Now_Konnektor.src.jobs
             //Task.WaitAll(tasks.ToArray());
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime - startTime;
-            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage02", duration));
-            log.Info(LocalizationService.GetFormattedResource("JobSchedulerMessage03", endTime));
+            log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage02", duration));
+            log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage03", endTime));
 
         }
 
@@ -68,7 +68,7 @@ namespace Enable_Now_Konnektor.src.jobs
             StatisticService.GetService(jobConfig.Id).PrintStatistic();
             ErrorControlService.GetService().PrintErrorStatistic();
             StatisticService service = StatisticService.GetService(jobConfig.Id);
-            string text = LocalizationService.GetFormattedResource("MailClientMessage01",
+            string text = LocalizationService.FormatResourceString("MailClientMessage01",
                 jobConfig.Id,
                 DateTime.Now,
                 service.FoundDocumentsCount,

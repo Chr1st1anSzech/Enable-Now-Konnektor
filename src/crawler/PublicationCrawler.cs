@@ -55,7 +55,7 @@ namespace Enable_Now_Konnektor.src.crawler
             using ElementLogContext context = new ElementLogContext();
             context.Initialize();
             context.ResetAllFoundStatus(jobConfig.Id);
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage09"));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage09"));
         }
 
 
@@ -71,7 +71,7 @@ namespace Enable_Now_Konnektor.src.crawler
                CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface();
                crawlerIndexerInterface.RemoveElementCompletly(e.Id);
            });
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage10"));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage10"));
         }
 
 
@@ -112,7 +112,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         internal void StartCrawling()
         {
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage01"));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage01"));
             int threadCount = jobConfig.ThreadCount;
             taskStatus = new bool[threadCount];
             Task[] tasks = new Task[threadCount];
@@ -136,7 +136,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private async Task EnterCrawlingLoopAsync(int threadNumber)
         {
             CrawlerIndexerInterface crawlerIndexerInterface = new CrawlerIndexerInterface();
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage03"));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
                 if (idWorkQueue.TryDequeue(out string id))
@@ -145,12 +145,12 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 else
                 {
-                    log.Debug(LocalizationService.GetFormattedResource("PublicationCrawlerMessage04"));
+                    log.Debug(LocalizationService.FormatResourceString("PublicationCrawlerMessage04"));
                     Thread.Sleep(new Random().Next(50, 1000));
                 }
 
                 int countElementsInQueue = idWorkQueue.Count;
-                log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage05", countElementsInQueue));
+                log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage05", countElementsInQueue));
                 if (countElementsInQueue == 0)
                 {
                     taskStatus[threadNumber] = false;
@@ -161,7 +161,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
             }
 
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage08"));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage08"));
         }
 
 
@@ -174,7 +174,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns></returns>
         private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
         {
-            log.Info(LocalizationService.GetFormattedResource("PublicationCrawlerMessage02", id));
+            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage02", id));
             Element element;
             try
             {
@@ -182,7 +182,7 @@ namespace Enable_Now_Konnektor.src.crawler
             }
             catch
             {
-                log.Error(LocalizationService.GetFormattedResource("PublicationCrawlerMessage07", id));
+                log.Error(LocalizationService.FormatResourceString("PublicationCrawlerMessage07", id));
                 ErrorControlService.GetService().IncreaseErrorCount();
                 return;
             }

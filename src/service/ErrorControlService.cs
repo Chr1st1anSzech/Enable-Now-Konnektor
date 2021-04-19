@@ -45,7 +45,7 @@ namespace Enable_Now_Konnektor.src.service
 
         internal void PrintErrorStatistic()
         {
-            log.Info(LocalizationService.GetFormattedResource("ErrorControlMessage3", ErrorCount));
+            log.Info(LocalizationService.FormatResourceString("ErrorControlMessage3", ErrorCount));
         }
 
         internal void IncreaseErrorCount()
@@ -59,7 +59,7 @@ namespace Enable_Now_Konnektor.src.service
             int elapsedMinutes = (int) watch.ElapsedMilliseconds / 1000 / 60;
             if( elapsedMinutes > maxMinutesRuntime)
             {
-                log.Fatal(LocalizationService.GetFormattedResource("ErrorControlMessage01", elapsedMinutes));
+                log.Fatal(LocalizationService.FormatResourceString("ErrorControlMessage01", elapsedMinutes));
                 Environment.Exit(-1);
             }
         }
@@ -68,7 +68,7 @@ namespace Enable_Now_Konnektor.src.service
         {
             if (ErrorCount > maxErrorCount)
             {
-                log.Fatal(LocalizationService.GetFormattedResource("ErrorControlMessage02", ErrorCount));
+                log.Fatal(LocalizationService.FormatResourceString("ErrorControlMessage02", ErrorCount));
                 Environment.Exit(-1);
             }
         }

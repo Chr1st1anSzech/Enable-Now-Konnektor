@@ -20,7 +20,7 @@ namespace Enable_Now_Konnektor.src.service
         {
             if ( string.IsNullOrWhiteSpace(jobId))
             {
-                string message = LocalizationService.GetFormattedResource("StatisticsMessage01");
+                string message = LocalizationService.FormatResourceString("StatisticsMessage01");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }
@@ -38,12 +38,12 @@ namespace Enable_Now_Konnektor.src.service
 
         public void PrintStatistic()
         {
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage02", FoundDocumentsCount));
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage03", AutostartElementsCount));
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage04", UnchangedDocumentsCount));
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage05", SkippedDocumentsCount));
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage06", IndexedDocumentsCount));
-            log.Info(LocalizationService.GetFormattedResource("StatisticsMessage07", RemovedDocumentsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage02", FoundDocumentsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage03", AutostartElementsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage04", UnchangedDocumentsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage05", SkippedDocumentsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage06", IndexedDocumentsCount));
+            log.Info(LocalizationService.FormatResourceString("StatisticsMessage07", RemovedDocumentsCount));
         }
 
         public void IncreaseSkippedDocumentsCount()

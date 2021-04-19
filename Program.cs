@@ -30,7 +30,7 @@ namespace Enable_Now_Konnektor
             List<string> parameters = args.Where(arg => !string.IsNullOrWhiteSpace(arg)).ToList();
             foreach (string p in parameters)
             {
-                log.Info(LocalizationService.GetFormattedResource("ProgramMessage02", p));
+                log.Info(LocalizationService.FormatResourceString("ProgramMessage02", p));
             }
             return parameters;
         }
@@ -41,7 +41,7 @@ namespace Enable_Now_Konnektor
             var logDirectory = Path.Combine(Util.GetApplicationRoot(), "logs");
             if ( Util.IsDirectoryWritable(logDirectory))
             {
-                log.Warn(LocalizationService.GetFormattedResource("ProgramMessage01"));
+                log.Warn(LocalizationService.FormatResourceString("ProgramMessage01"));
             }
             XmlConfigurator.Configure(new FileInfo(logFile));
         }

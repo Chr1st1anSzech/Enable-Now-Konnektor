@@ -81,7 +81,7 @@ namespace Enable_Now_Konnektor.src.metadata
         {
             if (json == null)
             {
-                log.Warn( LocalizationService.GetFormattedResource("MetaAnalyzerMessage02"));
+                log.Warn( LocalizationService.FormatResourceString("MetaAnalyzerMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -100,7 +100,7 @@ namespace Enable_Now_Konnektor.src.metadata
             metaData.Entity = await GetJsonFileAsync(element, MetaReader.EntityFile);
             if(metaData.Entity == null)
             {
-                string message = LocalizationService.GetFormattedResource("MetaAnalyzerMessage04");
+                string message = LocalizationService.FormatResourceString("MetaAnalyzerMessage04");
                 log.Error(message);
                 throw new ArgumentNullException(message);
             }

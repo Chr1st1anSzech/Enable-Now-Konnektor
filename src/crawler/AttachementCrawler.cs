@@ -44,7 +44,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 catch
                 {
-                    _log.Error( LocalizationService.GetFormattedResource("AttachementCrawlerMessage01", attachementName, element.Id) );
+                    _log.Error( LocalizationService.FormatResourceString("AttachementCrawlerMessage01", attachementName, element.Id) );
                     ErrorControlService.GetService().IncreaseErrorCount();
                     continue;
                 }

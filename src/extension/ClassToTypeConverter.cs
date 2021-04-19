@@ -30,6 +30,16 @@ namespace Enable_Now_Konnektor.src.extension
                         values[0] = "Medien";
                         break;
                     }
+                case "cdoc":
+                    {
+                        values[0] = "Textseite";
+                        break;
+                    }
+                case "book":
+                    {
+                        values[0] = "Buch";
+                        break;
+                    }
                 default:
                     {
                         values[0] = "Anderes";

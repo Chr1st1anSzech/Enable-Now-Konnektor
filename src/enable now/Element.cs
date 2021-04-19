@@ -40,7 +40,7 @@ namespace Enable_Now_Konnektor.src.enable_now
         {
             if (!Validator.Validate(id, Validator.EnableNowIdPattern))
             {
-                string message = LocalizationService.GetFormattedResource("ElementMessage01", id);
+                string message = LocalizationService.FormatResourceString("ElementMessage01", id);
                 _log.Error(message);
                 throw new ArgumentException(message);
             }

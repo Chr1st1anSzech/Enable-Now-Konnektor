@@ -69,7 +69,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
             }
             catch (Exception e)
             {
-                log.Warn(LocalizationService.GetFormattedResource("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
+                log.Warn(LocalizationService.FormatResourceString("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
             }
             return Array.Empty<string>();
         }

@@ -30,7 +30,7 @@ namespace Enable_Now_Konnektor.src.metadata
             }
             catch
             {
-                log.Warn(LocalizationService.GetFormattedResource("MetaWebsiteReaderMessage01"));
+                log.Warn(LocalizationService.FormatResourceString("MetaWebsiteReaderMessage01"));
                 return null;
             }
         }
