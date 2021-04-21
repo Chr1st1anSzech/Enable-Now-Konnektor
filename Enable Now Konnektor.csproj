@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/Chr1st1anSzech/Enable-Now-Konnektor</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Chr1st1anSzech/Enable-Now-Konnektor</RepositoryUrl>
     <PackageId>EnableNowKonnektor</PackageId>
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=X:\</PathMap>
   </PropertyGroup>
 
   <ItemGroup>

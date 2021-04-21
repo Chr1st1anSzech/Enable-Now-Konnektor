@@ -14,13 +14,13 @@ namespace Enable_Now_Konnektor.src.crawler
 {
     internal class AttachementCrawler
     {
-        private readonly JobConfig jobConfig;
         private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
 
         #region constructor
         internal AttachementCrawler()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
         #endregion
 
@@ -34,7 +34,7 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             ConverterService converter = new();
             List<Element> attachements = new();
-            StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
+            StatisticService statisticService = StatisticService.GetService(_jobConfig.Id);
             
             foreach (var attachementName in element.AttachementNames)
             {

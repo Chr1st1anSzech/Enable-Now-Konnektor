@@ -14,16 +14,16 @@ namespace Enable_Now_Konnektor.src.crawler
 {
     internal class CrawlerIndexerInterface
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
-        private readonly Indexer indexer;
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
+        private readonly Indexer _indexer;
 
 
         #region constructors
         internal CrawlerIndexerInterface()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
-            indexer = new JsonIndexer();
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _indexer = new JsonIndexer();
         }
         #endregion
 
@@ -51,9 +51,9 @@ namespace Enable_Now_Konnektor.src.crawler
             bool isIndexingNeeded = RemoveWhenChanged(element, isAlreadyIndexed, hasContentChanged, context);
             if (isIndexingNeeded == false) return;
 
-            log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage03", element.Id));
+            _log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage03", element.Id));
 
-            bool isIndexingSuccess = await indexer.AddElementToIndexAsync(element);
+            bool isIndexingSuccess = await _indexer.AddElementToIndexAsync(element);
             MarkElementFound(element, context, isIndexingSuccess);
         }
 
@@ -76,11 +76,11 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="id"></param>
         internal void RemoveElementCompletly(string id)
         {
-            log.Debug(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage04", id));
+            _log.Debug(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage04", id));
             using ElementLogContext context = new();
-            context.RemoveElementLog(id, jobConfig.Id);
-            indexer.RemoveElementFromIndexAsync(id);
-            StatisticService.GetService(jobConfig.Id).IncreaseRemovedDocumentsCount();
+            context.RemoveElementLog(id, _jobConfig.Id);
+            _indexer.RemoveElementFromIndexAsync(id);
+            StatisticService.GetService(_jobConfig.Id).IncreaseRemovedDocumentsCount();
         }
         #endregion
 
@@ -94,7 +94,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool IsAlreadyIndexed(Element element)
         {
             using ElementLogContext context = new ElementLogContext();
-            var elementLog = context.GetElementLog(element, jobConfig.Id);
+            var elementLog = context.GetElementLog(element, _jobConfig.Id);
             return (elementLog != null);
         }
 
@@ -109,8 +109,8 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (!ShouldBeIndexed(element))
             {
-                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage01", element.Id));
-                StatisticService.GetService(jobConfig.Id).IncreaseSkippedDocumentsCount();
+                _log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage01", element.Id));
+                StatisticService.GetService(_jobConfig.Id).IncreaseSkippedDocumentsCount();
                 if (isAlreadyIndexed)
                 {
                     RemoveElementCompletly(element);
@@ -136,15 +136,15 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 if (hasContentChanged)
                 {
-                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage02", element.Id));
+                    _log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage02", element.Id));
                     RemoveElementCompletly(element);
                     return true;
                 }
                 else
                 {
-                    log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage07", element.Id));
-                    StatisticService.GetService(jobConfig.Id).IncreaseUnchangedDocumentsCount();
-                    context.SetElementFound(element, jobConfig.Id, true);
+                    _log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage07", element.Id));
+                    StatisticService.GetService(_jobConfig.Id).IncreaseUnchangedDocumentsCount();
+                    context.SetElementFound(element, _jobConfig.Id, true);
                     return false;
                 }
             }
@@ -163,13 +163,13 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (isIndexingSuccess)
             {
-                context.SetElementFound(element, jobConfig.Id, true);
-                log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage06", element.Id));
-                StatisticService.GetService(jobConfig.Id).IncreaseIndexedDocumentsCount();
+                context.SetElementFound(element, _jobConfig.Id, true);
+                _log.Info(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage06", element.Id));
+                StatisticService.GetService(_jobConfig.Id).IncreaseIndexedDocumentsCount();
             }
             else
             {
-                log.Error(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage08", element.Id));
+                _log.Error(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage08", element.Id));
                 ErrorControlService.GetService().IncreaseErrorCount();
             }
         }
@@ -187,23 +187,23 @@ namespace Enable_Now_Konnektor.src.crawler
             {
                 case Element.Slide:
                     {
-                        return jobConfig.IndexSlides;
+                        return _jobConfig.IndexSlides;
                     }
                 case Element.Group:
                     {
-                        return jobConfig.IndexGroups;
+                        return _jobConfig.IndexGroups;
                     }
                 case Element.Project:
                     {
-                        return jobConfig.IndexProjects;
+                        return _jobConfig.IndexProjects;
                     }
                 case Element.Book:
                     {
-                        return jobConfig.IndexBooks;
+                        return _jobConfig.IndexBooks;
                     }
                 case Element.Text:
                     {
-                        return jobConfig.IndexText;
+                        return _jobConfig.IndexText;
                     }
                 default:
                     break;
@@ -237,7 +237,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool HasContentChanged(Element element)
         {
             using ElementLogContext context = new ElementLogContext();
-            var elementLog = context.GetElementLog(element, jobConfig.Id);
+            var elementLog = context.GetElementLog(element, _jobConfig.Id);
             return elementLog == null || !elementLog.Hash.Equals(element.Hash);
         }
 
@@ -253,7 +253,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool HasBlacklistedValue(Element element)
         {
             // Werte, die in beiden Listen sind
-            var fieldnames = from fieldName in jobConfig.BlacklistFields.Keys
+            var fieldnames = from fieldName in _jobConfig.BlacklistFields.Keys
                              join key in element.Fields.Keys
                              on fieldName equals key
                              select fieldName;
@@ -264,14 +264,14 @@ namespace Enable_Now_Konnektor.src.crawler
                 {
                     try
                     {
-                        if (Regex.IsMatch(value, jobConfig.BlacklistFields[fieldName]))
+                        if (Regex.IsMatch(value, _jobConfig.BlacklistFields[fieldName]))
                         {
                             return true;
                         }
                     }
                     catch
                     {
-                        log.Debug(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage05", element.Id));
+                        _log.Debug(LocalizationService.FormatResourceString("CrawlerIndexerInterfaceMessage05", element.Id));
                     }
                 }
             }
@@ -290,7 +290,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Gibt wahr zurück, wenn alle Pflichtfelder mindestens einen nichtleeren Wert haben, ansonsten falsch.</returns>
         private bool HasAllMustHaveFields(Element element)
         {
-            var mustHaveFieldNames = from fieldName in jobConfig.MustHaveFields
+            var mustHaveFieldNames = from fieldName in _jobConfig.MustHaveFields
                                      join key in element.Fields.Keys
                                      on fieldName equals key
                                      select fieldName;

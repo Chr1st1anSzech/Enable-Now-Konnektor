@@ -13,49 +13,24 @@ namespace Enable_Now_Konnektor.src.db
     internal class ElementLogContext : DbContext
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string DatabaseDirPath = Path.Combine(Util.GetApplicationRoot(), "db");
-        private static readonly string DatabaseFilePath = Path.Combine(DatabaseDirPath, "ElementLogging.db");
+        private static readonly string _databaseDirPath = Path.Combine(Util.GetApplicationRoot(), "db");
+        private static readonly string _databaseFilePath = Path.Combine(_databaseDirPath, "ElementLogging.db");
+        private static readonly object _objLock = new();
+
         private DbSet<ElementLog> ElementLogs { get; set; }
-
-        private static readonly object objLock = new object();
-
-
+        
+        
+        
+        #region internal-methods
+        /// <summary>
+        /// 
+        /// </summary>
         internal void Initialize()
         {
-            lock (objLock)
+            lock (_objLock)
             {
                 Database.EnsureCreated();
             }
-        }
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!Directory.Exists(DatabaseDirPath))
-            {
-                Directory.CreateDirectory(DatabaseDirPath);
-            }
-            optionsBuilder.UseSqlite(@"Filename=" + DatabaseFilePath, options =>
-            {
-                options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
-            });
-            base.OnConfiguring(optionsBuilder);
-        }
-
-
-
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ElementLog>().ToTable("Enable_Now_Data");
-            modelBuilder.Entity<ElementLog>(entity =>
-            {
-                entity.HasKey(e => new { e.Id, e.JobId });
-                entity.Property(e => e.WasFound);
-                entity.Property(e => e.Hash);
-            });
-            base.OnModelCreating(modelBuilder);
         }
 
         internal void ResetAllFoundStatus(string jobId)
@@ -66,24 +41,6 @@ namespace Enable_Now_Konnektor.src.db
             {
                 elementLog.WasFound = false;
             }
-            SaveChanges();
-        }
-
-        private void AddElementLog(Element element, string jobId, bool wasFound = true)
-        {
-            Database.EnsureCreated();
-            var log = GetElementLog(element.Id, jobId);
-            if (log == null)
-            {
-                ElementLogs.Add(new ElementLog { Id = element.Id, WasFound = wasFound, Hash = element.Hash, JobId = jobId });
-            }
-            else
-            {
-                log.WasFound = wasFound;
-                log.Hash = element.Hash;
-                UpdateElementsLog(log);
-            }
-
             SaveChanges();
         }
 
@@ -138,5 +95,60 @@ namespace Enable_Now_Konnektor.src.db
                 UpdateElementsLog(elementLog);
             }
         }
+#endregion
+
+        #region protected-methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<ElementLog>().ToTable("Enable_Now_Data");
+            modelBuilder.Entity<ElementLog>(entity => {
+                entity.HasKey(e => new { e.Id, e.JobId });
+                entity.Property(e => e.WasFound);
+                entity.Property(e => e.Hash);
+            });
+            base.OnModelCreating(modelBuilder);
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="optionsBuilder"></param>
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+            if (!Directory.Exists(_databaseDirPath)) {
+                Directory.CreateDirectory(_databaseDirPath);
+            }
+            optionsBuilder.UseSqlite(@"Filename=" + _databaseFilePath, options => {
+                options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
+            });
+            base.OnConfiguring(optionsBuilder);
+        }
+#endregion
+
+        #region private-methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="jobId"></param>
+        /// <param name="wasFound"></param>
+        private void AddElementLog(Element element, string jobId, bool wasFound = true) {
+            Database.EnsureCreated();
+            var log = GetElementLog(element.Id, jobId);
+            if (log == null) {
+                ElementLogs.Add(new ElementLog { Id = element.Id, WasFound = wasFound, Hash = element.Hash, JobId = jobId });
+            } else {
+                log.WasFound = wasFound;
+                log.Hash = element.Hash;
+                UpdateElementsLog(log);
+            }
+
+            SaveChanges();
+        }
+        #endregion
     }
 }

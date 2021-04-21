@@ -12,12 +12,12 @@ namespace Enable_Now_Konnektor.src.metadata
 {
     internal class MetaFileReader : MetaReader
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
+        private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
 
         internal MetaFileReader()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
         internal override async Task<JObject> GetMetaDataAsync(Element element, string fileType)
@@ -25,7 +25,7 @@ namespace Enable_Now_Konnektor.src.metadata
             string entityPath = GetMetaUrl(element.Class, element.Id, fileType);
             if (!File.Exists(entityPath))
             {
-                log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage01", entityPath));
+                s_log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage01", entityPath));
                 return null;
             }
 
@@ -38,19 +38,19 @@ namespace Enable_Now_Konnektor.src.metadata
             }
             catch
             {
-                log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage02"));
+                s_log.Warn(LocalizationService.FormatResourceString("MetaFileReaderMessage02"));
                 return null;
             }
         }
 
         internal override string GetMetaUrl(string className, string id, string fileType)
         {
-            return jobConfig.EntityPath.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
+            return _jobConfig.EntityPath.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
 
         internal override string GetContentUrl(string className, string id)
         {
-            return jobConfig.ContentPath.Replace("${Class}", ClassNames[className]).Replace("${Id}", id);
+            return _jobConfig.ContentPath.Replace("${Class}", ClassNames[className]).Replace("${Id}", id);
         }
     }
 }

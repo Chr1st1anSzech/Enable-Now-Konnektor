@@ -21,24 +21,26 @@ namespace Enable_Now_Konnektor.src.crawler
     /// </summary>
     internal class ElementCrawler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
-        private readonly MetaAnalyzer metaAnalyzer;
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
+        private readonly MetaAnalyzer _metaAnalyzer;
+
+
 
         /// <summary>
         /// Felder eines Projekts, die von einem Autostart-Element auf das andere Element abgebildet werden sollen
         /// </summary>
-        private List<string> projectMappingFields;
+        private List<string> _projectMappingFields;
         /// <summary>
         /// Felder einer Gruppe, die von einem Autostart-Element auf das andere Element abgebildet werden sollen
         /// </summary>
-        private List<string> groupMappingFields;
+        private List<string> _groupMappingFields;
 
         #region constructors
         internal ElementCrawler()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
-            metaAnalyzer = new MetaAnalyzer();
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _metaAnalyzer = new MetaAnalyzer();
             InitializeMappingFields();
         }
         #endregion
@@ -53,11 +55,11 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             Element element = new(id);
             FillInitialFields(element);
-            MetaDataCollection metaData = await metaAnalyzer.LoadMetaFilesAsync(element);
+            MetaDataCollection metaData = await MetaAnalyzer.LoadMetaFilesAsync(element);
             FillFields(element, metaData);
             AddAssets(element, metaData);
             string autostartId = GetAutostartId(metaData);
-            StatisticService statisticService = StatisticService.GetService(jobConfig.Id);
+            StatisticService statisticService = StatisticService.GetService(_jobConfig.Id);
             if (autostartId != null)
             {
                 try
@@ -68,7 +70,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 }
                 catch
                 {
-                    log.Warn(LocalizationService.FormatResourceString("ElementCrawlerMessage01"));
+                    _log.Warn(LocalizationService.FormatResourceString("ElementCrawlerMessage01"));
                 }
             }
             element.Hash = element.GenerateHashCode();
@@ -93,18 +95,18 @@ namespace Enable_Now_Konnektor.src.crawler
             fieldName = $"{cfg.StringIdentifier}.{cfg.UrlFieldName}";
             element.AddValues(fieldName, new MetaWebsiteReader().GetContentUrl(element.Class, element.Id));
 
-            foreach (var mapping in jobConfig.GlobalMappings)
+            foreach (var mapping in _jobConfig.GlobalMappings)
             {
                 element.AddValues(mapping.Key, mapping.Value);
             }
 
             Dictionary<string, Dictionary<string, string[]>> mappings = new Dictionary<string, Dictionary<string, string[]>>()
             {
-                { Element.Project, jobConfig.ProjectMappings },
-                { Element.Slide, jobConfig.SlideMappings},
-                { Element.Group, jobConfig.GroupMappings },
-                { Element.Book, jobConfig.BookMappings},
-                { Element.Text, jobConfig.TextMappings }
+                { Element.Project, _jobConfig.ProjectMappings },
+                { Element.Slide, _jobConfig.SlideMappings},
+                { Element.Group, _jobConfig.GroupMappings },
+                { Element.Book, _jobConfig.BookMappings},
+                { Element.Text, _jobConfig.TextMappings }
 
             };
 
@@ -157,22 +159,22 @@ namespace Enable_Now_Konnektor.src.crawler
         private void InitializeMappingFields()
         {
             // Mapping und Überschreiben ist deaktiviert
-            if (!jobConfig.AutostartMetaMapping && !jobConfig.AutostartChildOverwrite)
+            if (!_jobConfig.AutostartMetaMapping && !_jobConfig.AutostartChildOverwrite)
             {
                 return;
             }
 
-            projectMappingFields = new List<string>();
-            groupMappingFields = new List<string>();
+            _projectMappingFields = new List<string>();
+            _groupMappingFields = new List<string>();
 
             // alle globalen Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GlobalMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields, groupMappingFields);
+            AddValueToEachList(_jobConfig.GlobalMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _projectMappingFields, _groupMappingFields);
 
             // alle Projekt-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.ProjectMappings.Keys, jobConfig.AutoStartMappingBlacklist, projectMappingFields);
+            AddValueToEachList(_jobConfig.ProjectMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _projectMappingFields);
 
             // alle Gruppen-Felder hinzufügen außer sie stehen auf der Blacklist
-            AddValueToEachList(jobConfig.GroupMappings.Keys, jobConfig.AutoStartMappingBlacklist, groupMappingFields);
+            AddValueToEachList(_jobConfig.GroupMappings.Keys, _jobConfig.AutoStartMappingBlacklist, _groupMappingFields);
         }
 
 
@@ -200,7 +202,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="metaData"></param>
         private void AddAssets(Element element, MetaDataCollection metaData)
         {
-            metaAnalyzer.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
+            MetaAnalyzer.ExtractAssets(metaData, out string[] childrenIds, out string[] attachementIds);
             element.ChildrenIds = childrenIds;
             element.AttachementNames = attachementIds;
         }
@@ -238,12 +240,12 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             if (element.Class == Element.Slide) { return; }
 
-            if (!jobConfig.AutostartMetaMapping || projectMappingFields == null || groupMappingFields == null) { return; }
+            if (!_jobConfig.AutostartMetaMapping || _projectMappingFields == null || _groupMappingFields == null) { return; }
 
             List<string> mappingFieldList = GetMappingListForClass(element);
             if (mappingFieldList == null) { return; }
 
-            bool overwriteValues = jobConfig.AutostartChildOverwrite;
+            bool overwriteValues = _jobConfig.AutostartChildOverwrite;
             foreach (string field in mappingFieldList)
             {
                 var autostartValues = autostartElement.GetValues(field);
@@ -270,11 +272,11 @@ namespace Enable_Now_Konnektor.src.crawler
             List<string> mappingFieldList = null;
             if (element.Class == Element.Project)
             {
-                mappingFieldList = projectMappingFields;
+                mappingFieldList = _projectMappingFields;
             }
             else if (element.Class == Element.Group)
             {
-                mappingFieldList = groupMappingFields;
+                mappingFieldList = _groupMappingFields;
             }
 
             return mappingFieldList;
@@ -291,32 +293,32 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns>Eine Liste mit den Werten oder null, wenn der Ausdruck kein Ergebnis liefert.</returns>
         private string[] EvaluateField(string temporaryValue, ExpressionEvaluator expressionEvaluator, MetaDataCollection metaData)
         {
-            if (!expressionEvaluator.IsExpression(temporaryValue, out string expression))
+            if (!ExpressionEvaluator.IsExpression(temporaryValue, out string expression))
             {
-                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage02", temporaryValue));
+                _log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage02", temporaryValue));
                 return string.IsNullOrWhiteSpace(temporaryValue) ? null : new string[] { temporaryValue };
             }
 
-            if (expressionEvaluator.IsVariableExpression(expression, out string variableName))
+            if (ExpressionEvaluator.IsVariableExpression(expression, out string variableName))
             {
-                string value = Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, variableName));
-                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage03", expression, value));
+                string value = Util.RemoveMarkup(MetaAnalyzer.ExtractValue(metaData, variableName));
+                _log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage03", expression, value));
                 return string.IsNullOrWhiteSpace(value) ? null : new string[] { value };
             }
-            if (expressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string[] converterParameterNames))
+            if (ExpressionEvaluator.IsConverterExpression(expression, out string converterClassName, out string[] converterParameterNames))
             {
                 int parameterCount = converterParameterNames.Length;
                 string[] converterParameterValues = new string[parameterCount];
                 for (int i = 0; i < parameterCount; i++)
                 {
                     string converterParameter = converterParameterNames[i];
-                    bool isVariable = expressionEvaluator.IsVariableExpression(converterParameter, out string converterVariableName);
+                    bool isVariable = ExpressionEvaluator.IsVariableExpression(converterParameter, out string converterVariableName);
                     converterParameterValues[i] = isVariable ?
-                        Util.RemoveMarkup(metaAnalyzer.ExtractValue(metaData, converterVariableName)) :
+                        Util.RemoveMarkup(MetaAnalyzer.ExtractValue(metaData, converterVariableName)) :
                         converterParameterNames[i];
                 }
-                log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage04", expression, converterClassName, ""));
-                return expressionEvaluator.EvaluateAsConverter(converterClassName, converterParameterValues);
+                _log.Debug(LocalizationService.FormatResourceString("ElementCrawlerMessage04", expression, converterClassName, ""));
+                return ExpressionEvaluator.EvaluateAsConverter(converterClassName, converterParameterValues);
             }
             return null;
         }

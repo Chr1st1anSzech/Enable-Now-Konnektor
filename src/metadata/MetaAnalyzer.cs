@@ -18,40 +18,40 @@ namespace Enable_Now_Konnektor.src.metadata
     /// </summary>
     internal class MetaAnalyzer
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
+        private static readonly ILog s_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
 
         internal MetaAnalyzer()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
-        internal void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
+        internal static void ExtractAssets(MetaDataCollection metaData, out string[] childrenIds, out string[] attachementNames)
         {
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
-            log.Debug("Analysiere alle Kindselemente.");
-            var assets = metaData.Entity?[config.AssetsIdentifier];
+            s_log.Debug("Analysiere alle Kindselemente.");
+            JToken assets = metaData.Entity?[config.AssetsIdentifier];
             if (assets == null)
             {
-                childrenIds = new string[0];
-                attachementNames = new string[0];
+                childrenIds = Array.Empty<string>();
+                attachementNames = Array.Empty<string>();
                 return;
             }
 
             childrenIds = (from JToken asset in assets
-                               where asset[config.AutostartIdentifier]?.Value<bool>() != true
-                               && asset[config.UidFieldName]?.Value<string>() != null
-                               select asset[config.UidFieldName].Value<string>()).ToArray();
+                           where asset[config.AutostartIdentifier]?.Value<bool>() != true
+                           && asset[config.UidFieldName]?.Value<string>() != null
+                           select asset[config.UidFieldName].Value<string>()).ToArray();
 
             attachementNames = (from JToken asset in assets
-                                    where asset[config.TypeIdentifier]?.Value<string>() == config.DocuIdentifier
-                                    && asset[config.FileNameIdentifier]?.Value<string>() != null
-                                    select asset[config.FileNameIdentifier].Value<string>()).ToArray();
+                                where asset[config.TypeIdentifier]?.Value<string>() == config.DocuIdentifier
+                                && asset[config.FileNameIdentifier]?.Value<string>() != null
+                                select asset[config.FileNameIdentifier].Value<string>()).ToArray();
         }
 
-        internal string ExtractValue(MetaDataCollection metaData, string variableName)
+        internal static string ExtractValue(MetaDataCollection metaData, string variableName)
         {
-            if( variableName == null)
+            if (variableName == null)
             {
                 return null;
             }
@@ -72,16 +72,16 @@ namespace Enable_Now_Konnektor.src.metadata
             return "";
         }
 
-        private string ExtractValueFromEntityTxt(string variableName, JObject json)
+        private static string ExtractValueFromEntityTxt(string variableName, JObject json)
         {
             return json?[variableName]?.Value<string>();
         }
 
-        private string ExtractValueFromJson(string variableName, JObject json)
+        private static string ExtractValueFromJson(string variableName, JObject json)
         {
             if (json == null)
             {
-                log.Warn( LocalizationService.FormatResourceString("MetaAnalyzerMessage02"));
+                s_log.Warn(LocalizationService.FormatResourceString("MetaAnalyzerMessage02"));
                 return null;
             }
             IEnumerable<string> values = json.Descendants().OfType<JProperty>()
@@ -90,18 +90,18 @@ namespace Enable_Now_Konnektor.src.metadata
             return Util.JoinArray(values);
         }
 
-        internal async Task<MetaDataCollection> LoadMetaFilesAsync(Element element)
+        internal static async Task<MetaDataCollection> LoadMetaFilesAsync(Element element)
         {
             MetaDataCollection metaData = new()
             {
-                Lesson = await GetJsonFileAsync(element, MetaReader.LessonFile),
-                Slide = await GetJsonFileAsync(element, MetaReader.SlideFile)
+                Lesson = await GetJsonFileAsync(element, MetaReader.s_lessonFile),
+                Slide = await GetJsonFileAsync(element, MetaReader.s_slideFile)
             };
-            metaData.Entity = await GetJsonFileAsync(element, MetaReader.EntityFile);
-            if(metaData.Entity == null)
+            metaData.Entity = await GetJsonFileAsync(element, MetaReader.s_entityFile);
+            if (metaData.Entity == null)
             {
                 string message = LocalizationService.FormatResourceString("MetaAnalyzerMessage04");
-                log.Error(message);
+                s_log.Error(message);
                 throw new ArgumentNullException(message);
             }
             return metaData;
@@ -113,17 +113,17 @@ namespace Enable_Now_Konnektor.src.metadata
         /// <param name="element"></param>
         /// <param name="fileType"></param>
         /// <returns></returns>
-        private async Task<JObject> GetJsonFileAsync(Element element, string fileType)
+        private static async Task<JObject> GetJsonFileAsync(Element element, string fileType)
         {
             // nur Projekte haben eine lesson.js
             // nur Buchseiten haben eine slide.js
-            if ((element.Class != Element.Project && fileType == MetaReader.LessonFile) || (element.Class != Element.Slide && fileType == MetaReader.SlideFile))
+            if ((element.Class != Element.Project && fileType == MetaReader.s_lessonFile) || (element.Class != Element.Slide && fileType == MetaReader.s_slideFile))
             {
-                log.Debug($"Für {element.Class} gibt es keine {fileType}.");
+                s_log.Debug($"Für {element.Class} gibt es keine {fileType}.");
                 return null;
             }
 
-            var access = MetaReader.GetMetaReader();
+            MetaReader access = MetaReader.GetMetaReader();
             return await access.GetMetaDataAsync(element, fileType);
         }
     }

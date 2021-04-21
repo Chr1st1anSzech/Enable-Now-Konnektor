@@ -7,8 +7,9 @@ namespace Enable_Now_Konnektor.src.service
 {
     public class StatisticService
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly Dictionary<string, StatisticService> statisticServices = new Dictionary<string, StatisticService>();
+        private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Dictionary<string, StatisticService> s_statisticServices = new();
+
         public int IndexedDocumentsCount { get; private set; } = 0;
         public int UnchangedDocumentsCount { get; private set; } = 0;
         public int SkippedDocumentsCount { get; private set; } = 0;
@@ -18,32 +19,32 @@ namespace Enable_Now_Konnektor.src.service
 
         public static void Initialize(string jobId)
         {
-            if ( string.IsNullOrWhiteSpace(jobId))
+            if (string.IsNullOrWhiteSpace(jobId))
             {
                 string message = LocalizationService.FormatResourceString("StatisticsMessage01");
-                log.Error(message);
+                s_log.Error(message);
                 throw new ArgumentNullException(message);
             }
-            statisticServices.Add(jobId, new StatisticService());
+            s_statisticServices.Add(jobId, new StatisticService());
         }
 
         public static StatisticService GetService(string jobId)
         {
-            if( !statisticServices.ContainsKey(jobId))
+            if (!s_statisticServices.ContainsKey(jobId))
             {
                 Initialize(jobId);
             }
-            return statisticServices[jobId];
+            return s_statisticServices[jobId];
         }
 
         public void PrintStatistic()
         {
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage02", FoundDocumentsCount));
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage03", AutostartElementsCount));
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage04", UnchangedDocumentsCount));
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage05", SkippedDocumentsCount));
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage06", IndexedDocumentsCount));
-            log.Info(LocalizationService.FormatResourceString("StatisticsMessage07", RemovedDocumentsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage02", FoundDocumentsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage03", AutostartElementsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage04", UnchangedDocumentsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage05", SkippedDocumentsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage06", IndexedDocumentsCount));
+            s_log.Info(LocalizationService.FormatResourceString("StatisticsMessage07", RemovedDocumentsCount));
         }
 
         public void IncreaseSkippedDocumentsCount()

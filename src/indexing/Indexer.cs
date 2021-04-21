@@ -6,7 +6,7 @@ namespace Enable_Now_Konnektor.src.indexing
 {
     internal abstract class Indexer
     {
-        protected JobConfig jobConfig;
+        protected JobConfig JobConfig;
 
 
 

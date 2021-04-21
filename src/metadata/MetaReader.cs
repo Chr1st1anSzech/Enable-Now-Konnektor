@@ -8,9 +8,9 @@ namespace Enable_Now_Konnektor.src.metadata
 {
     internal abstract class MetaReader
     {
-        internal static string EntityFile = "entity.txt";
-        internal static string LessonFile = "lesson.js";
-        internal static string SlideFile = "slide.js";
+        internal static readonly string s_entityFile = "entity.txt";
+        internal static readonly string s_lessonFile = "lesson.js";
+        internal static readonly string s_slideFile = "slide.js";
 
         protected Dictionary<string, string> ClassNames { get; } = new Dictionary<string, string>() {
             { Element.Group, "group" },
@@ -23,7 +23,8 @@ namespace Enable_Now_Konnektor.src.metadata
 
         internal static MetaReader GetMetaReader()
         {
-            switch (JobManager.GetJobManager().SelectedJobConfig.PublicationSource.ToLower()) {
+            switch (JobManager.GetJobManager().SelectedJobConfig.PublicationSource.ToLower())
+            {
                 case "datei":
                     {
                         return new MetaFileReader();

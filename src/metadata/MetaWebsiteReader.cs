@@ -11,12 +11,12 @@ namespace Enable_Now_Konnektor.src.metadata
 {
     internal class MetaWebsiteReader : MetaReader
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
+        private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
 
         internal MetaWebsiteReader()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
 
@@ -25,24 +25,24 @@ namespace Enable_Now_Konnektor.src.metadata
             string entityUrl = GetMetaUrl(element.Class, element.Id, fileType);
             try
             {
-                string jsonString = await new HttpRequest(jobConfig).SendRequestAsync(entityUrl);
+                string jsonString = await new HttpRequest(_jobConfig).SendRequestAsync(entityUrl);
                 return JsonConvert.DeserializeObject<JObject>(jsonString);
             }
             catch
             {
-                log.Warn(LocalizationService.FormatResourceString("MetaWebsiteReaderMessage01"));
+                s_log.Warn(LocalizationService.FormatResourceString("MetaWebsiteReaderMessage01"));
                 return null;
             }
         }
 
         internal override string GetContentUrl(string className, string id)
         {
-            return jobConfig.ContentUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id);
+            return _jobConfig.ContentUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id);
         }
 
         internal override string GetMetaUrl(string className, string id, string fileType)
         {
-            return jobConfig.EntityUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
+            return _jobConfig.EntityUrl.Replace("${Class}", ClassNames[className]).Replace("${Id}", id).Replace("${File}", fileType);
         }
     }
 }

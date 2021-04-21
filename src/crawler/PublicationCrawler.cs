@@ -15,22 +15,21 @@ namespace Enable_Now_Konnektor.src.crawler
 {
     internal class PublicationCrawler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly JobConfig jobConfig;
-        private readonly ElementCrawler elementCrawler;
-        private readonly AttachementCrawler attachementCrawler;
-
-
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly JobConfig _jobConfig;
+        private readonly ElementCrawler _elementCrawler;
+        private readonly AttachementCrawler _attachementCrawler;
         /// <summary>
         /// Die Warteschlange mit den IDs, die noch analysiert und indexiert werden müssen.
         /// </summary>
-        private readonly ConcurrentQueue<string> idWorkQueue = new();
+        private readonly ConcurrentQueue<string> _idWorkQueue = new();
+
 
 
         /// <summary>
         /// Status der Tasks.
         /// </summary>
-        private bool[] taskStatus;
+        private bool[] _taskStatus;
 
 
         #region constructors
@@ -40,9 +39,9 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="jobConfig">Die Konfiguration des Jobs.</param>
         internal PublicationCrawler()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
-            elementCrawler = new ElementCrawler();
-            attachementCrawler = new AttachementCrawler();
+            _jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            _elementCrawler = new ElementCrawler();
+            _attachementCrawler = new AttachementCrawler();
         }
         #endregion
 
@@ -73,14 +72,14 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         internal void StartCrawling()
         {
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage01"));
-            int threadCount = jobConfig.ThreadCount;
-            taskStatus = new bool[threadCount];
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage01"));
+            int threadCount = _jobConfig.ThreadCount;
+            _taskStatus = new bool[threadCount];
             Task[] tasks = new Task[threadCount];
-            idWorkQueue.Enqueue(jobConfig.StartId);
+            _idWorkQueue.Enqueue(_jobConfig.StartId);
             for (int threadNumber = 0; threadNumber < threadCount; threadNumber++)
             {
-                taskStatus[threadNumber] = true;
+                _taskStatus[threadNumber] = true;
                 int i = threadNumber;
                 tasks[threadNumber] = Task.Run(async delegate () { await EnterCrawlingLoopAsync(i); });
             }
@@ -97,7 +96,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private async Task EnterCrawlingLoopAsync(int threadNumber)
         {
             CrawlerIndexerInterface crawlerIndexerInterface = new();
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage03"));
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage03"));
             while (IsAnyTaskActive())
             {
                 await DequeueJob(crawlerIndexerInterface);
@@ -105,7 +104,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 SetTaskStatus(threadNumber);
             }
 
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage08"));
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage08"));
         }
 
 
@@ -117,13 +116,13 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns></returns>
         private async Task DequeueJob(CrawlerIndexerInterface crawlerIndexerInterface)
         {
-            if (idWorkQueue.TryDequeue(out string id))
+            if (_idWorkQueue.TryDequeue(out string id))
             {
                 await CrawlElementAsync(crawlerIndexerInterface, id);
             }
             else
             {
-                log.Debug(LocalizationService.FormatResourceString("PublicationCrawlerMessage04"));
+                _log.Debug(LocalizationService.FormatResourceString("PublicationCrawlerMessage04"));
                 Thread.Sleep(new Random().Next(50, 1000));
             }
         }
@@ -136,15 +135,15 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <param name="threadNumber"></param>
         private void SetTaskStatus(int threadNumber)
         {
-            int countElementsInQueue = idWorkQueue.Count;
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage05", countElementsInQueue));
+            int countElementsInQueue = _idWorkQueue.Count;
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage05", countElementsInQueue));
             if (countElementsInQueue == 0)
             {
-                taskStatus[threadNumber] = false;
+                _taskStatus[threadNumber] = false;
             }
             else
             {
-                taskStatus[threadNumber] = true;
+                _taskStatus[threadNumber] = true;
             }
         }
 
@@ -157,8 +156,8 @@ namespace Enable_Now_Konnektor.src.crawler
         {
             using ElementLogContext context = new();
             context.Initialize();
-            context.ResetAllFoundStatus(jobConfig.Id);
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage09"));
+            context.ResetAllFoundStatus(_jobConfig.Id);
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage09"));
         }
 
 
@@ -169,12 +168,12 @@ namespace Enable_Now_Konnektor.src.crawler
         private void RemoveAllUnfoundElements()
         {
             using ElementLogContext context = new();
-            context.GetAllElementLogs(e => e.WasFound == false && e.JobId == jobConfig.Id).ToList().ForEach(e =>
+            context.GetAllElementLogs(e => e.WasFound == false && e.JobId == _jobConfig.Id).ToList().ForEach(e =>
             {
                 CrawlerIndexerInterface crawlerIndexerInterface = new();
                 crawlerIndexerInterface.RemoveElementCompletly(e.Id);
             });
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage10"));
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage10"));
         }
 
 
@@ -184,7 +183,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// </summary>
         private void InitializeStatisticService()
         {
-            StatisticService.Initialize(jobConfig.Id);
+            StatisticService.Initialize(_jobConfig.Id);
         }
 
 
@@ -197,22 +196,22 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns></returns>
         private async Task CrawlElementAsync(CrawlerIndexerInterface crawlerIndexerInterface, string id)
         {
-            log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage02", id));
+            _log.Info(LocalizationService.FormatResourceString("PublicationCrawlerMessage02", id));
             Element element;
             try
             {
-                element = await elementCrawler.CrawlElementAsync(id);
+                element = await _elementCrawler.CrawlElementAsync(id);
             }
             catch
             {
-                log.Error(LocalizationService.FormatResourceString("PublicationCrawlerMessage07", id));
+                _log.Error(LocalizationService.FormatResourceString("PublicationCrawlerMessage07", id));
                 ErrorControlService.GetService().IncreaseErrorCount();
                 return;
             }
 
             foreach (var childId in element.ChildrenIds)
             {
-                idWorkQueue.Enqueue(childId);
+                _idWorkQueue.Enqueue(childId);
             }
 
             await crawlerIndexerInterface.SendToIndexerAsync(element);
@@ -230,7 +229,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns></returns>
         private async Task CrawlAttachements(CrawlerIndexerInterface crawlerIndexerInterface, Element element)
         {
-            var attachements = await attachementCrawler.CrawlAttachementsAsync(element);
+            var attachements = await _attachementCrawler.CrawlAttachementsAsync(element);
             for (int i = 0; i < attachements.Count; i++)
             {
                 await crawlerIndexerInterface.SendToIndexerAsync(attachements[i]);
@@ -246,7 +245,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool IsAnyTaskActive()
         {
             bool isAnyTaskActive = false;
-            foreach (var isActive in taskStatus)
+            foreach (var isActive in _taskStatus)
             {
                 isAnyTaskActive |= isActive;
             }

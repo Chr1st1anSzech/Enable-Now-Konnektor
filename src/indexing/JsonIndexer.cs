@@ -15,7 +15,22 @@ namespace Enable_Now_Konnektor.src.indexing
 {
     internal class JsonIndexer : Indexer
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        struct IndexElement
+        {
+            // müssen klein geschrieben werden
+            public string id { get; }
+            public Dictionary<string, List<string>> fields { get; }
+
+            public IndexElement(string id, Dictionary<string, List<string>> fields)
+            {
+                this.id = id;
+                this.fields = fields;
+            }
+        }
+
+
+
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
 
@@ -24,11 +39,11 @@ namespace Enable_Now_Konnektor.src.indexing
         /// </summary>
         internal JsonIndexer()
         {
-            jobConfig = JobManager.GetJobManager().SelectedJobConfig;
+            JobConfig = JobManager.GetJobManager().SelectedJobConfig;
         }
 
 
-
+        #region internal-methods
         /// <summary>
         /// 
         /// </summary>
@@ -41,12 +56,12 @@ namespace Enable_Now_Konnektor.src.indexing
             string url = $"{config.IndexUrl}{paramString}";
             try
             {
-                await new HttpRequest(jobConfig).SendRequestAsync(url);
+                await new HttpRequest(JobConfig).SendRequestAsync(url);
                 return true;
             }
             catch (Exception e)
             {
-                log.Error(LocalizationService.FormatResourceString("JsonIndexerMessage01"), e);
+                _log.Error(LocalizationService.FormatResourceString("JsonIndexerMessage01"), e);
                 return false;
             }
         }
@@ -77,30 +92,18 @@ namespace Enable_Now_Konnektor.src.indexing
             string url = $"{config.RemoveUrl}{encodedParam}";
             try
             {
-                await new HttpRequest(jobConfig).SendRequestAsync(url);
+                await new HttpRequest(JobConfig).SendRequestAsync(url);
                 return true;
             }
             catch (Exception e)
             {
-                log.Error(LocalizationService.FormatResourceString("JsonIndexerMessage02"), e);
+                _log.Error(LocalizationService.FormatResourceString("JsonIndexerMessage02"), e);
                 return false;
             }
         }
+        #endregion
 
-        struct IndexElement
-        {
-            // müssen klein geschrieben werden
-            public string id { get;  }
-            public Dictionary<string, List<string>> fields { get; }
-
-            public IndexElement(string id, Dictionary<string, List<string>> fields)
-            {
-                this.id = id;
-                this.fields = fields;
-            }
-        }
-
-
+        #region private-methods
         /// <summary>
         /// 
         /// </summary>
@@ -123,7 +126,8 @@ namespace Enable_Now_Konnektor.src.indexing
         /// <returns></returns>
         private string GetElasticsearchId(string elementId)
         {
-            return $"{jobConfig.Id}-{elementId}";
+            return $"{JobConfig.Id}-{elementId}";
         }
+        #endregion
     }
 }

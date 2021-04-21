@@ -11,7 +11,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
 {
     internal class ExpressionEvaluator
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog s_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Prüft, ob es sich bei dem Text, um einen Ausdruck, der interpretiert werden soll, handelt.
@@ -19,7 +19,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
         /// <param name="textToExamine">Der Text, der geprüft werden soll.</param>
         /// <param name="expression">Der Ausdruck, falls einer gefunden wird. Andernfalls wird null zurückgegeben.</param>
         /// <returns>Wahr, wenn es ein Ausdruck ist.</returns>
-        internal bool IsExpression(string textToExamine, out string expression)
+        internal static bool IsExpression(string textToExamine, out string expression)
         {
             if (string.IsNullOrWhiteSpace(textToExamine)) { expression = null; return false; }
 
@@ -36,7 +36,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
         /// <param name="expression">Der Ausdruck, der geprüft werden soll.</param>
         /// <param name="variableName">Die Variable, falls eine gefunden wird. Andernfalls wird null zurückgegeben.</param>
         /// <returns>Wahr, wenn es eine Variable ist.</returns>
-        internal bool IsVariableExpression(string expression, out string variableName)
+        internal static bool IsVariableExpression(string expression, out string variableName)
         {
             Config cfg = ConfigManager.GetConfigManager().ConnectorConfig;
             string variablePattern = $"^({cfg.EntityIdentifier}|{cfg.LessonIdentifier}|{cfg.SlideIdentifier})\\w+$";
@@ -46,7 +46,7 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
             return isVariableExpression;
         }
 
-        internal bool IsConverterExpression(string expression, out string converterClassName, out string[] converterParameterNames)
+        internal static bool IsConverterExpression(string expression, out string converterClassName, out string[] converterParameterNames)
         {
             Match converterClassNameMatch = Regex.Match(expression, "^\\w+(?=\\(([^,]+,?)+\\)$)");
             converterClassName = converterClassNameMatch.Success ? converterClassNameMatch.Value : null;
@@ -56,20 +56,20 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
         }
 
 
-        internal string[] EvaluateAsConverter(string converterClassName, params string[] parameters)
+        internal static string[] EvaluateAsConverter(string converterClassName, params string[] parameters)
         {
             Type converterType = GetConverterType(converterClassName);
             if (converterType == null) { return Array.Empty<string>(); }
 
             try
             {
-                var o = Activator.CreateInstance(converterType) as IParameterConverter;
+                IParameterConverter converter = Activator.CreateInstance(converterType) as IParameterConverter;
                 MethodInfo method = converterType.GetMethod("TransformParameter");
-                return method.Invoke(o, new object[] { parameters }) as string[];
+                return method.Invoke(converter, new object[] { parameters }) as string[];
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                log.Warn(LocalizationService.FormatResourceString("ExpressionEvaluatorMessage01", converterClassName, parameters), e);
+                s_log.Warn(LocalizationService.FormatResourceString("ExpressionEvaluatorMessage01", converterClassName, parameters), exception);
             }
             return Array.Empty<string>();
         }
@@ -78,8 +78,8 @@ namespace Enable_Now_Konnektor_Bibliothek.src.misc
         {
             Type type = typeof(IParameterConverter);
             Type converterType = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .FirstOrDefault(p => type.IsAssignableFrom(p) && p.IsClass && p.Name.Equals(converterClassName));
+                .SelectMany(assembly => assembly.GetTypes())
+                .FirstOrDefault(t => type.IsAssignableFrom(t) && t.IsClass && t.Name.Equals(converterClassName));
             return converterType;
         }
 
