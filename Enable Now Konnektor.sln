@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor", "Enable Now Konnektor.csproj", "{DFA26985-D1A3-44CB-B60D-0AFAC32BA8E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Editor", "..\Enable Now Konnektor Editor\Enable Now Konnektor Editor.csproj", "{C670A578-49CC-4A26-9BC8-BBC97F2998A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Editor", "..\Enable-Now-Konnektor-Editor\Enable Now Konnektor Editor.csproj", "{C670A578-49CC-4A26-9BC8-BBC97F2998A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Bibliothek", "..\Enable Now Konnektor Bibliothek\Enable Now Konnektor Bibliothek.csproj", "{ED59E3EB-871B-4FBB-9D43-992428BFDC3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enable Now Konnektor Bibliothek", "..\Enable-Now-Konnektor-Bibliothek\Enable Now Konnektor Bibliothek.csproj", "{ED59E3EB-871B-4FBB-9D43-992428BFDC3E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{57D798E4-AAC2-410E-88DD-7945350675F4}"
 	ProjectSection(SolutionItems) = preProject

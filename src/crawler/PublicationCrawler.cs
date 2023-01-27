@@ -6,6 +6,7 @@ using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -209,7 +210,7 @@ namespace Enable_Now_Konnektor.src.crawler
                 return;
             }
 
-            foreach (var childId in element.ChildrenIds)
+            foreach (string childId in element.ChildrenIds)
             {
                 _idWorkQueue.Enqueue(childId);
             }
@@ -229,7 +230,7 @@ namespace Enable_Now_Konnektor.src.crawler
         /// <returns></returns>
         private async Task CrawlAttachements(CrawlerIndexerInterface crawlerIndexerInterface, Element element)
         {
-            var attachements = await _attachementCrawler.CrawlAttachementsAsync(element);
+            List<Element> attachements = await _attachementCrawler.CrawlAttachementsAsync(element);
             for (int i = 0; i < attachements.Count; i++)
             {
                 await crawlerIndexerInterface.SendToIndexerAsync(attachements[i]);
@@ -245,7 +246,7 @@ namespace Enable_Now_Konnektor.src.crawler
         private bool IsAnyTaskActive()
         {
             bool isAnyTaskActive = false;
-            foreach (var isActive in _taskStatus)
+            foreach (bool isActive in _taskStatus)
             {
                 isAnyTaskActive |= isActive;
             }

@@ -78,15 +78,15 @@ namespace Enable_Now_Konnektor.src.indexing
                 throw;
             }
             Config config = ConfigManager.GetConfigManager().ConnectorConfig;
-            var fields = json[0][config.ConverterFieldsIdentifier];
+            JToken fields = json[0][config.ConverterFieldsIdentifier];
             if (fields == null)
             {
-                var message = LocalizationService.FormatResourceString("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
+                string message = LocalizationService.FormatResourceString("ConverterServiceMessage03", config.ConverterFieldsIdentifier);
                 _log.Error(message);
                 throw new ArgumentNullException(message);
             }
 
-            ConverterResult res = new ConverterResult();
+            ConverterResult res = new();
 
             string fieldName = $"{config.StringIdentifier}.{config.BodyFieldName}";
             res.Body = Util.RemoveMarkup(GetConverterFieldValue(fields, fieldName));
@@ -94,11 +94,8 @@ namespace Enable_Now_Konnektor.src.indexing
             fieldName = $"{config.StringIdentifier}.{config.MimeTypeFieldName}";
             res.MimeType = GetConverterFieldValue(fields, fieldName);
 
-            fieldName = $"{config.StringIdentifier}.{config.ApplicationFieldName}";
-            string app = GetConverterFieldValue(fields, fieldName);
-
-            res.Application = config.ConverterApplicationMapping.ContainsKey(app) ?
-                config.ConverterApplicationMapping[app] : config.ConverterApplicationDefaultMapping;
+            res.Application = config.ConverterApplicationMapping.ContainsKey(res.MimeType) ?
+                config.ConverterApplicationMapping[res.MimeType] : config.ConverterApplicationDefaultMapping;
 
             return res;
         }
@@ -114,7 +111,7 @@ namespace Enable_Now_Konnektor.src.indexing
         /// <returns></returns>
         private string GetConverterFieldValue(JToken fields, string fieldName)
         {
-            var field = fields[fieldName]?[0];
+            JToken field = fields[fieldName]?[0];
             if ( field == null)
             {
                 string message = LocalizationService.FormatResourceString("ConverterServiceMessage03", fieldName);

@@ -1,6 +1,5 @@
 ﻿using Enable_Now_Konnektor.src.crawler;
 using Enable_Now_Konnektor.src.service;
-using Enable_Now_Konnektor_Bibliothek.src.config;
 using Enable_Now_Konnektor_Bibliothek.src.jobs;
 using Enable_Now_Konnektor_Bibliothek.src.service;
 using log4net;
@@ -27,19 +26,20 @@ namespace Enable_Now_Konnektor.src.jobs
             log.Info(LocalizationService.FormatResourceString("JobSchedulerMessage01", startTime));
             ErrorControlService.GetService().StartRuntimeStopwatch();
             JobManager manager = JobManager.GetJobManager();
-            if (manager.AllJobs == null) { return; }
+            if (manager.JobIds == null) { return; }
 
-            int jobCount = manager.AllJobs.Count;
-            List<string> jobIds = new(jobCount);
+            int jobCount = manager.JobIds.Count;
+            List<string> visitedJobIds = new(jobCount);
 
             for (int i = 0; i < jobCount; i++)
             {
-                JobConfig jobConfig = manager.AllJobs[i];
-                if (jobConfig == null) { continue; }
+                string jobConfigId = manager.JobIds[i];
+                if (jobConfigId == null) { continue; }
 
-                ExitWhenInvalidId(jobIds, jobConfig.Id);
+                ExitWhenInvalidId(visitedJobIds, jobConfigId);
 
-                InitNewThread(jobIdParameters, jobIds, jobConfig);
+                JobConfig jobConfig = manager.GetJobConfig(jobConfigId);
+                InitNewThread(jobIdParameters, visitedJobIds, jobConfig);
 
             }
 
